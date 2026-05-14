@@ -1,5 +1,8 @@
 {{ define "main" }}
-<div class="container" style="padding: 60px 20px; text-align: center;">
-  {{ .Content }}
+<div class="container content-page" style="padding: 40px 20px; max-width: 760px; margin: 0 auto;">
+  <h1>{{ .Title }}</h1>
+  <div class="page-content">
+    {{ .Content }}
+  </div>
 </div>
 {{ end }}
