@@ -1,0 +1,67 @@
+<!-- Hash Generator Widget -->
+<div class="mode-toggle" id="hash-mode-toggle">
+  <button class="btn btn-sm active" id="hash-md5" onclick="setHashAlgo('md5')">MD5</button>
+  <button class="btn btn-sm btn-outline" id="hash-sha1" onclick="setHashAlgo('sha1')">SHA1</button>
+  <button class="btn btn-sm btn-outline" id="hash-sha256" onclick="setHashAlgo('sha256')">SHA256</button>
+  <button class="btn btn-sm btn-outline" id="hash-sha512" onclick="setHashAlgo('sha512')">SHA512</button>
+</div>
+
+<textarea id="hash-input" class="tool-textarea" placeholder="输入要计算哈希的文本..." rows="6">Hello, AI Toolkit!</textarea>
+
+<div class="btn-row">
+  <button class="btn" onclick="computeHash()">🔢 计算哈希</button>
+  <button class="btn btn-outline btn-sm" onclick="clearHash()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="hash-copy-btn" onclick="copyHash()">📋 复制结果</button>
+</div>
+
+<pre class="output-area" id="hash-output"></pre>
+<div class="stats-bar" id="hash-stats"></div>
+
+<script>
+var _hashAlgo = 'md5';
+
+function setHashAlgo(algo) {
+  _hashAlgo = algo;
+  var labels = {md5:'hash-md5',sha1:'hash-sha1',sha256:'hash-sha256',sha512:'hash-sha512'};
+  Object.keys(labels).forEach(function(k) {
+    var el = document.getElementById(labels[k]);
+    el.className = k === algo ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  });
+  var text = document.getElementById('hash-input').value;
+  if (text.trim()) computeHash();
+}
+
+function computeHash() {
+  var text = document.getElementById('hash-input').value;
+  if (!text.trim()) { document.getElementById('hash-output').textContent = '⚠️ 请输入文本'; return; }
+  crypto.subtle.digest(_hashAlgo.toUpperCase() === 'MD5' ? 'SHA-1' : _hashAlgo, new TextEncoder().encode(text)).then(function(buf) {
+    var hash = Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
+    var h = hash;
+    if (_hashAlgo === 'md5') {
+      var short = text.length > 50 ? text.slice(0,50)+'...' : text;
+      crypto.subtle.digest('SHA-1', new TextEncoder().encode(text)).then(function(b1) {
+        var h1 = Array.from(new Uint8Array(b1)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+        crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)).then(function(b2) {
+          var h256 = Array.from(new Uint8Array(b2)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+          document.getElementById('hash-output').textContent = '[MD5]
+' + hash + '
+
+[SHA1]
+' + h1 + '
+
+[SHA256]
+' + h256;
+        });
+      });
+    }
+  });
+  if (_hashAlgo === 'md5') return;
+  _showHashResult(text, _hashAlgo, hash);
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择算法 → 输入文本 → 点击计算。支持 MD5、SHA1、SHA256、SHA512。</p>
+  <p><strong>注意：</strong>MD5 和 SHA1 存在已知碰撞漏洞，不推荐用于安全场景。</p>
+  <p><strong>适用场景：</strong>文件校验、密码哈希比对、数据完整性检查。</p>
+</div>
