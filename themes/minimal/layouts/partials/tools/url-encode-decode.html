@@ -1,0 +1,54 @@
+<!-- URL Encode/Decode Widget -->
+<textarea id="url-input" class="tool-textarea" placeholder="输入需要编码或解码的文本..." rows="6">https://example.com/search?q=AI工具&amp;lang=中文</textarea>
+
+<div class="btn-row">
+  <button class="btn" onclick="encodeURL()">🔐 Encode（编码）</button>
+  <button class="btn btn-outline" onclick="decodeURL()">🔓 Decode（解码）</button>
+  <button class="btn btn-outline btn-sm" onclick="clearURL()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="url-copy-btn" onclick="copyURLResult()">📋 复制结果</button>
+</div>
+
+<pre class="output-area" id="url-output"></pre>
+
+<script>
+function encodeURL() {
+  var input = document.getElementById('url-input').value;
+  if (!input.trim()) { document.getElementById('url-output').textContent = '⚠️ 请输入文本'; return; }
+  try {
+    document.getElementById('url-output').textContent = encodeURIComponent(input);
+  } catch(e) {
+    document.getElementById('url-output').textContent = '❌ 编码失败: ' + e.message;
+  }
+}
+
+function decodeURL() {
+  var input = document.getElementById('url-input').value;
+  if (!input.trim()) { document.getElementById('url-output').textContent = '⚠️ 请输入文本'; return; }
+  try {
+    document.getElementById('url-output').textContent = decodeURIComponent(input);
+  } catch(e) {
+    document.getElementById('url-output').textContent = '❌ 解码失败: ' + e.message;
+  }
+}
+
+function clearURL() {
+  document.getElementById('url-input').value = '';
+  document.getElementById('url-output').textContent = '';
+}
+
+function copyURLResult() {
+  var text = document.getElementById('url-output').textContent;
+  if (!text || text.indexOf('⚠️') === 0 || text.indexOf('❌') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('url-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入需要编码或解码的文本，点击对应按钮即可转换。</p>
+  <p><strong>URL编码</strong>将非ASCII字符和特殊字符转换为 % 后跟两位十六进制数的格式。</p>
+  <p><strong>适用场景：</strong>API 请求参数处理、中文 URL 转换、Query String 解析。</p>
+</div>

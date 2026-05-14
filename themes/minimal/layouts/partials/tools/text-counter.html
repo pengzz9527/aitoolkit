@@ -1,0 +1,67 @@
+<!-- Text Counter Widget -->
+<textarea id="text-input" class="tool-textarea" placeholder="在此输入或粘贴文本..." rows="10" oninput="updateTextStats()">Hello World! 你好世界。</textarea>
+
+<div class="stats-bar" id="text-stats">
+  <span>📝 字符: <strong id="char-count">17</strong></span>
+  <span>🔤 字数: <strong id="word-count">5</strong></span>
+  <span>📃 行数: <strong id="line-count">1</strong></span>
+  <span>📄 段落: <strong id="para-count">0</strong></span>
+  <span>🔢 数字: <strong id="digit-count">0</strong></span>
+  <span>␣ 空格: <strong id="space-count">1</strong></span>
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="clearTextStats()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" onclick="trimTextStats()">✂️ 去除首尾空格</button>
+  <button class="btn btn-outline btn-sm" onclick="removeExtraSpaceStats()">📏 合并连续空格</button>
+  <button class="btn btn-outline btn-sm" onclick="removeLineBreaksStats()">↔️ 去除换行</button>
+</div>
+
+<script>
+function updateTextStats() {
+  var text = document.getElementById('text-input').value;
+  var len = text.length;
+  var chineseChars = (text.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g) || []).length;
+  var words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  var totalWords = words + chineseChars;
+  var lines = text ? text.split(String.fromCharCode(10)).length : 0;
+  var paras = text ? text.split(String.fromCharCode(10,10)).filter(function(p) { return p.trim(); }).length : 0;
+  var digits = (text.match(/\d/g) || []).length;
+  var spaces = (text.match(/\s/g) || []).length;
+  document.getElementById('char-count').textContent = len;
+  document.getElementById('word-count').textContent = totalWords || 0;
+  document.getElementById('line-count').textContent = lines;
+  document.getElementById('para-count').textContent = paras;
+  document.getElementById('digit-count').textContent = digits;
+  document.getElementById('space-count').textContent = spaces;
+}
+
+function clearTextStats() {
+  document.getElementById('text-input').value = '';
+  updateTextStats();
+}
+
+function trimTextStats() {
+  var ta = document.getElementById('text-input');
+  ta.value = ta.value.trim();
+  updateTextStats();
+}
+
+function removeExtraSpaceStats() {
+  var ta = document.getElementById('text-input');
+  ta.value = ta.value.replace(/\s+/g, ' ');
+  updateTextStats();
+}
+
+function removeLineBreaksStats() {
+  var ta = document.getElementById('text-input');
+  ta.value = ta.value.replace(/\n/g, ' ');
+  updateTextStats();
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>直接在输入框中输入或粘贴文本，统计数据实时更新。</p>
+  <p><strong>统计项包括：</strong>总字符数、中英文词数、行数、段落数、数字数量、空格数量。</p>
+  <p><strong>适用场景：</strong>写作字数统计、SEO 内容长度检查、翻译工作量估算。</p>
+</div>

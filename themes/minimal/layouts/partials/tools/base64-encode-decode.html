@@ -1,0 +1,83 @@
+<!-- Base64 Encode/Decode Widget -->
+<div class="mode-toggle" id="b64-mode-toggle">
+  <button class="btn btn-sm active" id="b64-mode-encode" onclick="setB64Mode('encode')">✏️ 文本 → Base64</button>
+  <button class="btn btn-sm btn-outline" id="b64-mode-decode" onclick="setB64Mode('decode')">✏️ Base64 → 文本</button>
+</div>
+
+<textarea id="b64-input" class="tool-textarea" placeholder="在此粘贴文本..." rows="6">Hello, AI Toolkit! 你好，AI 工具包！</textarea>
+
+<div class="btn-row">
+  <button class="btn" onclick="convertB64()">🔄 转换</button>
+  <button class="btn btn-outline btn-sm" onclick="clearB64()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="b64-copy-btn" onclick="copyB64Result()">📋 复制结果</button>
+  <button class="btn btn-outline btn-sm" onclick="swapB64()">↕️ 交换</button>
+</div>
+
+<pre class="output-area" id="b64-output"></pre>
+<div class="stats-bar" id="b64-stats"></div>
+
+<script>
+var _b64Mode = 'encode';
+var _b64Input = document.getElementById('b64-input');
+var _b64Output = document.getElementById('b64-output');
+var _b64Stats = document.getElementById('b64-stats');
+var _b64ModeToggle = document.getElementById('b64-mode-toggle');
+
+function setB64Mode(mode) {
+  _b64Mode = mode;
+  document.getElementById('b64-mode-encode').className = mode === 'encode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('b64-mode-decode').className = mode === 'decode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  _b64Input.placeholder = mode === 'encode' ? '在此粘贴文本...' : '在此粘贴 Base64 字符串...';
+  convertB64();
+}
+
+function convertB64() {
+  var input = _b64Input.value;
+  if (!input.trim()) { _b64Output.textContent = ''; _b64Stats.textContent = ''; return; }
+  try {
+    if (_b64Mode === 'encode') {
+      var encoded = btoa(unescape(encodeURIComponent(input)));
+      _b64Output.textContent = encoded;
+      _b64Stats.innerHTML = '<span>📏 原始: ' + input.length + ' 字符</span><span>📦 Base64: ' + encoded.length + ' 字符</span>';
+    } else {
+      var decoded = decodeURIComponent(escape(atob(input)));
+      _b64Output.textContent = decoded;
+      _b64Stats.innerHTML = '<span>📦 Base64: ' + input.length + ' 字符</span><span>📏 解码后: ' + decoded.length + ' 字符</span>';
+    }
+  } catch(e) {
+    _b64Output.textContent = '❌ 转换失败: ' + e.message + '. 提示: Base64解码要求输入是有效的Base64字符串。';
+    _b64Stats.textContent = '';
+  }
+}
+
+function clearB64() {
+  _b64Input.value = '';
+  _b64Output.textContent = '';
+  _b64Stats.textContent = '';
+}
+
+function copyB64Result() {
+  var text = _b64Output.textContent;
+  if (!text || text.indexOf('❌') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('b64-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+function swapB64() {
+  var output = _b64Output.textContent;
+  if (!output || output.indexOf('❌') === 0) return;
+  _b64Input.value = output;
+  convertB64();
+}
+
+convertB64();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择编码或解码模式，输入文本后点击转换。</p>
+  <p><strong>支持中文：</strong>Base64 编码前会自动处理 UTF-8 中文编码，确保中文字符转换正确。</p>
+  <p><strong>适用场景：</strong>数据传输编码、API Token 处理、简单数据混淆。</p>
+</div>

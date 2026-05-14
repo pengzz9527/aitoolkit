@@ -1,0 +1,82 @@
+<!-- JSON Formatter Widget -->
+<textarea id="json-input" class="tool-textarea" placeholder="在此粘贴 JSON 数据..." rows="8">{"name":"AI Toolkit","version":"1.0","features":["json格式化","文本计数","编码解码"],"active":true}</textarea>
+
+<div class="btn-row">
+  <button class="btn" onclick="formatJSON()">✨ 格式化</button>
+  <button class="btn btn-outline" onclick="compressJSON()">🗜️ 压缩</button>
+  <button class="btn btn-outline btn-sm" onclick="validateJSON()">✅ 验证</button>
+  <button class="btn btn-outline btn-sm" onclick="clearJSON()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="json-copy-btn" onclick="copyJSON()">📋 复制</button>
+</div>
+
+<pre class="output-area" id="json-output"></pre>
+<div class="stats-bar" id="json-stats"></div>
+
+<script>
+var _jsonOutput = document.getElementById('json-output');
+var _jsonStats = document.getElementById('json-stats');
+
+function formatJSON() {
+  var input = document.getElementById('json-input').value;
+  if (!input.trim()) { _jsonOutput.textContent = '⚠️ 请输入 JSON 数据'; _jsonStats.textContent = ''; return; }
+  try {
+    var parsed = JSON.parse(input);
+    _jsonOutput.textContent = JSON.stringify(parsed, null, 2);
+    var len = JSON.stringify(parsed).length;
+    var lines = _jsonOutput.textContent.split(String.fromCharCode(10)).length;
+    _jsonStats.innerHTML = '<span>✅ 有效 JSON</span><span>📏 压缩后: ' + len + ' 字符</span><span>📃 ' + lines + ' 行</span>';
+  } catch(e) {
+    _jsonOutput.textContent = '❌ JSON 解析错误:' + String.fromCharCode(10) + e.message;
+    _jsonStats.innerHTML = '<span style="color:#dc2626">❌ 无效 JSON</span>';
+  }
+}
+
+function compressJSON() {
+  var input = document.getElementById('json-input').value;
+  if (!input.trim()) { _jsonOutput.textContent = '⚠️ 请输入 JSON 数据'; return; }
+  try {
+    var parsed = JSON.parse(input);
+    _jsonOutput.textContent = JSON.stringify(parsed);
+    _jsonStats.innerHTML = '<span>✅ 已压缩</span><span>📏 ' + _jsonOutput.textContent.length + ' 字符</span>';
+  } catch(e) {
+    _jsonOutput.textContent = '❌ JSON 解析错误:' + String.fromCharCode(10) + e.message;
+  }
+}
+
+function validateJSON() {
+  var input = document.getElementById('json-input').value;
+  if (!input.trim()) { _jsonOutput.textContent = '⚠️ 请输入 JSON 数据'; return; }
+  try {
+    JSON.parse(input);
+    _jsonOutput.textContent = '✅ JSON 有效！';
+    _jsonStats.innerHTML = '<span style="color:#16a34a">✅ 语法正确</span>';
+  } catch(e) {
+    _jsonOutput.textContent = '❌ JSON 无效:' + String.fromCharCode(10) + e.message;
+    _jsonStats.innerHTML = '<span style="color:#dc2626">❌ ' + e.message.split('(')[0].trim() + '</span>';
+  }
+}
+
+function clearJSON() {
+  document.getElementById('json-input').value = '';
+  _jsonOutput.textContent = '';
+  _jsonStats.textContent = '';
+}
+
+function copyJSON() {
+  var text = _jsonOutput.textContent;
+  if (!text || text.indexOf('⚠️') === 0 || text.indexOf('❌') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('json-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制'; }, 2000);
+  }).catch(function() {});
+}
+
+formatJSON();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>粘贴 JSON 数据到输入框，点击「格式化」美化输出，点击「压缩」去除空白。</p>
+  <p><strong>适用场景：</strong>API 调试、配置文件编辑、数据交换格式校验。</p>
+  <p><strong>隐私说明：</strong>所有数据仅在浏览器本地处理，不会上传到任何服务器。</p>
+</div>

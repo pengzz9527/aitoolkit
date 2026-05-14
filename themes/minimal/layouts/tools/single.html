@@ -2,7 +2,6 @@
 <div class="container">
   <article class="tool-page">
 
-    {{/* ===== Header ===== */}}
     <header class="tool-page-header">
       <div class="breadcrumb">
         <a href="/">🏠 首页</a><span>›</span>{{ .Title }}
@@ -14,18 +13,13 @@
       {{ with .Description }}<p class="tool-desc">{{ . }}</p>{{ end }}
     </header>
 
-    {{/* ===== Widget ===== */}}
     <div class="tool-widget">
-      {{ .Content }}
+      {{ partial (printf "tools/%s" .File.ContentBaseName) . }}
     </div>
 
-    {{/* ===== Meta ===== */}}
     <div class="tool-meta">
       {{ with .Description }}
       <p><strong>📖 描述：</strong>{{ . }}</p>
-      {{ end }}
-      {{ with .Keywords }}
-      <p><strong>🏷️ 关键词：</strong>{{ delimit . "、" }}</p>
       {{ end }}
       {{ with .Params.categories }}
       <p><strong>📂 分类：</strong>{{ delimit . "、" }}</p>
