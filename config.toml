@@ -2,44 +2,17 @@ baseURL = 'https://aitoolkit.duckdblab.com'
 languageCode = 'zh-CN'
 title = 'AI Toolkit - 在线工具集'
 theme = 'minimal'
-paginate = 20
 enableRobotsTXT = true
-canonifyURLs = true
-relativeURLs = false
 
 [params]
-  description = "免费在线工具集合 — JSON格式化、文本处理、编码解码、图片处理等实用工具，无需下载，打开即用"
+  description = "免费在线工具集合 — JSON格式化、文本处理、编码解码等实用在线工具，无需下载打开即用"
   keywords = "在线工具, JSON格式化, 文本计数器, Base64编码, URL编码, 免费工具"
   author = "AI Toolkit"
-  adsense_publisher_id = "ca-pub-XXXXXXXXXXXXXXXX"  # ← 替换为你的AdSense发布者ID
-  adsense_slot_header = "1234567890"                 # ← 替换为广告单元slot ID
-  adsense_slot_footer = "1234567891"
-  adsense_slot_inarticle = "1234567892"
+  adsense_publisher_id = "ca-pub-XXXXXXXXXXXXXXXX"
   enable_ads = true
-  site_verification = ""                             # ← Google Search Console 验证码
-
-[outputs]
-  home = ["HTML"]
-  section = ["HTML", "RSS"]
 
 [taxonomies]
   category = "categories"
-  tag = "tags"
-
-[markup]
-  [markup.goldmark]
-    [markup.goldmark.renderer]
-      unsafe = true
-
-[mediaTypes]
-  [mediaTypes."application/ld+json"]
-    suffixes = ["json"]
-
-[outputFormats.SearchIndex]
-  mediaType = "application/ld+json"
-  baseName = "search"
-  isPlainText = true
-  notAlternative = true
 
 [sitemap]
   changefreq = "weekly"
