@@ -43,14 +43,7 @@ function computeHash() {
         var h1 = Array.from(new Uint8Array(b1)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
         crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)).then(function(b2) {
           var h256 = Array.from(new Uint8Array(b2)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
-          document.getElementById('hash-output').textContent = '[MD5]
-' + hash + '
-
-[SHA1]
-' + h1 + '
-
-[SHA256]
-' + h256;
+          document.getElementById('hash-output').textContent = '[MD5]\n' + hash + '\n\n[SHA1]\n' + h1 + '\n\n[SHA256]\n' + h256;
         });
       });
     }
