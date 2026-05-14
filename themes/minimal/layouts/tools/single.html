@@ -2,35 +2,37 @@
 <div class="container">
   <article class="tool-page">
 
-    {{/* ===== Tool Page Header ===== */}}
+    {{/* ===== Header ===== */}}
     <header class="tool-page-header">
       <div class="breadcrumb">
-        <a href="{{ .Site.BaseURL }}">首页</a> &gt; {{ .Title }}
+        <a href="{{ .Site.BaseURL }}">🏠 首页</a><span>›</span>{{ .Title }}
       </div>
-      {{ with .Params.icon }}<div class="tool-icon">{{ . | safeHTML }}</div>{{ end }}
-      <h1>{{ .Title }}</h1>
+      <div class="tool-icon-title">
+        <span class="icon-badge">{{ with .Params.icon }}{{ . }}{{ else }}🔧{{ end }}</span>
+        <h1>{{ .Title }}</h1>
+      </div>
       {{ with .Description }}<p class="tool-desc">{{ . }}</p>{{ end }}
     </header>
 
-    {{/* ===== Interactive Widget (rendered from .md content) ===== */}}
+    {{/* ===== Widget ===== */}}
     <div class="tool-widget">
       {{ .Content }}
     </div>
 
-    {{/* ===== SEO-Friendly Meta Information ===== */}}
+    {{/* ===== Meta ===== */}}
     <div class="tool-meta">
       {{ with .Description }}
-      <p><strong>描述：</strong>{{ . }}</p>
+      <p><strong>📖 描述：</strong>{{ . }}</p>
       {{ end }}
       {{ with .Keywords }}
-      <p><strong>关键词：</strong>{{ delimit . "、" }}</p>
+      <p><strong>🏷️ 关键词：</strong>{{ delimit . "、" }}</p>
       {{ end }}
       {{ with .Params.categories }}
-      <p><strong>分类：</strong>{{ delimit . "、" }}</p>
+      <p><strong>📂 分类：</strong>{{ delimit . "、" }}</p>
       {{ end }}
+      <p><strong>🔒 隐私：</strong>所有数据仅在浏览器本地处理，不上传到任何服务器。</p>
     </div>
 
-    {{/* ===== In-content Ad ===== */}}
     {{ partial "ad-incontent.html" . }}
 
   </article>

@@ -1,67 +1,38 @@
 {{ define "main" }}
 <div class="container">
 
-  {{/* ===== Hero Section ===== */}}
+  {{/* ===== Hero ===== */}}
   <section class="hero">
-    <h1>{{ .Site.Title }}</h1>
+    <h1>{{ .Title }}</h1>
     <p>{{ .Site.Params.description }}</p>
+    <div class="hero-stats">
+      <span>🧰 {{ len (where .Site.Pages "Type" "tools") }} 个工具</span>
+      <span>📂 {{ len .Site.Taxonomies.categories }} 个分类</span>
+      <span>⚡ 纯浏览器端处理</span>
+    </div>
   </section>
 
-  {{/* ===== Tools Grouped by Category ===== */}}
+  {{/* ===== Tools grouped by category ===== */}}
   {{ $toolPages := where .Site.Pages "Type" "tools" }}
 
-  {{ if gt (len .Site.Taxonomies.categories) 0 }}
-    {{/* Categories exist — group tools by category */}}
-    {{ range $name, $taxonomy := .Site.Taxonomies.categories }}
-      {{ $toolsInCat := where $taxonomy.Pages "Type" "tools" }}
-      {{ if gt (len $toolsInCat) 0 }}
-      <section class="category-section">
+  {{ range $name, $taxonomy := .Site.Taxonomies.categories }}
+    {{ $toolsInCat := sort (where $taxonomy.Pages "Type" "tools") "Weight" }}
+    {{ if gt (len $toolsInCat) 0 }}
+    <section class="category-section">
+      <div class="category-header">
+        <span class="cat-icon">{{ if eq $name "开发工具" }}🛠️{{ else if eq $name "文本处理" }}📄{{ else if eq $name "编码解码" }}🔐{{ else }}📦{{ end }}</span>
         <h2>{{ $name }}</h2>
-        <div class="tool-grid">
-          {{ range $toolsInCat }}
-          <a href="{{ .RelPermalink }}" class="tool-card">
-            {{ with .Params.icon }}<span class="tool-icon">{{ . | safeHTML }}</span>{{ end }}
-            <h3>{{ .Title }}</h3>
-            <p>{{ .Description | default .Summary }}</p>
-          </a>
-          {{ end }}
-        </div>
-      </section>
-      {{ end }}
-    {{ end }}
-
-    {{/* Tools not assigned to any category */}}
-    {{ $categorized := slice }}
-    {{ range .Site.Taxonomies.categories }}
-      {{ $categorized = $categorized | append .Pages }}
-    {{ end }}
-    {{ $uncategorized := complement $categorized $toolPages }}
-    {{ if gt (len $uncategorized) 0 }}
-    <section class="category-section">
-      <h2>其他工具</h2>
-      <div class="tool-grid">
-        {{ range $uncategorized }}
-        <a href="{{ .RelPermalink }}" class="tool-card">
-          {{ with .Params.icon }}<span class="tool-icon">{{ . | safeHTML }}</span>{{ end }}
-          <h3>{{ .Title }}</h3>
-          <p>{{ .Description | default .Summary }}</p>
-        </a>
-        {{ end }}
+        <span class="cat-count">{{ len $toolsInCat }} 个</span>
       </div>
-    </section>
-    {{ end }}
-
-  {{ else }}
-    {{/* No categories — show all tools in a single grid */}}
-    {{ if gt (len $toolPages) 0 }}
-    <section class="category-section">
-      <h2>全部工具</h2>
       <div class="tool-grid">
-        {{ range $toolPages }}
+        {{ range $toolsInCat }}
         <a href="{{ .RelPermalink }}" class="tool-card">
-          {{ with .Params.icon }}<span class="tool-icon">{{ . | safeHTML }}</span>{{ end }}
-          <h3>{{ .Title }}</h3>
-          <p>{{ .Description | default .Summary }}</p>
+          <span class="tool-icon">{{ with .Params.icon }}{{ . }}{{ else }}🔧{{ end }}</span>
+          <div class="tool-info">
+            <h3>{{ .Title }}</h3>
+            <p>{{ .Description }}</p>
+            <span class="tool-tag">免费在线使用</span>
+          </div>
         </a>
         {{ end }}
       </div>
@@ -69,7 +40,7 @@
     {{ end }}
   {{ end }}
 
-  {{/* ===== Ad Slot below tool grid ===== */}}
+  {{/* ===== Ad ===== */}}
   {{ partial "ad-incontent.html" . }}
 
 </div>
