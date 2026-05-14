@@ -1,0 +1,31 @@
+<!-- TOTP 验证码生成器 Widget -->
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">密钥 (Base32)</label>
+<input id="totp-secret" class="tool-textarea" style="resize:none;height:38px;padding:8px 12px;margin-bottom:12px;" placeholder="输入 Base32 密钥..." value="JBSWY3DPEHPK3PXP">
+<label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;color:var(--text-secondary);margin-bottom:12px;">
+  <input type="checkbox" id="totp-autorefresh" checked onchange="totpToggleAuto()"> 自动刷新
+</label>
+<div class="btn-row">
+  <button class="btn" onclick="totpGenerate()">🔑 生成验证码</button>
+  <button class="btn btn-outline btn-sm" onclick="totpClear()">🗑️ 清空</button>
+</div>
+<div class="output-area" id="totp-output" style="text-align:center;font-size:1.8rem;font-weight:700;letter-spacing:6px;"></div>
+<div class="stats-bar" id="totp-stats"></div>
+<script>
+var totpTimer=null;
+function _base32Decode(s){var a='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';s=s.toUpperCase().replace(/[^A-Z2-7]/g,'');var bits=0,bc=0,b=[];for(var i=0;i<s.length;i++){bits=(bits<<5)|a.indexOf(s[i]);bc+=5;if(bc>=8){bc-=8;b.push((bits>>bc)&255);}}return new Uint8Array(b);}
+async function totpGenerate(){var sec=document.getElementById('totp-secret').value.trim();if(!sec){document.getElementById('totp-output').textContent='⚠️ 请输入密钥';return;}
+var keyBytes;try{keyBytes=_base32Decode(sec);if(keyBytes.length===0)throw new Error('empty');}catch(e){document.getElementById('totp-output').textContent='⚠️ Base32 密钥无效';return;}
+var epoch=Math.floor(Date.now()/1000);var counter=Math.floor(epoch/30);var buf=new ArrayBuffer(8);var dv=new DataView(buf);dv.setBigUint64(0,BigInt(counter),false);
+var hk=await crypto.subtle.importKey('raw',keyBytes,{name:'HMAC',hash:'SHA-1'},false,['sign']);var sig=await crypto.subtle.sign('HMAC',hk,buf);
+var sb=new Uint8Array(sig);var off=sb[sb.length-1]&15;var code=((sb[off]&127)<<24|sb[off+1]<<16|sb[off+2]<<8|sb[off+3])%1000000;
+document.getElementById('totp-output').textContent=String(code).padStart(6,'0');
+var remaining=30-(epoch%30);document.getElementById('totp-stats').innerHTML='<span>🕐 刷新剩余: '+remaining+'s</span><span>📏 6 位验证码</span><span>🔄 30s 时间步长</span>';}
+function totpToggleAuto(){if(document.getElementById('totp-autorefresh').checked){totpTimer=setInterval(totpGenerate,1000);totpGenerate();}else{if(totpTimer){clearInterval(totpTimer);totpTimer=null;}}}
+function totpClear(){if(totpTimer){clearInterval(totpTimer);totpTimer=null;}document.getElementById('totp-output').textContent='';document.getElementById('totp-stats').textContent='';}
+totpToggleAuto();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入 Base32 密钥 → 点击生成 → 每30秒自动刷新。可勾选自动刷新实时更新。</p>
+  <p><strong>标准：</strong>遵循 RFC 6238 TOTP 标准，HMAC-SHA1 算法，6位数字。</p>
+  <p><strong>用途：</strong>配合 Google Authenticator 等 2FA 应用使用同一密钥。</p>
+</div>

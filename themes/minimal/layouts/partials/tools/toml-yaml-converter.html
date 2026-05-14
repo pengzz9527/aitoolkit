@@ -1,0 +1,128 @@
+<!-- TOML ↔ YAML 互转 Widget -->
+<div class="mode-toggle" id="toml-yaml-mode">
+  <button class="btn btn-sm active" id="toml2yaml-btn" onclick="setTomlYamlDir('toml2yaml')">TOML → YAML</button>
+  <button class="btn btn-sm btn-outline" id="yaml2toml-btn" onclick="setTomlYamlDir('yaml2toml')">YAML → TOML</button>
+</div>
+<textarea id="toml-yaml-input" class="tool-textarea" placeholder="在此粘贴 TOML/YAML 数据..." rows="8">title = "AI Toolkit"
+version = 1.0
+[server]
+host = "localhost"
+port = 8080
+enabled = true</textarea>
+<div class="btn-row">
+  <button class="btn" onclick="convertTomlYaml()">🔄 转换</button>
+  <button class="btn btn-outline btn-sm" onclick="clearTomlYaml()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="toml-yaml-copy-btn" onclick="copyTomlYaml()">📋 复制</button>
+</div>
+<pre class="output-area" id="toml-yaml-output"></pre>
+<div class="stats-bar" id="toml-yaml-stats"></div>
+<script>
+var _tomlYamlDir = 'toml2yaml';
+
+function setTomlYamlDir(dir){
+  _tomlYamlDir = dir;
+  document.getElementById('toml2yaml-btn').className = dir === 'toml2yaml' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('yaml2toml-btn').className = dir === 'yaml2toml' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('toml-yaml-input').placeholder = dir === 'toml2yaml' ? '在此粘贴 TOML 数据...' : '在此粘贴 YAML 数据...';
+  convertTomlYaml();
+}
+
+function _simpleToml2Yaml(tomlStr){
+  var lines = tomlStr.split(String.fromCharCode(10));
+  var yamlLines = [];
+  var currentSection = '';
+  for(var i=0;i<lines.length;i++){
+    var line = lines[i];
+    var trimmed = line.trim();
+    if(!trimmed || trimmed.indexOf('#')===0){yamlLines.push(trimmed ? line : '');continue;}
+    if(trimmed.indexOf('[')===0 && trimmed.indexOf(']')>0){
+      currentSection = trimmed.replace(/\[|\]/g,'');
+      yamlLines.push(currentSection+':');
+      continue;
+    }
+    var eqIdx = trimmed.indexOf('=');
+    if(eqIdx<0){yamlLines.push(line);continue;}
+    var key = trimmed.substring(0,eqIdx).trim();
+    var val = trimmed.substring(eqIdx+1).trim();
+    var prefix = currentSection ? '  ' : '';
+    if(val.indexOf('"')===0 || val.indexOf("'")===0){
+      yamlLines.push(prefix+key+': '+val);
+    } else if(val==='true'||val==='false'){
+      yamlLines.push(prefix+key+': '+val);
+    } else if(!isNaN(parseFloat(val))){
+      yamlLines.push(prefix+key+': '+val);
+    } else {
+      yamlLines.push(prefix+key+': "'+val+'"');
+    }
+  }
+  return yamlLines.join(String.fromCharCode(10));
+}
+
+function _simpleYaml2Toml(yamlStr){
+  var lines = yamlStr.split(String.fromCharCode(10));
+  var tomlLines = [];
+  var currentSection = '';
+  for(var i=0;i<lines.length;i++){
+    var line = lines[i];
+    var trimmed = line.trim();
+    if(!trimmed || trimmed.indexOf('#')===0){tomlLines.push(trimmed ? line : '');continue;}
+    if(trimmed.indexOf(':')<0&&trimmed.indexOf(':')!==trimmed.length-1){tomlLines.push(line);continue;}
+    var colonIdx = trimmed.indexOf(':');
+    var key = trimmed.substring(0,colonIdx).trim();
+    var val = trimmed.substring(colonIdx+1).trim();
+    if(!val&&!key){tomlLines.push(line);continue;}
+    if(!val){
+      currentSection = key;
+      tomlLines.push('['+key+']');
+      continue;
+    }
+    if(key.indexOf(' ')<0&&currentSection){
+      tomlLines.push(key+' = '+val);
+    } else if(key.indexOf(' ')<0){
+      tomlLines.push(key+' = '+val);
+    } else {
+      tomlLines.push(line);
+    }
+  }
+  return tomlLines.join(String.fromCharCode(10));
+}
+
+function convertTomlYaml(){
+  var input = document.getElementById('toml-yaml-input').value;
+  var out = document.getElementById('toml-yaml-output');
+  var stats = document.getElementById('toml-yaml-stats');
+  if(!input.trim()){out.textContent='⚠️ 请输入数据';stats.textContent='';return;}
+  try {
+    var result;
+    if(_tomlYamlDir==='toml2yaml'){
+      result = _simpleToml2Yaml(input);
+    } else {
+      result = _simpleYaml2Toml(input);
+    }
+    out.textContent = result;
+    stats.innerHTML = '<span>✅ 转换成功</span><span>📏 '+result.length+' 字符</span>';
+  } catch(e){
+    out.textContent = '❌ 转换失败: '+e.message;
+    stats.textContent = '';
+  }
+}
+
+function clearTomlYaml(){
+  document.getElementById('toml-yaml-input').value='';
+  document.getElementById('toml-yaml-output').textContent='';
+  document.getElementById('toml-yaml-stats').textContent='';
+}
+
+function copyTomlYaml(){
+  var text=document.getElementById('toml-yaml-output').textContent;
+  if(!text||text.indexOf('⚠️')===0||text.indexOf('❌')===0)return;
+  navigator.clipboard.writeText(text).then(function(){var b=document.getElementById('toml-yaml-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制';},2000);}).catch(function(){});
+}
+
+convertTomlYaml();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择转换方向（TOML→YAML 或 YAML→TOML），粘贴数据后点击转换。</p>
+  <p><strong>适用场景：</strong>配置文件格式迁移、TOML 与 YAML 互转、DevOps 配置管理。</p>
+  <p><strong>隐私说明：</strong>所有数据仅在浏览器本地处理，不会上传到任何服务器。</p>
+</div>

@@ -1,0 +1,136 @@
+<!-- MIME Type 查询 Widget -->
+<div class="tool-widget">
+  <div class="btn-row">
+    <input type="text" id="mt-search" class="tool-textarea" style="font-family:var(--font);min-height:auto;padding:9px 14px;flex:1;" placeholder="🔍 搜索扩展名或 MIME 类型..." oninput="filterMIME()">
+  </div>
+
+  <div class="mode-toggle" id="mt-tabs" style="margin-bottom:12px;">
+    <button class="btn btn-sm active" onclick="switchMTTab('all')">全部</button>
+    <button class="btn btn-sm btn-outline" onclick="switchMTTab('text')">📄 文本</button>
+    <button class="btn btn-sm btn-outline" onclick="switchMTTab('image')">🖼️ 图片</button>
+    <button class="btn btn-sm btn-outline" onclick="switchMTTab('audio')">🎵 音频</button>
+    <button class="btn btn-sm btn-outline" onclick="switchMTTab('video')">🎬 视频</button>
+    <button class="btn btn-sm btn-outline" onclick="switchMTTab('application')">📦 应用</button>
+    <button class="btn btn-sm btn-outline" onclick="switchMTTab('font')">🔤 字体</button>
+  </div>
+
+  <div class="output-area" id="mt-output" style="max-height:450px;padding:0;"></div>
+  <div class="stats-bar" id="mt-stats"></div>
+</div>
+
+<script>
+var _mtTab = 'all';
+var _mtData = [
+  {ext:'html',type:'text/html',cat:'text',desc:'HTML 文档'},
+  {ext:'css',type:'text/css',cat:'text',desc:'CSS 样式表'},
+  {ext:'js',type:'text/javascript',cat:'application',desc:'JavaScript 文件'},
+  {ext:'json',type:'application/json',cat:'application',desc:'JSON 数据'},
+  {ext:'xml',type:'application/xml',cat:'application',desc:'XML 文档'},
+  {ext:'csv',type:'text/csv',cat:'text',desc:'CSV 表格数据'},
+  {ext:'txt',type:'text/plain',cat:'text',desc:'纯文本文件'},
+  {ext:'md',type:'text/markdown',cat:'text',desc:'Markdown 文档'},
+  {ext:'yaml',type:'application/x-yaml',cat:'application',desc:'YAML 配置文件'},
+  {ext:'toml',type:'application/toml',cat:'application',desc:'TOML 配置文件'},
+  {ext:'pdf',type:'application/pdf',cat:'application',desc:'PDF 文档'},
+  {ext:'doc',type:'application/msword',cat:'application',desc:'Word 文档'},
+  {ext:'docx',type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',cat:'application',desc:'Word OpenXML 文档'},
+  {ext:'xls',type:'application/vnd.ms-excel',cat:'application',desc:'Excel 表格'},
+  {ext:'xlsx',type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',cat:'application',desc:'Excel OpenXML 表格'},
+  {ext:'ppt',type:'application/vnd.ms-powerpoint',cat:'application',desc:'PowerPoint 演示'},
+  {ext:'pptx',type:'application/vnd.openxmlformats-officedocument.presentationml.presentation',cat:'application',desc:'PowerPoint OpenXML'},
+  {ext:'zip',type:'application/zip',cat:'application',desc:'ZIP 压缩包'},
+  {ext:'tar',type:'application/x-tar',cat:'application',desc:'TAR 归档'},
+  {ext:'gz',type:'application/gzip',cat:'application',desc:'Gzip 压缩文件'},
+  {ext:'rar',type:'application/vnd.rar',cat:'application',desc:'RAR 压缩包'},
+  {ext:'7z',type:'application/x-7z-compressed',cat:'application',desc:'7z 压缩包'},
+  {ext:'png',type:'image/png',cat:'image',desc:'PNG 图片'},
+  {ext:'jpg',type:'image/jpeg',cat:'image',desc:'JPEG 图片'},
+  {ext:'jpeg',type:'image/jpeg',cat:'image',desc:'JPEG 图片'},
+  {ext:'gif',type:'image/gif',cat:'image',desc:'GIF 动图'},
+  {ext:'webp',type:'image/webp',cat:'image',desc:'WebP 图片'},
+  {ext:'svg',type:'image/svg+xml',cat:'image',desc:'SVG 矢量图'},
+  {ext:'ico',type:'image/vnd.microsoft.icon',cat:'image',desc:'图标文件'},
+  {ext:'bmp',type:'image/bmp',cat:'image',desc:'BMP 位图'},
+  {ext:'avif',type:'image/avif',cat:'image',desc:'AVIF 图片'},
+  {ext:'mp3',type:'audio/mpeg',cat:'audio',desc:'MP3 音频'},
+  {ext:'wav',type:'audio/wav',cat:'audio',desc:'WAV 音频'},
+  {ext:'ogg',type:'audio/ogg',cat:'audio',desc:'OGG 音频'},
+  {ext:'aac',type:'audio/aac',cat:'audio',desc:'AAC 音频'},
+  {ext:'flac',type:'audio/flac',cat:'audio',desc:'FLAC 无损音频'},
+  {ext:'wma',type:'audio/x-ms-wma',cat:'audio',desc:'WMA 音频'},
+  {ext:'m4a',type:'audio/mp4',cat:'audio',desc:'M4A 音频'},
+  {ext:'mp4',type:'video/mp4',cat:'video',desc:'MP4 视频'},
+  {ext:'avi',type:'video/x-msvideo',cat:'video',desc:'AVI 视频'},
+  {ext:'mkv',type:'video/x-matroska',cat:'video',desc:'MKV 视频'},
+  {ext:'webm',type:'video/webm',cat:'video',desc:'WebM 视频'},
+  {ext:'mov',type:'video/quicktime',cat:'video',desc:'MOV 视频'},
+  {ext:'flv',type:'video/x-flv',cat:'video',desc:'FLV 视频'},
+  {ext:'wmv',type:'video/x-ms-wmv',cat:'video',desc:'WMV 视频'},
+  {ext:'ttf',type:'font/ttf',cat:'font',desc:'TrueType 字体'},
+  {ext:'otf',type:'font/otf',cat:'font',desc:'OpenType 字体'},
+  {ext:'woff',type:'font/woff',cat:'font',desc:'WOFF 字体'},
+  {ext:'woff2',type:'font/woff2',cat:'font',desc:'WOFF2 字体'},
+  {ext:'eot',type:'application/vnd.ms-fontobject',cat:'font',desc:'EOT 字体'},
+  {ext:'wasm',type:'application/wasm',cat:'application',desc:'WebAssembly 二进制'},
+  {ext:'bin',type:'application/octet-stream',cat:'application',desc:'二进制文件'},
+  {ext:'ico',type:'image/x-icon',cat:'image',desc:'Windows 图标'},
+  {ext:'rtf',type:'application/rtf',cat:'application',desc:'富文本格式'},
+  {ext:'epub',type:'application/epub+zip',cat:'application',desc:'EPUB 电子书'},
+  {ext:'apk',type:'application/vnd.android.package-archive',cat:'application',desc:'Android APK 包'}
+];
+
+function renderMIME(filter) {
+  var output = document.getElementById('mt-output');
+  var stats = document.getElementById('mt-stats');
+  var search = (document.getElementById('mt-search').value || '').toLowerCase().trim();
+
+  var filtered = _mtData.filter(function(item) {
+    if (filter && filter !== 'all' && item.cat !== filter) return false;
+    if (!search) return true;
+    return item.ext.indexOf(search) > -1 || item.type.indexOf(search) > -1 || item.desc.indexOf(search) > -1;
+  });
+
+  if (filtered.length === 0) {
+    output.textContent = '🔍 未找到匹配的 MIME 类型';
+    stats.innerHTML = '<span>📋 共 0 条</span>';
+    return;
+  }
+
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:0.82rem;">';
+  html += '<thead><tr style="background:var(--primary-light);position:sticky;top:0;">';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:70px;">扩展名</th>';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);">MIME 类型</th>';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:120px;">说明</th></tr></thead><tbody>';
+
+  filtered.forEach(function(item, idx) {
+    var bg = idx % 2 === 0 ? 'background:var(--bg-card);' : 'background:var(--bg);';
+    html += '<tr style="' + bg + '">';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:700;">.' + item.ext + '</td>';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);font-family:monospace;font-size:0.8rem;color:var(--primary);word-break:break-all;">' + item.type + '</td>';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary);">' + item.desc + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  output.innerHTML = html;
+  stats.innerHTML = '<span>📋 共 ' + filtered.length + ' 条</span><span>🔍 分类: ' + (_mtTab === 'all' ? '全部' : _mtTab) + '</span>';
+}
+
+function filterMIME() { renderMIME(_mtTab); }
+
+function switchMTTab(tab) {
+  _mtTab = tab;
+  var btns = document.querySelectorAll('#mt-tabs .btn');
+  btns.forEach(function(b) { b.className = 'btn btn-sm btn-outline'; });
+  var activeMap = {all:0,text:1,image:2,audio:3,video:4,application:5,font:6};
+  btns[activeMap[tab]].className = 'btn btn-sm active';
+  renderMIME(tab);
+}
+
+renderMIME('all');
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入文件扩展名或在搜索框中搜索，即可查看对应的 MIME 类型。支持按分类筛选。</p>
+  <p><strong>支持分类：</strong>文本、图片、音频、视频、应用、字体等 50+ 常见文件格式。</p>
+  <p><strong>适用场景：</strong>Web 开发设置 Content-Type、文件上传类型校验、HTTP 响应头配置。</p>
+</div>

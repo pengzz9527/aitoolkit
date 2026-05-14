@@ -1,0 +1,209 @@
+<!-- 百分比计算 Widget -->
+<div class="tool-widget">
+  <div class="mode-toggle" id="pc-tabs" style="margin-bottom:12px;">
+    <button class="btn btn-sm active" onclick="switchPCTab('percent')">📊 求百分比</button>
+    <button class="btn btn-sm btn-outline" onclick="switchPCTab('change')">📈 增减百分比</button>
+    <button class="btn btn-sm btn-outline" onclick="switchPCTab('original')">🔙 求原值</button>
+  </div>
+
+  <!-- Mode 1: Find what percentage X is of Y -->
+  <div id="pc-mode-percent">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
+      <div style="flex:1;min-width:100px;">
+        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">🔢 部分值</label>
+        <input type="number" id="pc-part" class="tool-textarea" style="min-height:auto;padding:9px 14px;" value="25" step="any">
+      </div>
+      <div style="flex:1;min-width:100px;">
+        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">📊 总值</label>
+        <input type="number" id="pc-total" class="tool-textarea" style="min-height:auto;padding:9px 14px;" value="200" step="any">
+      </div>
+      <div>
+        <button class="btn" onclick="calcPercentMode()" style="padding:9px 20px;">⚡ 计算</button>
+      </div>
+    </div>
+    <div class="output-area" id="pc-percent-output"></div>
+  </div>
+
+  <!-- Mode 2: Percentage increase/decrease -->
+  <div id="pc-mode-change" style="display:none;">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
+      <div style="flex:1;min-width:100px;">
+        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">💰 原值</label>
+        <input type="number" id="pc-original" class="tool-textarea" style="min-height:auto;padding:9px 14px;" value="100" step="any">
+      </div>
+      <div style="flex:0 0 80px;">
+        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">百分比</label>
+        <input type="number" id="pc-change-pct" class="tool-textarea" style="min-height:auto;padding:9px 14px;" value="20" step="any">
+      </div>
+      <div style="flex:0 0 80px;">
+        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">方向</label>
+        <select id="pc-change-dir" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;">
+          <option value="increase">增加</option>
+          <option value="decrease">减少</option>
+        </select>
+      </div>
+      <div>
+        <button class="btn" onclick="calcChangeMode()" style="padding:9px 20px;">⚡ 计算</button>
+      </div>
+    </div>
+    <div class="output-area" id="pc-change-output"></div>
+  </div>
+
+  <!-- Mode 3: Find original value before percentage change -->
+  <div id="pc-mode-original" style="display:none;">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
+      <div style="flex:1;min-width:100px;">
+        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">🎯 结果值</label>
+        <input type="number" id="pc-result-val" class="tool-textarea" style="min-height:auto;padding:9px 14px;" value="120" step="any">
+      </div>
+      <div style="flex:0 0 80px;">
+        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">百分比</label>
+        <input type="number" id="pc-orig-pct" class="tool-textarea" style="min-height:auto;padding:9px 14px;" value="20" step="any">
+      </div>
+      <div style="flex:0 0 80px;">
+        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">方向</label>
+        <select id="pc-orig-dir" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;">
+          <option value="increase">增加了</option>
+          <option value="decrease">减少了</option>
+        </select>
+      </div>
+      <div>
+        <button class="btn" onclick="calcOriginalMode()" style="padding:9px 20px;">⚡ 计算</button>
+      </div>
+    </div>
+    <div class="output-area" id="pc-original-output"></div>
+  </div>
+
+  <div class="stats-bar" id="pc-stats"></div>
+</div>
+
+<script>
+var _pcTab = 'percent';
+
+function switchPCTab(tab) {
+  _pcTab = tab;
+  var btns = document.querySelectorAll('#pc-tabs .btn');
+  btns.forEach(function(b) { b.className = 'btn btn-sm btn-outline'; });
+  var map = {percent:0, change:1, original:2};
+  btns[map[tab]].className = 'btn btn-sm active';
+
+  document.getElementById('pc-mode-percent').style.display = tab === 'percent' ? 'block' : 'none';
+  document.getElementById('pc-mode-change').style.display = tab === 'change' ? 'block' : 'none';
+  document.getElementById('pc-mode-original').style.display = tab === 'original' ? 'block' : 'none';
+}
+
+function formatNum(n) {
+  // Format with up to 2 decimal places, remove trailing zeros
+  return Math.round(n * 100) / 100;
+}
+
+function calcPercentMode() {
+  var part = parseFloat(document.getElementById('pc-part').value);
+  var total = parseFloat(document.getElementById('pc-total').value);
+  var output = document.getElementById('pc-percent-output');
+  var stats = document.getElementById('pc-stats');
+
+  if (isNaN(part) || isNaN(total) || total === 0) {
+    output.innerHTML = '⚠️ 请输入有效的数值（总值不能为 0）';
+    stats.textContent = '';
+    return;
+  }
+
+  var percent = (part / total) * 100;
+  var formattedPct = formatNum(percent);
+
+  var html = '<div style="padding:16px;text-align:center;">';
+  html += '<div style="font-size:2.2rem;font-weight:900;color:var(--primary);margin-bottom:4px;">' + formattedPct + '%</div>';
+  html += '<div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px;">' + formatNum(part) + ' 是 ' + formatNum(total) + ' 的百分比</div>';
+  html += '<div style="border-top:1px solid var(--border);padding-top:12px;font-size:0.82rem;color:var(--text-secondary);text-align:left;">';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>部分值</span><span style="font-weight:600;">' + formatNum(part) + '</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>总值</span><span style="font-weight:600;">' + formatNum(total) + '</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>百分比</span><span style="font-weight:600;color:var(--primary);">' + formattedPct + '%</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>小数</span><span style="font-weight:600;">' + formatNum(percent / 100) + '</span></div>';
+  html += '</div></div>';
+  output.innerHTML = html;
+  stats.innerHTML = '<span>📊 ' + formattedPct + '%</span><span>🧮 ' + formatNum(part) + ' ÷ ' + formatNum(total) + ' × 100%</span>';
+}
+
+function calcChangeMode() {
+  var original = parseFloat(document.getElementById('pc-original').value);
+  var pct = parseFloat(document.getElementById('pc-change-pct').value);
+  var dir = document.getElementById('pc-change-dir').value;
+  var output = document.getElementById('pc-change-output');
+  var stats = document.getElementById('pc-stats');
+
+  if (isNaN(original) || original === 0 || isNaN(pct)) {
+    output.innerHTML = '⚠️ 请输入有效的数值';
+    stats.textContent = '';
+    return;
+  }
+
+  var change = original * (pct / 100);
+  var result = dir === 'increase' ? original + change : original - change;
+  var diff = dir === 'increase' ? change : -change;
+  var sym = dir === 'increase' ? '+' : '-';
+
+  var html = '<div style="padding:16px;text-align:center;">';
+  html += '<div style="font-size:2.2rem;font-weight:900;color:' + (dir === 'increase' ? '#16a34a' : '#dc2626') + ';margin-bottom:4px;">' + formatNum(result) + '</div>';
+  html += '<div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px;">原值 ' + formatNum(original) + ' ' + (dir === 'increase' ? '增加' : '减少') + ' ' + pct + '% 的结果</div>';
+  html += '<div style="border-top:1px solid var(--border);padding-top:12px;font-size:0.82rem;color:var(--text-secondary);text-align:left;">';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>原值</span><span style="font-weight:600;">' + formatNum(original) + '</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>变化百分比</span><span style="font-weight:600;">' + sym + pct + '%</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>变化量</span><span style="font-weight:600;color:' + (diff >= 0 ? '#16a34a' : '#dc2626') + ';">' + sym + formatNum(change) + '</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>结果值</span><span style="font-weight:600;color:var(--primary);">' + formatNum(result) + '</span></div>';
+  html += '</div></div>';
+  output.innerHTML = html;
+  stats.innerHTML = '<span>📈 ' + sym + pct + '%</span><span>🏁 ' + formatNum(original) + ' → ' + formatNum(result) + '</span>';
+}
+
+function calcOriginalMode() {
+  var resultVal = parseFloat(document.getElementById('pc-result-val').value);
+  var pct = parseFloat(document.getElementById('pc-orig-pct').value);
+  var dir = document.getElementById('pc-orig-dir').value;
+  var output = document.getElementById('pc-original-output');
+  var stats = document.getElementById('pc-stats');
+
+  if (isNaN(resultVal) || isNaN(pct) || pct === 100) {
+    output.innerHTML = '⚠️ 请输入有效的数值（百分比不能为 100）';
+    stats.textContent = '';
+    return;
+  }
+
+  var factor = 1;
+  if (dir === 'increase') factor = 1 + pct / 100;
+  else factor = 1 - pct / 100;
+
+  if (factor === 0) {
+    output.innerHTML = '⚠️ 无法计算：减少 100% 的结果为 0，无法求原值';
+    stats.textContent = '';
+    return;
+  }
+
+  var original = resultVal / factor;
+  var diff = resultVal - original;
+  var sym = diff >= 0 ? '+' : '';
+
+  var html = '<div style="padding:16px;text-align:center;">';
+  html += '<div style="font-size:2.2rem;font-weight:900;color:var(--primary);margin-bottom:4px;">' + formatNum(original) + '</div>';
+  html += '<div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:12px;">' + (dir === 'increase' ? '增加' : '减少') + ' ' + pct + '% 后为 ' + formatNum(resultVal) + ' 的原值</div>';
+  html += '<div style="border-top:1px solid var(--border);padding-top:12px;font-size:0.82rem;color:var(--text-secondary);text-align:left;">';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>结果值</span><span style="font-weight:600;">' + formatNum(resultVal) + '</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>原值（未知）</span><span style="font-weight:600;color:var(--primary);">' + formatNum(original) + '</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>变化百分比</span><span style="font-weight:600;">' + (dir === 'increase' ? '+' : '-') + pct + '%</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:4px 0;"><span>变化量</span><span style="font-weight:600;color:' + (diff >= 0 ? '#16a34a' : '#dc2626') + ';">' + sym + formatNum(Math.abs(diff)) + '</span></div>';
+  html += '</div></div>';
+  output.innerHTML = html;
+  stats.innerHTML = '<span>🔙 原值: ' + formatNum(original) + '</span><span>🧮 公式: ' + formatNum(resultVal) + ' ÷ (1 ' + (dir === 'increase' ? '+' : '-') + ' ' + pct + '%)</span>';
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择计算模式，输入相应数值，点击「计算」即可得到结果。</p>
+  <p><strong>三种模式：</strong></p>
+  <ul style="font-size:0.82rem;color:var(--text-secondary);margin:4px 0;padding-left:20px;">
+    <li><strong>求百分比</strong> — 计算部分值占总值的百分之几</li>
+    <li><strong>增减百分比</strong> — 在原值基础上增加或减少一定百分比后的结果</li>
+    <li><strong>求原值</strong> — 已知增减百分比后的结果，反推原始值</li>
+  </ul>
+  <p><strong>适用场景：</strong>折扣计算、税率计算、涨幅分析、数据统计、财务分析。</p>
+</div>

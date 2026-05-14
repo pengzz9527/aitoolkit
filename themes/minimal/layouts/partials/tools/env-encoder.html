@@ -1,0 +1,94 @@
+<!-- .env 文件 Base64 批量编码 Widget -->
+<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:6px;">📝 .env 文件内容（每行一个 KEY=VALUE）</label>
+<textarea id="env-input" class="tool-textarea" placeholder="在此粘贴 .env 文件内容..." rows="8">DATABASE_URL=postgresql://localhost:5432/myapp
+API_KEY=sk-abc123def456
+SECRET_TOKEN=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0
+APP_ENV=production
+DEBUG=false</textarea>
+<div class="btn-row">
+  <button class="btn" onclick="encodeEnvBulk()">🔐 批量 Base64 编码</button>
+  <button class="btn btn-outline btn-sm" onclick="clearEnv()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="env-copy-btn" onclick="copyEnvOutput()">📋 复制结果</button>
+  <button class="btn btn-outline btn-sm" onclick="downloadEnvOutput()">📥 下载</button>
+</div>
+<label style="font-size:0.85rem;font-weight:600;display:block;margin:8px 0 6px;">🔐 编码结果（Base64）</label>
+<pre class="output-area" id="env-output" style="font-size:0.8rem;"></pre>
+<div class="stats-bar" id="env-stats"></div>
+<script>
+function encodeEnvBulk(){
+  var input = document.getElementById('env-input').value;
+  var out = document.getElementById('env-output');
+  var stats = document.getElementById('env-stats');
+  if(!input.trim()){out.textContent='⚠️ 请输入 .env 数据';stats.textContent='';return;}
+  var lines = input.split(String.fromCharCode(10));
+  var result = [];
+  var totalChars = 0;
+  var errorCount = 0;
+  var successCount = 0;
+  for(var i=0;i<lines.length;i++){
+    var line = lines[i].trim();
+    if(!line || line.indexOf('#')===0){
+      // Preserve comments and empty lines
+      result.push({original:lines[i],encoded:''});
+      continue;
+    }
+    var eqIdx = line.indexOf('=');
+    if(eqIdx<0){
+      errorCount++;
+      result.push({original:line,encoded:'❌ 格式错误: 缺少 ='});
+      continue;
+    }
+    var key = line.substring(0,eqIdx).trim();
+    var val = line.substring(eqIdx+1).trim();
+    var encoded = btoa(unescape(encodeURIComponent(val)));
+    totalChars += val.length;
+    successCount++;
+    result.push({original:line,encoded:key+'='+encoded});
+  }
+  var outputLines = [];
+  result.forEach(function(r){
+    if(r.encoded){
+      outputLines.push('# '+r.original+'  ➜  '+r.encoded);
+    } else {
+      outputLines.push(r.original);
+    }
+  });
+  outputLines.push('\n# === 简易解码命令 ===');
+  outputLines.push('# 解码: echo "BASE64_STRING" | base64 -d');
+  outputLines.push('# 批量: cat encoded.env | while IFS== read -r k v; do echo "$k=$(echo $v | base64 -d)"; done');
+  out.textContent = outputLines.join(String.fromCharCode(10));
+  stats.innerHTML = '<span>✅ 编码 '+successCount+' 个变量</span><span>📏 原始: '+totalChars+' 字符</span>'+(errorCount>0?'<span style="color:#dc2626">❌ 错误: '+errorCount+' 个</span>':'');
+}
+
+function clearEnv(){
+  document.getElementById('env-input').value='';
+  document.getElementById('env-output').textContent='';
+  document.getElementById('env-stats').textContent='';
+}
+
+function copyEnvOutput(){
+  var text=document.getElementById('env-output').textContent;
+  if(!text||text.indexOf('⚠️')===0)return;
+  navigator.clipboard.writeText(text).then(function(){var b=document.getElementById('env-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制结果';},2000);}).catch(function(){});
+}
+
+function downloadEnvOutput(){
+  var text=document.getElementById('env-output').textContent;
+  if(!text)return;
+  var lines = [];
+  text.split(String.fromCharCode(10)).forEach(function(l){
+    if(l.indexOf('#')===0){
+      var m = l.match(/# (.+?) ➜  (.+)/);
+      if(m) lines.push(m[2]);
+    }
+  });
+  var output = lines.join(String.fromCharCode(10));
+  var blob=new Blob([output],{type:'text/plain'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='env-encoded.txt';a.click();URL.revokeObjectURL(a.href);
+}
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>粘贴 .env 文件内容（每行 KEY=VALUE 格式），自动将每个 VALUE 进行 Base64 编码。</p>
+  <p><strong>适用场景：</strong>在 CI/CD 流程中安全传递环境变量值、避免明文敏感信息、Kubernetes Secret 配置准备。</p>
+  <p><strong>隐私说明：</strong>所有数据仅在浏览器本地处理，不会上传到任何服务器。</p>
+</div>

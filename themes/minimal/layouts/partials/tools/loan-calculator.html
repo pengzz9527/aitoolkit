@@ -1,0 +1,170 @@
+<!-- Loan Calculator Widget -->
+<div class="tool-widget">
+  <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end;">
+    <div style="flex:1;min-width:180px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">💰 贷款金额</label>
+      <div style="display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--radius-xs);overflow:hidden;">
+        <span style="padding:0 10px;font-size:0.85rem;color:var(--text-secondary);background:var(--bg);">¥</span>
+        <input type="number" id="loan-amount" class="tool-textarea" style="border:none;border-radius:0;min-height:auto;padding:10px 12px;flex:1;" value="500000" min="0" step="10000">
+      </div>
+    </div>
+    <div style="flex:1;min-width:140px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">📊 年利率 (%)</label>
+      <input type="number" id="loan-rate" class="tool-textarea" style="min-height:auto;padding:10px 12px;" value="4.2" min="0" step="0.1">
+    </div>
+    <div style="flex:1;min-width:140px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">📅 贷款期限</label>
+      <div style="display:flex;gap:6px;">
+        <input type="number" id="loan-years" class="tool-textarea" style="min-height:auto;padding:10px 12px;flex:1;" value="30" min="1" max="50">
+        <select id="loan-unit" style="padding:10px 8px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-size:0.82rem;color:var(--text);cursor:pointer;">
+          <option value="years">年</option>
+          <option value="months">月</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="calcLoan()">🧮 计算贷款</button>
+    <button class="btn btn-outline btn-sm" onclick="resetLoan()">🗑️ 重置</button>
+    <button class="btn btn-outline btn-sm" id="loan-copy-btn" onclick="copyLoan()">📋 复制结果</button>
+  </div>
+
+  <div id="loan-results" style="margin-top:14px;">
+    <div class="stats-bar" style="margin-top:0;">
+      <span><strong>💰 月供:</strong> <span id="loan-monthly" style="font-size:1.1rem;color:var(--primary);font-weight:700;">¥2,444.11</span></span>
+      <span><strong>💵 总还款:</strong> <span id="loan-total">¥879,879.60</span></span>
+      <span><strong>📈 总利息:</strong> <span id="loan-interest" style="color:#ef4444;">¥379,879.60</span></span>
+    </div>
+    <div class="stats-bar" style="margin-top:8px;">
+      <span><strong>📏 贷款期数:</strong> <span id="loan-periods">360 个月</span></span>
+      <span><strong>📊 月利率:</strong> <span id="loan-monthly-rate">0.35%</span></span>
+      <span><strong>🏦 利息占比:</strong> <span id="loan-interest-pct">43.17%</span></span>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;padding:14px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);">
+    <div style="font-size:0.82rem;font-weight:600;margin-bottom:8px;">📊 还款明细（逐年）</div>
+    <div style="max-height:260px;overflow-y:auto;font-size:0.78rem;font-family:var(--font-mono);" id="loan-schedule"></div>
+  </div>
+</div>
+
+<script>
+function calcLoan() {
+  var amount = parseFloat(document.getElementById('loan-amount').value) || 0;
+  var rateYear = parseFloat(document.getElementById('loan-rate').value) || 0;
+  var termVal = parseInt(document.getElementById('loan-years').value) || 1;
+  var unit = document.getElementById('loan-unit').value;
+
+  if (amount <= 0 || rateYear < 0 || termVal <= 0) {
+    document.getElementById('loan-monthly').textContent = '—';
+    document.getElementById('loan-total').textContent = '—';
+    document.getElementById('loan-interest').textContent = '—';
+    document.getElementById('loan-periods').textContent = '—';
+    document.getElementById('loan-monthly-rate').textContent = '—';
+    document.getElementById('loan-interest-pct').textContent = '—';
+    document.getElementById('loan-schedule').textContent = '';
+    return;
+  }
+
+  var periods = unit === 'years' ? termVal * 12 : termVal;
+  var monthlyRate = rateYear / 100 / 12;
+
+  // Equal principal & interest (等额本息)
+  var monthly, totalPayment, totalInterest;
+  if (monthlyRate === 0) {
+    monthly = amount / periods;
+    totalPayment = amount;
+    totalInterest = 0;
+  } else {
+    var factor = Math.pow(1 + monthlyRate, periods);
+    monthly = amount * monthlyRate * factor / (factor - 1);
+    totalPayment = monthly * periods;
+    totalInterest = totalPayment - amount;
+  }
+
+  function fmtMoney(v) {
+    return '¥' + v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  function fmtPct(v) {
+    return (v * 100).toFixed(2) + '%';
+  }
+
+  document.getElementById('loan-monthly').textContent = fmtMoney(monthly);
+  document.getElementById('loan-total').textContent = fmtMoney(totalPayment);
+  document.getElementById('loan-interest').textContent = fmtMoney(totalInterest);
+  document.getElementById('loan-periods').textContent = periods + ' 个月';
+  document.getElementById('loan-monthly-rate').textContent = fmtPct(monthlyRate);
+  document.getElementById('loan-interest-pct').textContent = ((totalInterest / totalPayment) * 100).toFixed(2) + '%';
+
+  // Generate yearly schedule
+  var scheduleHtml = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:6px 0;border-bottom:1px solid var(--border);font-weight:600;">' +
+    '<span>年份</span><span>月供</span><span>已还本金</span><span>剩余本金</span></div>';
+
+  var balance = amount;
+  var totalPrincipalPaid = 0;
+  for (var y = 1; y <= Math.ceil(periods / 12); y++) {
+    var yearPrincipal = 0;
+    var yearEnd = Math.min(y * 12, periods);
+    var yearStart = (y - 1) * 12 + 1;
+    for (var m = yearStart; m <= yearEnd; m++) {
+      if (monthlyRate === 0) {
+        var principalPart = amount / periods;
+      } else {
+        var interestPart = balance * monthlyRate;
+        var principalPart = monthly - interestPart;
+      }
+      if (principalPart > balance) principalPart = balance;
+      balance -= principalPart;
+      yearPrincipal += principalPart;
+      if (balance < 0.01) balance = 0;
+    }
+    totalPrincipalPaid += yearPrincipal;
+    scheduleHtml += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:4px 0;">' +
+      '<span>第' + y + '年</span>' +
+      '<span>' + fmtMoney(monthly * Math.min(12, periods - yearStart + 1)) + '</span>' +
+      '<span>' + fmtMoney(totalPrincipalPaid) + '</span>' +
+      '<span>' + fmtMoney(Math.max(0, balance)) + '</span></div>';
+    if (balance <= 0) break;
+  }
+  document.getElementById('loan-schedule').innerHTML = scheduleHtml;
+}
+
+function resetLoan() {
+  document.getElementById('loan-amount').value = '500000';
+  document.getElementById('loan-rate').value = '4.2';
+  document.getElementById('loan-years').value = '30';
+  document.getElementById('loan-unit').value = 'years';
+  calcLoan();
+}
+
+function copyLoan() {
+  var results = [];
+  results.push('💰 月供: ' + document.getElementById('loan-monthly').textContent);
+  results.push('💵 总还款: ' + document.getElementById('loan-total').textContent);
+  results.push('📈 总利息: ' + document.getElementById('loan-interest').textContent);
+  results.push('📏 贷款期数: ' + document.getElementById('loan-periods').textContent);
+  results.push('📊 月利率: ' + document.getElementById('loan-monthly-rate').textContent);
+  results.push('🏦 利息占比: ' + document.getElementById('loan-interest-pct').textContent);
+  var text = '📊 贷款计算结果\n' + results.join('\n');
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('loan-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+// Auto-calculate on input changes
+document.getElementById('loan-amount').addEventListener('input', calcLoan);
+document.getElementById('loan-rate').addEventListener('input', calcLoan);
+document.getElementById('loan-years').addEventListener('input', calcLoan);
+document.getElementById('loan-unit').addEventListener('change', calcLoan);
+calcLoan();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入贷款金额、年利率和期限（年或月），自动计算等额本息月供和总利息。</p>
+  <p><strong>计算方式：</strong>采用等额本息还款法（每月还款额固定，利息占比逐月递减）。</p>
+  <p><strong>适用场景：</strong>房贷计算、车贷规划、消费贷款评估、创业贷款预算。</p>
+  <p><strong>注意：</strong>计算结果仅供参考，实际贷款请以银行合同为准。</p>
+</div>

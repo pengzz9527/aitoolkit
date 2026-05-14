@@ -1,0 +1,184 @@
+<!-- Lorem Ipsum 文本生成 Widget -->
+<div class="tool-widget">
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
+    <div style="flex:0 0 100px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">📝 生成模式</label>
+      <select id="li-mode" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;">
+        <option value="paragraphs">段落数</option>
+        <option value="sentences">句子数</option>
+        <option value="words">单词数</option>
+      </select>
+    </div>
+    <div style="flex:0 0 80px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">数量</label>
+      <input type="number" id="li-count" class="tool-textarea" style="min-height:auto;padding:9px 14px;" value="3" min="1" max="100" placeholder="数量...">
+    </div>
+    <div style="flex:0 0 90px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">语言</label>
+      <select id="li-lang" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;">
+        <option value="latin">拉丁文</option>
+        <option value="chinese">中文</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="generateLorem()">⚡ 生成</button>
+    <button class="btn btn-outline btn-sm" onclick="clearLorem()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="li-copy-btn" onclick="copyLorem()">📋 复制结果</button>
+  </div>
+
+  <textarea id="li-output" class="tool-textarea" rows="12" readonly placeholder="生成的文本将显示在此处..."></textarea>
+  <div class="stats-bar" id="li-stats"></div>
+</div>
+
+<script>
+var _loremWords = [
+  'lorem','ipsum','dolor','sit','amet','consectetur','adipiscing','elit','sed','do','eiusmod','tempor','incididunt',
+  'ut','labore','et','dolore','magna','aliqua','enim','ad','minim','veniam','quis','nostrud','exercitation','ullamco',
+  'laboris','nisi','ut','aliquip','ex','ea','commodo','consequat','duis','aute','irure','dolor','in','reprehenderit',
+  'in','voluptate','velit','esse','cillum','dolore','eu','fugiat','nulla','pariatur','excepteur','sint','occaecat',
+  'cupidatat','non','proident','sunt','in','culpa','qui','officia','deserunt','mollit','anim','id','est','laborum',
+  'sed','perspiciatis','unde','omnis','iste','natus','error','sit','voluptatem','accusantium','doloremque','laudantium',
+  'totam','rem','aperiam','eaque','ipsa','quae','ab','illo','inventore','veritatis','et','quasi','architecto',
+  'beatae','vitae','dicta','sunt','explicabo','nemo','enim','ipsam','voluptatem','quia','voluptas','sit','aspernatur',
+  'aut','odit','aut','fugit','sed','quia','consequuntur','magni','dolores','eos','qui','ratione','voluptatem','sequi',
+  'nesciunt','neque','porro','quisquam','est','qui','dolorem','ipsum','quia','dolor','sit','amet','consectetur',
+  'adipisci','velit','sed','quia','non','numquam','eius','modi','tempora','incidunt','ut','labore','et','dolore',
+  'magnam','aliquam','quaerat','voluptatem'
+];
+
+var _cnLorem = [
+  '在','广泛','的','数字','化','时代','信息','技术','正在','深刻','改变','我们','的','生活','方式',
+  '随着','人工智能','机器','学习','深度','学习','等','技术','的','快速','发展','智能','应用','日益','普及',
+  '数据','驱动','决策','已经','成为','现代','企业','管理','的','核心','理念','之一',
+  '互联网','不仅','连接','了','世界','还','创造','了','前所','未有','的','商业','机会','和','社会','价值',
+  '云计','算','物','联网','区块','链','等','新兴','技术','正在','重塑','产业','格局',
+  '在','这样','的','背景','下','创新','成为','推动','社会','进步','的','重要','引擎',
+  '用户','体验','设计','强调','以','用户','为','中心','通过','深入','理解','用户','需求','提供','优质','服务',
+  '软件','开发','领域','敏捷','方法','和','DevOps','实践','大大','提升','了','交付','效率',
+  '网络','安全','和','数据','隐私','保护','已经','上升','到','国家','战略','高度',
+  '未来','十年','技术','创新','将','持续','加速','为','人类','社会','带来','更多','可能','性'
+];
+
+function generateLorem() {
+  var mode = document.getElementById('li-mode').value;
+  var count = parseInt(document.getElementById('li-count').value) || 3;
+  var lang = document.getElementById('li-lang').value;
+  var output = document.getElementById('li-output');
+  var stats = document.getElementById('li-stats');
+
+  if (count < 1) count = 1;
+  if (count > 100) count = 100;
+
+  var result = '';
+  if (lang === 'latin') {
+    result = generateLatin(mode, count);
+  } else {
+    result = generateChinese(mode, count);
+  }
+
+  output.value = result;
+  var wordCount = result.trim() ? result.trim().split(/\s+/).length : 0;
+  var charCount = result.length;
+  stats.innerHTML = '<span>📏 单词数: ' + wordCount + '</span><span>📏 字符数: ' + charCount + '</span><span>📝 模式: ' + (mode === 'paragraphs' ? '段落' : mode === 'sentences' ? '句子' : '单词') + '=' + count + '</span>';
+}
+
+function generateLatin(mode, count) {
+  var result = '';
+  if (mode === 'words') {
+    var words = [];
+    for (var i = 0; i < count; i++) {
+      words.push(_loremWords[Math.floor(Math.random() * _loremWords.length)]);
+    }
+    result = words.join(' ');
+    result = result.charAt(0).toUpperCase() + result.slice(1) + '.';
+  } else if (mode === 'sentences') {
+    for (var i = 0; i < count; i++) {
+      var sLen = 5 + Math.floor(Math.random() * 10);
+      var words = [];
+      for (var j = 0; j < sLen; j++) {
+        words.push(_loremWords[Math.floor(Math.random() * _loremWords.length)]);
+      }
+      var sentence = words.join(' ');
+      sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1) + '.';
+      result += sentence + ' ';
+    }
+  } else {
+    for (var p = 0; p < count; p++) {
+      var para = '';
+      var sCount = 3 + Math.floor(Math.random() * 5);
+      for (var i = 0; i < sCount; i++) {
+        var sLen = 6 + Math.floor(Math.random() * 12);
+        var words = [];
+        for (var j = 0; j < sLen; j++) {
+          words.push(_loremWords[Math.floor(Math.random() * _loremWords.length)]);
+        }
+        var sentence = words.join(' ');
+        sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1) + '.';
+        para += sentence + ' ';
+      }
+      result += para.trim() + '\n\n';
+    }
+    result = result.trim();
+  }
+  return result;
+}
+
+function generateChinese(mode, count) {
+  var result = '';
+  if (mode === 'words') {
+    var words = [];
+    for (var i = 0; i < count; i++) {
+      words.push(_cnLorem[Math.floor(Math.random() * _cnLorem.length)]);
+    }
+    result = words.join('');
+  } else if (mode === 'sentences') {
+    for (var i = 0; i < count; i++) {
+      var sLen = 8 + Math.floor(Math.random() * 12);
+      var words = [];
+      for (var j = 0; j < sLen; j++) {
+        words.push(_cnLorem[Math.floor(Math.random() * _cnLorem.length)]);
+      }
+      result += words.join('') + '。 ';
+    }
+  } else {
+    for (var p = 0; p < count; p++) {
+      var para = '';
+      var sCount = 3 + Math.floor(Math.random() * 4);
+      for (var i = 0; i < sCount; i++) {
+        var sLen = 10 + Math.floor(Math.random() * 15);
+        var words = [];
+        for (var j = 0; j < sLen; j++) {
+          words.push(_cnLorem[Math.floor(Math.random() * _cnLorem.length)]);
+        }
+        para += words.join('') + '。 ';
+      }
+      result += para.trim() + '\n\n';
+    }
+    result = result.trim();
+  }
+  return result;
+}
+
+function clearLorem() {
+  document.getElementById('li-output').value = '';
+  document.getElementById('li-stats').textContent = '';
+}
+
+function copyLorem() {
+  var text = document.getElementById('li-output').value;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('li-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择生成模式（段落数/句子数/单词数）和语言（拉丁文/中文），输入数量后点击「生成」即可。</p>
+  <p><strong>生成模式：</strong>段落数生成完整的段落文本；句子数生成指定数量的句子；单词数生成指定数量的单词。</p>
+  <p><strong>适用场景：</strong>排版测试、网页布局填充、设计稿占位文本、文档模板制作。</p>
+</div>

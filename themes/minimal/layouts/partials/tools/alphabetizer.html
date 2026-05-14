@@ -1,0 +1,94 @@
+<!-- 字母顺序排列 Widget -->
+<div class="tool-widget">
+  <textarea id="ab-input" class="tool-textarea" placeholder="在此输入多行文本..." rows="8">banana
+Apple
+cherry
+123abc
+date
+Zebra
+APPLE
+elderberry</textarea>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:12px 0;">
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="radio" name="ab-order" id="ab-asc" checked> ⬆️ A-Z 升序
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="radio" name="ab-order" id="ab-desc"> ⬇️ Z-A 降序
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="checkbox" id="ab-ignore-case"> 🔤 忽略大小写
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="checkbox" id="ab-unique"> 🗑️ 去重
+    </label>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="sortAlphabetizer()">⚡ 排序</button>
+    <button class="btn btn-outline btn-sm" onclick="clearAlphabetizer()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="ab-copy-btn" onclick="copyAlphabetizer()">📋 复制结果</button>
+  </div>
+
+  <pre class="output-area" id="ab-output"></pre>
+  <div class="stats-bar" id="ab-stats"></div>
+</div>
+
+<script>
+function sortAlphabetizer() {
+  var input = document.getElementById('ab-input').value;
+  var output = document.getElementById('ab-output');
+  var stats = document.getElementById('ab-stats');
+  if (!input.trim()) { output.textContent = '⚠️ 请输入文本'; stats.textContent = ''; return; }
+
+  var lines = input.split('\n');
+  var totalLines = lines.length;
+  var asc = document.getElementById('ab-asc').checked;
+  var ignoreCase = document.getElementById('ab-ignore-case').checked;
+  var unique = document.getElementById('ab-unique').checked;
+
+  if (unique) {
+    var seen = {};
+    lines = lines.filter(function(line) {
+      var key = ignoreCase ? line.toLowerCase() : line;
+      if (seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+  }
+
+  lines.sort(function(a, b) {
+    var va = ignoreCase ? a.toLowerCase() : a;
+    var vb = ignoreCase ? b.toLowerCase() : b;
+    if (va < vb) return asc ? -1 : 1;
+    if (va > vb) return asc ? 1 : -1;
+    return 0;
+  });
+
+  var result = lines.join('\n');
+  output.textContent = result;
+  stats.innerHTML = '<span>📃 原始行数: ' + totalLines + '</span><span>📏 处理后行数: ' + lines.length + '</span><span>⬆️⬇️ ' + (asc ? 'A-Z' : 'Z-A') + '</span>';
+}
+
+function clearAlphabetizer() {
+  document.getElementById('ab-input').value = '';
+  document.getElementById('ab-output').textContent = '';
+  document.getElementById('ab-stats').textContent = '';
+}
+
+function copyAlphabetizer() {
+  var text = document.getElementById('ab-output').textContent;
+  if (!text || text.indexOf('⚠️') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('ab-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入多行文本，选择排序方式和选项，点击「排序」即可按字母顺序排列各行。</p>
+  <p><strong>选项功能：</strong>A-Z 升序 / Z-A 降序、忽略大小写排序、去除重复行。</p>
+  <p><strong>适用场景：</strong>列表排序、数据整理、字典编排、单词表排序。</p>
+</div>

@@ -1,0 +1,76 @@
+<!-- CSV 表格查看器 Widget -->
+<textarea id="csv-input" class="tool-textarea" placeholder="在此粘贴 CSV 数据（支持逗号、制表符分隔）..." rows="8">名称,版本,类型,活跃
+AI Toolkit,1.0,工具集,是
+DevBox,2.3,开发环境,是
+CodeLite,0.9,编辑器,否</textarea>
+<div class="btn-row">
+  <button class="btn" onclick="renderCsv()">📊 渲染表格</button>
+  <button class="btn btn-outline btn-sm" onclick="clearCsv()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="csv-download-btn" onclick="downloadCsvTable()">📥 下载表格</button>
+</div>
+<div class="output-area" id="csv-output" style="overflow-x:auto;padding:0;"></div>
+<div class="stats-bar" id="csv-stats"></div>
+<script>
+function renderCsv(){
+  var input = document.getElementById('csv-input').value.trim();
+  var out = document.getElementById('csv-output');
+  var stats = document.getElementById('csv-stats');
+  if(!input){out.innerHTML='<span style=\"display:block;padding:20px;color:var(--text-secondary);\">⚠️ 请输入 CSV 数据</span>';stats.textContent='';return;}
+  var separator = ',';
+  if(input.indexOf('\t')>=0&&input.indexOf(',')<0) separator='\t';
+  var lines = input.split(String.fromCharCode(10)).filter(function(l){return l.trim();});
+  if(lines.length<1){out.innerHTML='<span style=\"display:block;padding:20px;color:var(--text-secondary);\">⚠️ 无有效数据</span>';stats.textContent='';return;}
+  var headers = lines[0].split(separator).map(function(h){return h.trim();});
+  var html = '<table style=\"width:100%;border-collapse:collapse;font-size:0.85rem;\">';
+  html += '<thead><tr>';
+  headers.forEach(function(h){
+    html += '<th style=\"background:var(--bg-secondary);padding:8px 12px;text-align:left;border-bottom:2px solid var(--border-color);font-weight:600;white-space:nowrap;\">'+_csvEscape(h)+'</th>';
+  });
+  html += '</tr></thead><tbody>';
+  for(var i=1;i<lines.length;i++){
+    var cells = lines[i].split(separator);
+    html += '<tr>';
+    for(var j=0;j<headers.length;j++){
+      var val = cells[j] ? cells[j].trim() : '';
+      html += '<td style=\"padding:6px 12px;border-bottom:1px solid var(--border-color);'+(j===0?'font-weight:500;':'')+'\">'+_csvEscape(val)+'</td>';
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  out.innerHTML = html;
+  var rowCount = lines.length-1;
+  var colCount = headers.length;
+  stats.innerHTML = '<span>✅ '+rowCount+' 行 × '+colCount+' 列</span><span>📏 '+input.length+' 字符</span>';
+}
+
+function _csvEscape(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function clearCsv(){
+  document.getElementById('csv-input').value='';
+  document.getElementById('csv-output').innerHTML='';
+  document.getElementById('csv-stats').textContent='';
+}
+
+function downloadCsvTable(){
+  var table = document.querySelector('#csv-output table');
+  if(!table) return;
+  var html = '<html><head><meta charset=\"utf-8\"><style>table{border-collapse:collapse;width:100%;font-family:sans-serif;}th,td{border:1px solid #ccc;padding:8px;text-align:left;}th{background:#f5f5f5;}</style></head><body>'+table.outerHTML+'</body></html>';
+  var blob = new Blob([html],{type:'text/html'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'csv-table.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+document.getElementById('csv-input').addEventListener('input',function(){clearTimeout(_csvTimer);_csvTimer=setTimeout(renderCsv,500);});
+var _csvTimer = null;
+renderCsv();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>粘贴 CSV 文本（支持逗号和制表符分隔），自动解析并渲染为 HTML 表格。</p>
+  <p><strong>适用场景：</strong>快速查看 CSV 数据、数据预览、报表生成、日志表格化。</p>
+  <p><strong>隐私说明：</strong>所有数据仅在浏览器本地处理，不会上传到任何服务器。</p>
+</div>

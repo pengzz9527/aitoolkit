@@ -1,0 +1,34 @@
+<!-- Placeholder 图片生成 Widget -->
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">尺寸</label>
+<div style="display:flex;gap:8px;margin-bottom:12px;">
+  <div style="flex:1;"><label style="font-size:0.75rem;color:var(--text-secondary);">宽度</label><input id="plh-w" type="number" class="tool-textarea" style="resize:none;height:38px;padding:8px 12px;" value="400" min="1" max="2000"></div>
+  <div style="flex:1;"><label style="font-size:0.75rem;color:var(--text-secondary);">高度</label><input id="plh-h" type="number" class="tool-textarea" style="resize:none;height:38px;padding:8px 12px;" value="300" min="1" max="2000"></div>
+</div>
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">文字</label>
+<input id="plh-text" class="tool-textarea" style="resize:none;height:38px;padding:8px 12px;margin-bottom:12px;" value="400 × 300">
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">背景色</label>
+<input type="color" id="plh-bg" value="#6366f1" style="width:100%;height:40px;border:none;padding:0;cursor:pointer;margin-bottom:12px;">
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">文字色</label>
+<input type="color" id="plh-fg" value="#ffffff" style="width:100%;height:40px;border:none;padding:0;cursor:pointer;margin-bottom:12px;">
+<div class="btn-row">
+  <button class="btn" onclick="plhGenerate()">🖼️ 生成</button>
+  <button class="btn btn-outline btn-sm" id="plh-copy-btn" onclick="plhCopySVG()">📋 复制 SVG</button>
+</div>
+<div class="output-area" id="plh-output" style="text-align:center;"></div>
+<div class="stats-bar" id="plh-stats"></div>
+<script>
+function plhGenerate(){var w=parseInt(document.getElementById('plh-w').value)||400;var h=parseInt(document.getElementById('plh-h').value)||300;var txt=document.getElementById('plh-text').value||(w+'x'+h);
+var bg=document.getElementById('plh-bg').value;var fg=document.getElementById('plh-fg').value;var fs=Math.min(w,h)*0.12;
+var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><rect width="'+w+'" height="'+h+'" fill="'+bg+'"/><text x="'+w/2+'" y="'+h/2+'" text-anchor="middle" dominant-baseline="central" fill="'+fg+'" font-size="'+fs+'" font-family="Arial,sans-serif" font-weight="bold">'+txt+'</text></svg>';
+document.getElementById('plh-output').innerHTML=svg;document.getElementById('plh-stats').innerHTML='<span>📐 '+w+'x'+h+' px</span><span>📏 SVG 大小: '+svg.length+' 字符</span>';}
+function plhCopySVG(){var w=parseInt(document.getElementById('plh-w').value)||400;var h=parseInt(document.getElementById('plh-h').value)||300;var txt=document.getElementById('plh-text').value||(w+'x'+h);
+var bg=document.getElementById('plh-bg').value;var fg=document.getElementById('plh-fg').value;var fs=Math.min(w,h)*0.12;
+var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'"><rect width="'+w+'" height="'+h+'" fill="'+bg+'"/><text x="'+w/2+'" y="'+h/2+'" text-anchor="middle" dominant-baseline="central" fill="'+fg+'" font-size="'+fs+'" font-family="Arial,sans-serif" font-weight="bold">'+txt+'</text></svg>';
+navigator.clipboard.writeText(svg).then(function(){var b=document.getElementById('plh-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制 SVG';},2000);}).catch(function(){});}
+plhGenerate();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>设置尺寸、文字、颜色 → 点击生成 → 占位 SVG 图片。</p>
+  <p><strong>适用场景：</strong>前端开发占位图、设计稿中的临时图片。</p>
+  <p><strong>注意：</strong>生成的是内联 SVG，可直接嵌入 HTML。</p>
+</div>

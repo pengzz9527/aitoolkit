@@ -1,0 +1,94 @@
+<!-- 文本反转 Widget -->
+<div class="tool-widget">
+  <textarea id="rev-input" class="tool-textarea" placeholder="在此输入需要反转的文本..." rows="8">Hello World
+AI Toolkit 是一个强大的工具集
+反转字符串测试
+每行文本都可以单独反转</textarea>
+
+  <div class="btn-row" style="margin:12px 0;">
+    <button class="btn btn-sm" onclick="reverseString()">🔃 反转字符串</button>
+    <button class="btn btn-sm btn-outline" onclick="reverseWords()">🔄 反转单词</button>
+    <button class="btn btn-sm btn-outline" onclick="reverseLines()">↕️ 反转每行</button>
+    <button class="btn btn-sm btn-outline" onclick="reverseAllLines()">📋 反转全部行序</button>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="clearReverse()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="rev-copy-btn" onclick="copyReverse()">📋 复制结果</button>
+  </div>
+
+  <pre class="output-area" id="rev-output"></pre>
+  <div class="stats-bar" id="rev-stats"></div>
+</div>
+
+<script>
+function _getRevInput() {
+  return document.getElementById('rev-input').value;
+}
+
+function _setRevOutput(text, label) {
+  document.getElementById('rev-output').textContent = text;
+  var len = text.length;
+  var wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+  document.getElementById('rev-stats').innerHTML = '<span>' + label + '</span><span>📏 ' + len + ' 字符</span><span>🔤 ' + wordCount + ' 单词</span>';
+}
+
+function reverseString() {
+  var text = _getRevInput();
+  if (!text.trim()) { document.getElementById('rev-output').textContent = '⚠️ 请输入文本'; document.getElementById('rev-stats').textContent = ''; return; }
+  var result = text.split('').reverse().join('');
+  _setRevOutput(result, '🔃 反转字符串');
+}
+
+function reverseWords() {
+  var text = _getRevInput();
+  if (!text.trim()) { document.getElementById('rev-output').textContent = '⚠️ 请输入文本'; document.getElementById('rev-stats').textContent = ''; return; }
+  var result = text.split(/\s+/).reverse().join(' ');
+  _setRevOutput(result, '🔄 反转单词');
+}
+
+function reverseLines() {
+  var text = _getRevInput();
+  if (!text.trim()) { document.getElementById('rev-output').textContent = '⚠️ 请输入文本'; document.getElementById('rev-stats').textContent = ''; return; }
+  var lines = text.split('\n');
+  var reversed = lines.map(function(line) {
+    return line.split('').reverse().join('');
+  });
+  _setRevOutput(reversed.join('\n'), '↕️ 反转每行');
+}
+
+function reverseAllLines() {
+  var text = _getRevInput();
+  if (!text.trim()) { document.getElementById('rev-output').textContent = '⚠️ 请输入文本'; document.getElementById('rev-stats').textContent = ''; return; }
+  var lines = text.split('\n');
+  _setRevOutput(lines.reverse().join('\n'), '📋 反转全部行序');
+}
+
+function clearReverse() {
+  document.getElementById('rev-input').value = '';
+  document.getElementById('rev-output').textContent = '';
+  document.getElementById('rev-stats').textContent = '';
+}
+
+function copyReverse() {
+  var text = document.getElementById('rev-output').textContent;
+  if (!text || text.indexOf('⚠️') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('rev-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入文本，选择需要的反转方式即可。</p>
+  <p><strong>反转方式：</strong></p>
+  <ul style="font-size:0.82rem;color:var(--text-secondary);margin:4px 0;padding-left:20px;">
+    <li><strong>反转字符串</strong> — 将整个文本的字符顺序反转</li>
+    <li><strong>反转单词</strong> — 保持单词内字符顺序，反转单词排列顺序</li>
+    <li><strong>反转每行</strong> — 分别反转每一行的字符顺序</li>
+    <li><strong>反转全部行序</strong> — 保持行内文本不变，反转行的排列顺序</li>
+  </ul>
+  <p><strong>适用场景：</strong>文字游戏、谜题制作、文本格式转换、逆向思考练习。</p>
+</div>

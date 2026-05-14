@@ -1,0 +1,37 @@
+<!-- 哈希值对比工具 Widget -->
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">原始文本</label>
+<textarea id="hc-original" class="tool-textarea" rows="2" placeholder="输入原始文本...">hello</textarea>
+<label style="display:block;font-size:0.85rem;font-weight:600;margin:12px 0 6px;color:var(--text);">对比哈希值</label>
+<textarea id="hc-compare" class="tool-textarea" rows="2" placeholder="粘贴要对比的哈希值...">2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824</textarea>
+<label style="display:block;font-size:0.85rem;font-weight:600;margin:12px 0 6px;color:var(--text);">算法</label>
+<select id="hc-algorithm" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.85rem;margin-bottom:12px;">
+  <option value="MD5">MD5</option>
+  <option value="SHA-1">SHA-1</option>
+  <option value="SHA-256" selected>SHA-256</option>
+  <option value="SHA-512">SHA-512</option>
+</select>
+<div class="btn-row">
+  <button class="btn" onclick="hcCompare()">🔍 对比</button>
+  <button class="btn btn-outline" onclick="hcGenerate()">⚡ 生成哈希</button>
+  <button class="btn btn-outline btn-sm" onclick="hcClear()">🗑️ 清空</button>
+</div>
+<div class="output-area" id="hc-output"></div>
+<div class="stats-bar" id="hc-stats"></div>
+<script>
+function _hcHex(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return('0'+x.toString(16)).slice(-2)}).join('');}
+async function hcGenerate(){var txt=document.getElementById('hc-original').value;if(!txt.trim()){document.getElementById('hc-output').textContent='⚠️ 请输入原始文本';return;}
+var alg=document.getElementById('hc-algorithm').value;var hash=await crypto.subtle.digest(alg,new TextEncoder().encode(txt));
+var hex=_hcHex(hash);document.getElementById('hc-output').textContent=hex;
+document.getElementById('hc-stats').innerHTML='<span>✅ '+alg+' 哈希已生成</span><span>📏 长度: '+hex.length+' 字符</span>';}
+async function hcCompare(){var txt=document.getElementById('hc-original').value;var cmp=document.getElementById('hc-compare').value.trim();
+if(!txt||!cmp){document.getElementById('hc-output').textContent='⚠️ 请输入原始文本和对比哈希值';return;}
+var alg=document.getElementById('hc-algorithm').value;var hash=await crypto.subtle.digest(alg,new TextEncoder().encode(txt));
+var hex=_hcHex(hash);var match=hex===cmp;document.getElementById('hc-output').textContent=match?'✅ 哈希匹配！完全相同。':'❌ 哈希不匹配！';
+document.getElementById('hc-stats').innerHTML=match?'<span style="color:#16a34a">✅ 匹配成功</span><span>📏 哈希: '+hex+'</span>':'<span style="color:#dc2626">❌ 不匹配</span><span>📏 期望: '+cmp+'</span><span>📏 实际: '+hex+'</span>';}
+function hcClear(){document.getElementById('hc-original').value='';document.getElementById('hc-compare').value='';document.getElementById('hc-output').textContent='';document.getElementById('hc-stats').textContent='';}
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入原始文本 → 选择算法 → 点击「生成哈希」获取哈希值，或输入两个哈希值点击「对比」。</p>
+  <p><strong>支持算法：</strong>MD5、SHA-1、SHA-256、SHA-512。</p>
+  <p><strong>应用场景：</strong>校验文件完整性、密码哈希对比、数据一致性检查。</p>
+</div>

@@ -1,0 +1,34 @@
+<!-- SVG 在线编辑 & 预览 Widget（实时渲染） -->
+<textarea id="svg-input" class="tool-textarea" rows="8" placeholder="输入 SVG 代码，实时预览..."><svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="#6366f1" stroke="#4f46e5" stroke-width="4"/><text x="100" y="110" text-anchor="middle" fill="white" font-size="24" font-weight="bold">SVG</text></svg></textarea>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="svgClear()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="svg-copy-btn" onclick="svgCopy()">📋 复制代码</button>
+</div>
+<div class="output-area" id="svg-preview" style="text-align:center;padding:10px;"></div>
+<div class="stats-bar" id="svg-stats"></div>
+<script>
+function svgRender(){
+  var code=document.getElementById('svg-input').value.trim();
+  var out=document.getElementById('svg-preview');
+  var stats=document.getElementById('svg-stats');
+  if(!code){out.innerHTML='<span style=\"color:var(--text-secondary);\">💡 输入 SVG 代码后将在此实时预览</span>';stats.textContent='';return;}
+  var sanitized=code.replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/on\w+\s*=\s*\"[^\"]*\"/gi,'');
+  out.innerHTML=sanitized;
+  var imgs=out.querySelectorAll('image,use');
+  imgs.forEach(function(el){el.setAttribute('crossorigin','anonymous');});
+  stats.innerHTML='<span>✅ 实时渲染</span><span>📏 '+code.length+' 字符</span>';
+}
+function svgClear(){document.getElementById('svg-input').value='';svgRender();}
+function svgCopy(){
+  var t=document.getElementById('svg-input').value;
+  if(!t)return;
+  navigator.clipboard.writeText(t).then(function(){var b=document.getElementById('svg-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制代码';},2000);}).catch(function(){});
+}
+document.getElementById('svg-input').addEventListener('input',svgRender);
+svgRender();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>在输入框中编写或粘贴 SVG 代码，右侧实时渲染预览。支持基本 SVG 元素（circle, rect, path, text 等）。</p>
+  <p><strong>适用场景：</strong>图标设计、SVG 动画调试、图形代码编写与快速原型。</p>
+  <p><strong>注意：</strong>出于安全考虑，脚本和事件处理属性已自动过滤。不支持外部资源加载。</p>
+</div>

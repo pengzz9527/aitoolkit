@@ -1,0 +1,112 @@
+<!-- 文本批量替换 Widget -->
+<div class="tool-widget">
+  <div class="btn-row" style="margin-bottom:8px;">
+    <span style="font-size:0.85rem;font-weight:600;">🔍 查找替换规则</span>
+    <button class="btn btn-sm btn-outline" onclick="addReplaceRule()">➕ 添加规则</button>
+    <button class="btn btn-sm btn-outline" onclick="clearAllRules()">🗑️ 清空规则</button>
+  </div>
+
+  <div id="tr-rules"></div>
+
+  <textarea id="tr-input" class="tool-textarea" placeholder="在此输入要替换的原始文本..." rows="6">Hello World! 欢迎来到 AI Toolkit。
+这是一段示例文本，用于测试批量替换功能。
+Hello World! 重复的文本可以用规则统一替换。</textarea>
+
+  <div class="btn-row" style="margin-top:10px;">
+    <button class="btn" onclick="executeReplace()">⚡ 执行替换</button>
+    <button class="btn btn-outline btn-sm" onclick="clearReplace()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="tr-copy-btn" onclick="copyReplace()">📋 复制结果</button>
+  </div>
+
+  <textarea id="tr-output" class="tool-textarea" rows="8" readonly placeholder="替换结果将显示在此处..."></textarea>
+  <div class="stats-bar" id="tr-stats"></div>
+</div>
+
+<script>
+var _ruleIdCounter = 0;
+
+function addReplaceRule(findVal, replaceVal) {
+  var container = document.getElementById('tr-rules');
+  var id = ++_ruleIdCounter;
+  var div = document.createElement('div');
+  div.className = 'tr-rule';
+  div.id = 'tr-rule-' + id;
+  div.style.cssText = 'display:flex;gap:8px;align-items:center;margin-bottom:6px;';
+  div.innerHTML = '<input type="text" id="tr-find-' + id + '" class="tool-textarea" style="flex:1;min-height:auto;padding:8px 12px;font-family:var(--font);font-size:0.82rem;" placeholder="查找..." value="' + (findVal || '') + '">' +
+    '<span style="color:var(--text-secondary);font-size:0.85rem;">→</span>' +
+    '<input type="text" id="tr-replace-' + id + '" class="tool-textarea" style="flex:1;min-height:auto;padding:8px 12px;font-family:var(--font);font-size:0.82rem;" placeholder="替换为..." value="' + (replaceVal || '') + '">' +
+    '<button class="btn btn-sm btn-outline" onclick="removeRule(' + id + ')" style="padding:4px 10px;font-size:0.8rem;">✕</button>';
+  container.appendChild(div);
+}
+
+function removeRule(id) {
+  var el = document.getElementById('tr-rule-' + id);
+  if (el) el.remove();
+}
+
+function clearAllRules() {
+  document.getElementById('tr-rules').innerHTML = '';
+}
+
+function executeReplace() {
+  var input = document.getElementById('tr-input').value;
+  var output = document.getElementById('tr-output');
+  var stats = document.getElementById('tr-stats');
+  if (!input.trim()) { output.value = '⚠️ 请输入文本'; stats.textContent = ''; return; }
+
+  var rules = [];
+  var containers = document.querySelectorAll('#tr-rules .tr-rule');
+  containers.forEach(function(container) {
+    var findInput = container.querySelector('input[placeholder="查找..."]');
+    var replaceInput = container.querySelector('input[placeholder="替换为..."]');
+    if (findInput && findInput.value.trim()) {
+      rules.push({ find: findInput.value, replace: replaceInput ? replaceInput.value : '' });
+    }
+  });
+
+  if (rules.length === 0) {
+    output.value = '⚠️ 请至少添加一条查找替换规则';
+    stats.textContent = '';
+    return;
+  }
+
+  var result = input;
+  var totalReplacements = 0;
+  rules.forEach(function(rule) {
+    var escaped = rule.find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var regex = new RegExp(escaped, 'g');
+    var matches = result.match(regex);
+    if (matches) totalReplacements += matches.length;
+    result = result.replace(regex, rule.replace);
+  });
+
+  output.value = result;
+  stats.innerHTML = '<span>📋 规则数: ' + rules.length + '</span><span>🔄 替换次数: ' + totalReplacements + '</span><span>📏 原始长度: ' + input.length + ' → ' + result.length + ' 字符</span>';
+}
+
+function clearReplace() {
+  document.getElementById('tr-input').value = '';
+  document.getElementById('tr-output').value = '';
+  document.getElementById('tr-stats').textContent = '';
+}
+
+function copyReplace() {
+  var text = document.getElementById('tr-output').value;
+  if (!text || text.indexOf('⚠️') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('tr-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+// Initialize with sample rules
+addReplaceRule('Hello', 'Hi');
+addReplaceRule('World', 'Universe');
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>添加多个查找替换规则（查找 → 替换），输入原始文本后点击「执行替换」即可批量处理。</p>
+  <p><strong>功能特点：</strong>支持任意数量的替换规则、区分大小写、可替换为空字符串（删除文本）。</p>
+  <p><strong>适用场景：</strong>文本清洗、数据脱敏、模板变量替换、批量术语统一、代码重构。</p>
+</div>

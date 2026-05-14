@@ -1,0 +1,36 @@
+<!-- 图片尺寸比例计算器 Widget -->
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">原始尺寸</label>
+<div style="display:flex;gap:8px;margin-bottom:12px;">
+  <div style="flex:1;"><label style="font-size:0.75rem;color:var(--text-secondary);">宽度 (px)</label><input id="irc-w" type="number" class="tool-textarea" style="resize:none;height:38px;padding:8px 12px;" value="1920" oninput="ircCalcW()"></div>
+  <div style="flex:1;"><label style="font-size:0.75rem;color:var(--text-secondary);">高度 (px)</label><input id="irc-h" type="number" class="tool-textarea" style="resize:none;height:38px;padding:8px 12px;" value="1080" oninput="ircCalcH()"></div>
+</div>
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">目标尺寸 (输入一项自动计算另一项)</label>
+<div style="display:flex;gap:8px;margin-bottom:12px;">
+  <div style="flex:1;"><input id="irc-tw" type="number" class="tool-textarea" style="resize:none;height:38px;padding:8px 12px;" placeholder="目标宽度" oninput="ircCalcFromW()"></div>
+  <div style="flex:1;"><input id="irc-th" type="number" class="tool-textarea" style="resize:none;height:38px;padding:8px 12px;" placeholder="目标高度" oninput="ircCalcFromH()"></div>
+</div>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="ircClear()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="irc-copy-btn" onclick="ircCopy()">📋 复制</button>
+</div>
+<div class="output-area" id="irc-output" style="font-size:0.85rem;"></div>
+<div class="stats-bar" id="irc-stats"></div>
+<script>
+function ircCalcW(){var w=parseFloat(document.getElementById('irc-w').value);var h=parseFloat(document.getElementById('irc-h').value);if(w&&h){document.getElementById('irc-stats').innerHTML='<span>📐 宽高比: '+(w/h).toFixed(4)+'</span><span>📏 面积: '+(w*h)+' px²</span>';}}
+function ircCalcH(){ircCalcW();}
+function ircCalcFromW(){var tw=parseFloat(document.getElementById('irc-tw').value);if(!tw)return;var w=parseFloat(document.getElementById('irc-w').value);var h=parseFloat(document.getElementById('irc-h').value);if(!w||!h){document.getElementById('irc-output').textContent='⚠️ 请先输入原始尺寸';return;}
+var th=Math.round(tw/(w/h));document.getElementById('irc-th').value=th;
+document.getElementById('irc-output').innerHTML='<table style="width:100%;font-size:0.85rem;"><tr><td><strong>原始</strong></td><td>'+w+' × '+h+' px</td><td><strong>宽高比</strong></td><td>'+(w/h).toFixed(4)+'</td></tr><tr><td><strong>目标</strong></td><td>'+tw+' × '+th+' px</td><td><strong>面积</strong></td><td>'+(tw*th)+' px²</td></tr></table>';
+document.getElementById('irc-stats').innerHTML='<span>📐 比例: '+(w/h).toFixed(4)+'</span><span>📏 目标: '+tw+'×'+th+'</span>';}
+function ircCalcFromH(){var th=parseFloat(document.getElementById('irc-th').value);if(!th)return;var w=parseFloat(document.getElementById('irc-w').value);var h=parseFloat(document.getElementById('irc-h').value);if(!w||!h){document.getElementById('irc-output').textContent='⚠️ 请先输入原始尺寸';return;}
+var tw=Math.round(th*(w/h));document.getElementById('irc-tw').value=tw;
+document.getElementById('irc-output').innerHTML='<table style="width:100%;font-size:0.85rem;"><tr><td><strong>原始</strong></td><td>'+w+' × '+h+' px</td><td><strong>宽高比</strong></td><td>'+(w/h).toFixed(4)+'</td></tr><tr><td><strong>目标</strong></td><td>'+tw+' × '+th+' px</td><td><strong>面积</strong></td><td>'+(tw*th)+' px²</td></tr></table>';
+document.getElementById('irc-stats').innerHTML='<span>📐 比例: '+(w/h).toFixed(4)+'</span><span>📏 目标: '+tw+'×'+th+'</span>';}
+function ircClear(){document.getElementById('irc-tw').value='';document.getElementById('irc-th').value='';document.getElementById('irc-output').textContent='';document.getElementById('irc-stats').textContent='';}
+function ircCopy(){var t=document.getElementById('irc-output').textContent;if(!t)return;navigator.clipboard.writeText(t).then(function(){var b=document.getElementById('irc-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制';},2000);}).catch(function(){});}
+ircCalcW();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入原始宽高 → 输入目标宽或高 → 按比例自动计算另一尺寸。</p>
+  <p><strong>适用场景：</strong>图片等比缩放、视频分辨率计算、响应式设计。</p>
+</div>

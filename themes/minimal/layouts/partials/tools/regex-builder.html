@@ -1,0 +1,113 @@
+<!-- 正则表达式构建器 Widget -->
+<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:6px;">🔧 可视化构建正则表达式</label>
+<div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:8px;padding:12px;margin-bottom:12px;">
+  <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;">
+    <span style="font-size:0.75rem;font-weight:600;width:100%;margin-bottom:4px;color:var(--text-secondary);">📋 常用模式</span>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('\\d+')" title="一个或多个数字">\d+</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('[a-zA-Z]+')" title="一个或多个字母">[a-z]+</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('\\w+')" title="一个或多个单词字符">\w+</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('\\s')" title="空白字符">\s</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('.')" title="任意字符">.</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('^')" title="行首">^</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('$')" title="行尾">$</button>
+  </div>
+  <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;">
+    <span style="font-size:0.75rem;font-weight:600;width:100%;margin-bottom:4px;color:var(--text-secondary);">🔢 量词</span>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('*')">* (0次+)</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('+')">+ (1次+)</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('?')">? (0或1次)</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('{3}')">{3} (精确)</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('{2,5}')">{2,5} (范围)</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('{2,}')">{2,} (至少)</button>
+  </div>
+  <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;">
+    <span style="font-size:0.75rem;font-weight:600;width:100%;margin-bottom:4px;color:var(--text-secondary);">🧩 分组 & 特殊</span>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('( )')" title="捕获分组">( )</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('(?: )')" title="非捕获分组">(?: )</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('|')" title="或">|</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('(?= )')" title="正向先行断言">(?= )</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('(?! )')" title="负向先行断言">(?! )</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('\\b')">\b (单词边界)</button>
+    <button class="btn btn-sm btn-outline" onclick="addRbPart('\\B')">\B (非单词边界)</button>
+  </div>
+  <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;">
+    <span style="font-size:0.75rem;font-weight:600;margin-right:4px;color:var(--text-secondary);">🏁 标志:</span>
+    <label style="font-size:0.75rem;display:flex;align-items:center;gap:2px;cursor:pointer;">
+      <input type="checkbox" id="rb-flag-g" checked onchange="updateRbPreview()"> g
+    </label>
+    <label style="font-size:0.75rem;display:flex;align-items:center;gap:2px;cursor:pointer;">
+      <input type="checkbox" id="rb-flag-i" onchange="updateRbPreview()"> i
+    </label>
+    <label style="font-size:0.75rem;display:flex;align-items:center;gap:2px;cursor:pointer;">
+      <input type="checkbox" id="rb-flag-m" onchange="updateRbPreview()"> m
+    </label>
+    <label style="font-size:0.75rem;display:flex;align-items:center;gap:2px;cursor:pointer;">
+      <input type="checkbox" id="rb-flag-s" onchange="updateRbPreview()"> s
+    </label>
+  </div>
+</div>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="clearRbPart()">🗑️ 清空构建</button>
+  <button class="btn btn-outline btn-sm" id="rb-copy-btn" onclick="copyRbRegex()">📋 复制正则</button>
+</div>
+<label style="font-size:0.85rem;font-weight:600;display:block;margin:8px 0 6px;">🔤 当前正则表达式</label>
+<div class="output-area" id="rb-preview" style="padding:10px 14px;font-family:var(--font-mono);font-size:0.85rem;word-break:break-all;"></div>
+<label style="font-size:0.85rem;font-weight:600;display:block;margin:8px 0 6px;">📝 测试文本</label>
+<textarea id="rb-test" class="tool-textarea" placeholder="输入测试文本..." rows="4">Hello World 123
+Regex Builder Test</textarea>
+<div style="margin:8px 0;"><span id="rb-match-count" style="font-size:0.82rem;color:var(--text-secondary);">匹配数: 0</span></div>
+<pre class="output-area" id="rb-output" style="white-space:pre-wrap;"></pre>
+<div class="stats-bar" id="rb-stats"></div>
+<script>
+var _rbParts = [];
+
+function addRbPart(part){_rbParts.push(part);updateRbPreview();}
+
+function clearRbPart(){_rbParts=[];updateRbPreview();}
+
+function updateRbPreview(){
+  var regex = _rbParts.join('');
+  document.getElementById('rb-preview').textContent = regex || '(空)';
+  testRbRegex();
+}
+
+function testRbRegex(){
+  var regex = _rbParts.join('');
+  var testText = document.getElementById('rb-test').value;
+  var out = document.getElementById('rb-output');
+  var countEl = document.getElementById('rb-match-count');
+  if(!regex.trim()){out.textContent='';countEl.textContent='匹配数: 0';return;}
+  var flags = '';
+  if(document.getElementById('rb-flag-g').checked) flags+='g';
+  if(document.getElementById('rb-flag-i').checked) flags+='i';
+  if(document.getElementById('rb-flag-m').checked) flags+='m';
+  if(document.getElementById('rb-flag-s').checked) flags+='s';
+  try {
+    var re = new RegExp(regex, flags);
+    var matches = testText.match(re);
+    var count = matches?matches.length:0;
+    countEl.textContent = '匹配数: '+count;
+    if(count===0){out.textContent='❌ 无匹配结果';return;}
+    var escaped = testText.replace(/(<|>)/g,'');
+    var reHL = new RegExp('('+regex.replace(/([/\\\\])/g,'\\$1')+')',flags.indexOf('g')>=0?flags.replace('g','')+'g':flags);
+    out.innerHTML = escaped.replace(reHL,'**$1**');
+  } catch(e){
+    out.textContent = '❌ 正则错误: '+e.message;
+    countEl.textContent = '匹配数: 0';
+  }
+}
+
+function copyRbRegex(){
+  var text = _rbParts.join('');
+  if(!text) return;
+  navigator.clipboard.writeText(text).then(function(){var b=document.getElementById('rb-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制正则';},2000);}).catch(function(){});
+}
+
+document.getElementById('rb-test').addEventListener('input',testRbRegex);
+updateRbPreview();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>点击按钮添加常用模式、量词和分组到正则表达式中，选择标志位，在测试文本中验证匹配结果。</p>
+  <p><strong>适用场景：</strong>正则表达式学习、复杂正则构建、文本匹配测试。</p>
+  <p><strong>隐私说明：</strong>所有数据仅在浏览器本地处理，不会上传到任何服务器。</p>
+</div>

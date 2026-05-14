@@ -1,0 +1,30 @@
+<!-- PIN码生成器 Widget -->
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">PIN 码位数</label>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+  <input type="range" id="pin-length" min="4" max="8" value="6" style="flex:1;accent-color:var(--primary);" oninput="document.getElementById('pin-length-label').textContent=this.value">
+  <span id="pin-length-label" style="font-size:0.85rem;font-weight:600;min-width:20px;text-align:center;">6</span>
+</div>
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">生成数量</label>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+  <input type="range" id="pin-count" min="1" max="50" value="10" style="flex:1;accent-color:var(--primary);" oninput="document.getElementById('pin-count-label').textContent=this.value">
+  <span id="pin-count-label" style="font-size:0.85rem;font-weight:600;min-width:20px;text-align:center;">10</span>
+</div>
+<div class="btn-row">
+  <button class="btn" onclick="pinGenerate()">🔢 生成 PIN 码</button>
+  <button class="btn btn-outline btn-sm" id="pin-copy-btn" onclick="pinCopy()">📋 复制</button>
+  <button class="btn btn-outline btn-sm" onclick="pinClear()">🗑️ 清空</button>
+</div>
+<div class="output-area" id="pin-output" style="font-family:monospace;white-space:pre;"></div>
+<div class="stats-bar" id="pin-stats"></div>
+<script>
+function pinGenerate(){var len=parseInt(document.getElementById('pin-length').value);var cnt=parseInt(document.getElementById('pin-count').value);var out=[];for(var i=0;i<cnt;i++){var pin='';for(var j=0;j<len;j++)pin+=Math.floor(Math.random()*10);out.push(pin);}
+document.getElementById('pin-output').textContent=out.join('\n');
+document.getElementById('pin-stats').innerHTML='<span>🔢 生成: '+cnt+' 个</span><span>📏 位数: '+len+' 位</span><span>🔐 熵值: ~'+Math.round(len*Math.log2(10))+' bit/个</span>';}
+function pinCopy(){var t=document.getElementById('pin-output').textContent;if(!t)return;navigator.clipboard.writeText(t).then(function(){var b=document.getElementById('pin-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制';},2000);}).catch(function(){});}
+function pinClear(){document.getElementById('pin-output').textContent='';document.getElementById('pin-stats').textContent='';}
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择位数 (4-8) 和数量 (1-50) → 点击生成 → 批量生成数字 PIN 码。</p>
+  <p><strong>适用场景：</strong>门禁卡密码、银行卡 PIN、会员卡密码等。</p>
+  <p><strong>隐私说明：</strong>所有生成在本地完成。</p>
+</div>

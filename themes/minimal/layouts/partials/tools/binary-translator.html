@@ -1,0 +1,115 @@
+<!-- Binary Translator Widget -->
+<div class="tool-widget">
+  <div class="mode-toggle" id="bin-mode-toggle">
+    <button class="btn btn-sm active" id="bin-mode-encode" onclick="setBinMode('encode')">✏️ 文本 → 二进制</button>
+    <button class="btn btn-sm btn-outline" id="bin-mode-decode" onclick="setBinMode('decode')">✏️ 二进制 → 文本</button>
+  </div>
+
+  <textarea id="bin-input" class="tool-textarea" rows="5" placeholder="输入文本...">Hello, AI Toolkit!</textarea>
+
+  <div class="btn-row">
+    <button class="btn" onclick="convertBin()">🔄 转换</button>
+    <button class="btn btn-outline btn-sm" onclick="clearBin()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="bin-copy-btn" onclick="copyBin()">📋 复制结果</button>
+    <button class="btn btn-outline btn-sm" onclick="swapBin()">↕️ 交换</button>
+  </div>
+
+  <pre class="output-area" id="bin-output"></pre>
+  <div class="stats-bar" id="bin-stats"></div>
+</div>
+
+<script>
+var _binMode = 'encode';
+
+function setBinMode(mode) {
+  _binMode = mode;
+  document.getElementById('bin-mode-encode').className = mode === 'encode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('bin-mode-decode').className = mode === 'decode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  var input = document.getElementById('bin-input');
+  input.placeholder = mode === 'encode' ? '输入文本...' : '输入二进制字符串 (如 01001000 01101001)...';
+  convertBin();
+}
+
+function convertBin() {
+  var input = document.getElementById('bin-input').value;
+  var output = document.getElementById('bin-output');
+  var stats = document.getElementById('bin-stats');
+
+  if (!input.trim()) {
+    output.textContent = '';
+    stats.textContent = '';
+    return;
+  }
+
+  try {
+    if (_binMode === 'encode') {
+      // Text to binary
+      var result = '';
+      for (var i = 0; i < input.length; i++) {
+        var code = input.charCodeAt(i);
+        var bin = code.toString(2).padStart(8, '0');
+        result += bin + ' ';
+      }
+      result = result.trim();
+      output.textContent = result;
+
+      var charCount = input.length;
+      var byteCount = result.replace(/ /g, '').length / 8;
+      stats.innerHTML = '<span>📏 字符: ' + charCount + '</span><span>📦 二进制长度: ' + result.replace(/ /g, '').length + ' bit</span><span>📊 ' + byteCount + ' 字节</span>';
+    } else {
+      // Binary to text - handle various formats (with or without spaces)
+      var clean = input.replace(/[^01]/g, '');
+      if (clean.length % 8 !== 0) {
+        output.textContent = '❌ 二进制位数不是 8 的倍数（每个字符需要 8 bits）';
+        stats.textContent = '';
+        return;
+      }
+      var result = '';
+      for (var i = 0; i < clean.length; i += 8) {
+        var byte = clean.substr(i, 8);
+        var code = parseInt(byte, 2);
+        result += String.fromCharCode(code);
+      }
+      output.textContent = result;
+
+      stats.innerHTML = '<span>📦 二进制: ' + clean.length + ' bit</span><span>📏 解码后: ' + result.length + ' 字符</span><span>📊 ' + (clean.length / 8) + ' 字节</span>';
+    }
+  } catch(e) {
+    output.textContent = '❌ 转换失败: ' + e.message;
+    stats.textContent = '';
+  }
+}
+
+function clearBin() {
+  document.getElementById('bin-input').value = '';
+  document.getElementById('bin-output').textContent = '';
+  document.getElementById('bin-stats').textContent = '';
+}
+
+function copyBin() {
+  var text = document.getElementById('bin-output').textContent;
+  if (!text || text.indexOf('❌') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('bin-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+function swapBin() {
+  var output = document.getElementById('bin-output').textContent;
+  if (!output || output.indexOf('❌') === 0) return;
+  document.getElementById('bin-input').value = output;
+  convertBin();
+}
+
+document.getElementById('bin-input').addEventListener('input', convertBin);
+convertBin();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择转换方向（文本→二进制 或 二进制→文本）→ 输入内容 → 实时转换。</p>
+  <p><strong>文本→二进制：</strong>每个字符转换为 8 位二进制，空格分隔。</p>
+  <p><strong>二进制→文本：</strong>输入二进制字符串（可带空格），每 8 位解码为一个字符。</p>
+  <p><strong>适用场景：</strong>计算机原理学习、数据编码、网络协议分析、ASCII 查看。</p>
+</div>

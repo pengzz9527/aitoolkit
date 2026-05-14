@@ -1,0 +1,157 @@
+<!-- Base64 Protobuf 简单解码 Widget -->
+<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:6px;">🔤 Base64 编码的 Protobuf 数据</label>
+<textarea id="pb-input" class="tool-textarea" placeholder="粘贴 Base64 编码的 Protobuf 数据..." rows="5">CgNhaWQSBmFjdGl2ZRoFMTIzNDUiCDEwMDAwMDAw</textarea>
+<div class="btn-row">
+  <button class="btn" onclick="decodeProtobuf()">🔓 解码</button>
+  <button class="btn btn-outline btn-sm" onclick="clearProtobuf()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="pb-copy-btn" onclick="copyProtobuf()">📋 复制</button>
+</div>
+<pre class="output-area" id="pb-output"></pre>
+<div class="stats-bar" id="pb-stats"></div>
+<script>
+function _pbDecodeVarint(bytes, offset){
+  var result = 0;
+  var shift = 0;
+  var i = offset;
+  while(i < bytes.length){
+    var b = bytes[i];
+    result |= (b & 0x7f) << shift;
+    shift += 7;
+    i++;
+    if(!(b & 0x80)) break;
+    if(shift >= 64) break;
+  }
+  return {value: result, bytesRead: i - offset};
+}
+
+function _pbDecodeSignedVarint(bytes, offset){
+  var r = _pbDecodeVarint(bytes, offset);
+  var v = r.value;
+  return {value: (v >>> 1) ^ -(v & 1), bytesRead: r.bytesRead};
+}
+
+function _pbTypeName(wireType){
+  var names = ['varint','64-bit','length-delimited','start-group','end-group','32-bit'];
+  return names[wireType]||'unknown('+wireType+')';
+}
+
+function _pbFieldName(tag){
+  var wellKnown = {
+    1:'field_1',2:'field_2',3:'field_3',4:'field_4',5:'field_5',
+    6:'field_6',7:'field_7',8:'field_8',9:'field_9',10:'field_10',
+    15:'field_15',16:'field_16'
+  };
+  return wellKnown[tag]||'field_'+tag;
+}
+
+function decodeProtobuf(){
+  var input = document.getElementById('pb-input').value.trim();
+  var out = document.getElementById('pb-output');
+  var stats = document.getElementById('pb-stats');
+  if(!input){out.textContent='⚠️ 请输入 Base64 数据';stats.textContent='';return;}
+  try {
+    var binaryStr = atob(input);
+    var bytes = new Uint8Array(binaryStr.length);
+    for(var i=0;i<binaryStr.length;i++) bytes[i]=binaryStr.charCodeAt(i)&0xff;
+    var outputLines = [];
+    var offset = 0;
+    var fieldNum = 0;
+    while(offset < bytes.length){
+      var tagResult = _pbDecodeVarint(bytes, offset);
+      var tag = tagResult.value;
+      offset += tagResult.bytesRead;
+      var fieldNumber = tag >> 3;
+      var wireType = tag & 0x07;
+      var line = '字段 #'+fieldNumber+' (类型: '+_pbTypeName(wireType)+')';
+      switch(wireType){
+        case 0: { // varint
+          var vResult = _pbDecodeVarint(bytes, offset);
+          var svResult = _pbDecodeSignedVarint(bytes, offset);
+          outputLines.push(line);
+          outputLines.push('  varint: ' + vResult.value + ' (signed: ' + svResult.value + ')');
+          offset += vResult.bytesRead;
+          break;
+        }
+        case 1: { // 64-bit
+          if(offset+8 <= bytes.length){
+            var val = 0;
+            for(var j=0;j<8;j++) val += bytes[offset+j]*Math.pow(256,j);
+            outputLines.push(line);
+            outputLines.push('  64-bit: ' + val);
+            offset += 8;
+          } else { outputLines.push(line); outputLines.push('  ❌ 数据不足 (64-bit)'); offset = bytes.length; }
+          break;
+        }
+        case 2: { // length-delimited
+          var lenResult = _pbDecodeVarint(bytes, offset);
+          var len = lenResult.value;
+          offset += lenResult.bytesRead;
+          if(offset+len <= bytes.length){
+            var strBytes = bytes.slice(offset, offset+len);
+            var strVal = '';
+            var isPrintable = true;
+            for(var j=0;j<strBytes.length;j++){
+              var c = strBytes[j];
+              if(c>=32&&c<=126) strVal += String.fromCharCode(c);
+              else if(c===10||c===13||c===9) strVal += String.fromCharCode(c);
+              else { isPrintable = false; break; }
+            }
+            outputLines.push(line);
+            if(isPrintable && strVal.length>0){
+              outputLines.push('  string: "'+strVal+'"');
+            } else {
+              var hexParts = [];
+              for(var j=0;j<strBytes.length;j++) hexParts.push(strBytes[j].toString(16).padStart(2,'0'));
+              outputLines.push('  bytes: '+hexParts.join(' '));
+            }
+            offset += len;
+          } else { outputLines.push(line); outputLines.push('  ❌ 数据不足 (string/bytes)'); offset = bytes.length; }
+          break;
+        }
+        case 5: { // 32-bit
+          if(offset+4 <= bytes.length){
+            var val = 0;
+            for(var j=0;j<4;j++) val += bytes[offset+j]*Math.pow(256,j);
+            outputLines.push(line);
+            outputLines.push('  32-bit: ' + val);
+            offset += 4;
+          } else { outputLines.push(line); outputLines.push('  ❌ 数据不足 (32-bit)'); offset = bytes.length; }
+          break;
+        }
+        default:
+          outputLines.push(line);
+          outputLines.push('  ⚠️ 不支持的 wire type: '+wireType);
+          offset = bytes.length;
+          break;
+      }
+    }
+    if(outputLines.length===0){
+      out.textContent = '⚠️ 无有效的 Protobuf 字段';
+    } else {
+      out.textContent = outputLines.join(String.fromCharCode(10));
+    }
+    stats.innerHTML = '<span>✅ 解码完成</span><span>📏 原始: '+input.length+' 字符</span><span>📦 '+bytes.length+' 字节</span>';
+  } catch(e){
+    out.textContent = '❌ 解码失败: '+e.message;
+    stats.textContent = '';
+  }
+}
+
+function clearProtobuf(){
+  document.getElementById('pb-input').value='';
+  document.getElementById('pb-output').textContent='';
+  document.getElementById('pb-stats').textContent='';
+}
+
+function copyProtobuf(){
+  var text=document.getElementById('pb-output').textContent;
+  if(!text||text.indexOf('⚠️')===0||text.indexOf('❌')===0)return;
+  navigator.clipboard.writeText(text).then(function(){var b=document.getElementById('pb-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制';},2000);}).catch(function(){});
+}
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>粘贴 Base64 编码的 Protobuf 数据，解码显示每个字段的编号、类型和值。</p>
+  <p><strong>支持：</strong>varint（含 signed）、64-bit、length-delimited（string/bytes）、32-bit。</p>
+  <p><strong>适用场景：</strong>gRPC 调试、Protobuf 数据逆向分析、网络包解码。</p>
+  <p><strong>注意：</strong>此为简单解码器，基于 wire type 解析。如需 schema-aware 解码请使用 protoc 等工具。</p>
+</div>

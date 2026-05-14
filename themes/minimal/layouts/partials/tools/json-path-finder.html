@@ -1,0 +1,172 @@
+<!-- JSON Path 查询 Widget -->
+<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:6px;">📦 JSON 数据</label>
+<textarea id="jsonpath-input" class="tool-textarea" placeholder="在此粘贴 JSON 数据..." rows="6">{
+  "store": {
+    "book": [
+      {"title": "JSON入门","price": 29.99},
+      {"title": "高级JavaScript","price": 49.99}
+    ],
+    "bicycle": {"color": "red","price": 199.99}
+  }
+}</textarea>
+<label style="font-size:0.85rem;font-weight:600;display:block;margin:8px 0 6px;">🔍 JSON Path 表达式</label>
+<input type="text" id="jsonpath-expr" class="tool-textarea" style="font-family:var(--font-mono);min-height:auto;padding:12px 14px;" value="$.store.book[*].title" placeholder="输入 JSON Path，如 $.store.book[*].title">
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;">
+  <span style="font-size:0.75rem;color:var(--text-secondary);cursor:pointer;padding:2px 8px;border:1px solid var(--border-color);border-radius:4px;" onclick="setJsonpathExample('$.store.book[*].title')">$.store.book[*].title</span>
+  <span style="font-size:0.75rem;color:var(--text-secondary);cursor:pointer;padding:2px 8px;border:1px solid var(--border-color);border-radius:4px;" onclick="setJsonpathExample('$.store..price')">$.store..price</span>
+  <span style="font-size:0.75rem;color:var(--text-secondary);cursor:pointer;padding:2px 8px;border:1px solid var(--border-color);border-radius:4px;" onclick="setJsonpathExample('$..book[?(@.price>30)]')">$..book[?(@.price>30)]</span>
+</div>
+<div class="btn-row">
+  <button class="btn" onclick="queryJsonpath()">🔍 查询</button>
+  <button class="btn btn-outline btn-sm" onclick="clearJsonpath()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="jsonpath-copy-btn" onclick="copyJsonpath()">📋 复制</button>
+</div>
+<pre class="output-area" id="jsonpath-output"></pre>
+<div class="stats-bar" id="jsonpath-stats"></div>
+<script>
+function _jpTokenize(expr){
+  var tokens = [];
+  expr = expr.replace(/^\$\.?/,'');
+  var parts = expr.split('.');
+  for(var i=0;i<parts.length;i++){
+    var p = parts[i];
+    if(!p) continue;
+    var bracketIdx = p.indexOf('[');
+    if(bracketIdx>=0){
+      if(bracketIdx>0) tokens.push(p.substring(0,bracketIdx));
+      var brackets = p.substring(bracketIdx);
+      var bMatches = brackets.match(/\[([^\]]*)\]/g);
+      if(bMatches){bMatches.forEach(function(m){tokens.push(m);});}
+    } else {
+      tokens.push(p);
+    }
+  }
+  return tokens;
+}
+
+function _jpEval(obj, expr, isRoot) {
+  if(expr===''||expr==='$') return obj===undefined?[]:[obj];
+  var tokens = _jpTokenize(expr);
+  var results = [obj];
+  for(var t=0;t<tokens.length;t++){
+    var token = tokens[t];
+    var nextResults = [];
+    for(var r=0;r<results.length;r++){
+      var current = results[r];
+      if(current===undefined||current===null) continue;
+      if(typeof current !== 'object') continue;
+      if(token.indexOf('[')===0){
+        var inner = token.substring(1,token.length-1);
+        if(inner==='*'){
+          if(Array.isArray(current)){for(var a=0;a<current.length;a++) nextResults.push(current[a]);}
+          else if(typeof current==='object'){for(var k in current) nextResults.push(current[k]);}
+        } else if(inner.indexOf('?')===0){
+          var filterExpr = inner.substring(1);
+          if(!Array.isArray(current)) continue;
+          for(var a=0;a<current.length;a++){
+            var item = current[a];
+            try {
+              var match = false;
+              if(filterExpr.indexOf('@.price>')>=0){
+                var priceVal = parseFloat(filterExpr.split('@.price>')[1]);
+                if(item.price>priceVal) match=true;
+              } else if(filterExpr.indexOf('@.price<')>=0){
+                var priceVal = parseFloat(filterExpr.split('@.price<')[1]);
+                if(item.price<priceVal) match=true;
+              } else if(filterExpr.indexOf('@.price>=')>=0){
+                var priceVal = parseFloat(filterExpr.split('@.price>=')[1]);
+                if(item.price>=priceVal) match=true;
+              } else if(filterExpr.indexOf('@.price<=')>=0){
+                var priceVal = parseFloat(filterExpr.split('@.price<=')[1]);
+                if(item.price<=priceVal) match=true;
+              } else if(filterExpr.indexOf('@.price==')>=0){
+                var priceVal = parseFloat(filterExpr.split('@.price==')[1]);
+                if(item.price===priceVal) match=true;
+              } else if(filterExpr.indexOf('@.')>=0){
+                var parts = filterExpr.split(' ');
+                if(parts.length>=3){
+                  var key = parts[0].replace('@.','');
+                  var op = parts[1];
+                  var v = parts.slice(2).join(' ');
+                  var iv = item[key];
+                  if(op==='=='&&iv==v) match=true;
+                  if(op==='!='&&iv!=v) match=true;
+                }
+              }
+              if(match) nextResults.push(item);
+            } catch(e){}
+          }
+        } else if(inner.indexOf(':')>=0){
+          var rangeParts = inner.split(':').map(Number);
+          var start = rangeParts[0]||0;
+          var end = rangeParts[1]!==undefined?rangeParts[1]:current.length;
+          for(var a=start;a<end&&a<current.length;a++) nextResults.push(current[a]);
+        } else {
+          var idx = parseInt(inner);
+          if(!isNaN(idx)&&Array.isArray(current)&&idx>=0&&idx<current.length) nextResults.push(current[idx]);
+        }
+      } else {
+        if(Array.isArray(current)){
+          for(var a=0;a<current.length;a++){
+            if(current[a]&&typeof current[a]==='object'&&current[a].hasOwnProperty(token)) nextResults.push(current[a][token]);
+          }
+        } else if(typeof current==='object'&&current!==null){
+          if(current.hasOwnProperty(token)) nextResults.push(current[token]);
+        }
+      }
+    }
+    results = nextResults;
+  }
+  return results;
+}
+
+function queryJsonpath(){
+  var jsonStr = document.getElementById('jsonpath-input').value.trim();
+  var expr = document.getElementById('jsonpath-expr').value.trim();
+  var out = document.getElementById('jsonpath-output');
+  var stats = document.getElementById('jsonpath-stats');
+  if(!jsonStr){out.textContent='⚠️ 请输入 JSON 数据';stats.textContent='';return;}
+  if(!expr){out.textContent='⚠️ 请输入 JSON Path 表达式';stats.textContent='';return;}
+  try {
+    var obj = JSON.parse(jsonStr);
+    var results = _jpEval(obj, expr);
+    if(results.length===0){
+      out.textContent = '❌ 无匹配结果';
+      stats.innerHTML = '<span>📋 路径: '+_iniEscape(expr)+'</span><span>🔍 匹配: 0 个</span>';
+    } else {
+      out.textContent = JSON.stringify(results.length===1?results[0]:results, null, 2);
+      stats.innerHTML = '<span>📋 路径: '+_iniEscape(expr)+'</span><span>🔍 匹配: '+results.length+' 个</span>';
+    }
+  } catch(e){
+    out.textContent = '❌ 查询失败: '+e.message;
+    stats.textContent = '';
+  }
+}
+
+function _iniEscape(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function setJsonpathExample(expr){
+  document.getElementById('jsonpath-expr').value=expr;
+  queryJsonpath();
+}
+
+function clearJsonpath(){
+  document.getElementById('jsonpath-input').value='';
+  document.getElementById('jsonpath-expr').value='';
+  document.getElementById('jsonpath-output').textContent='';
+  document.getElementById('jsonpath-stats').textContent='';
+}
+
+function copyJsonpath(){
+  var text=document.getElementById('jsonpath-output').textContent;
+  if(!text||text.indexOf('⚠️')===0||text.indexOf('❌')===0)return;
+  navigator.clipboard.writeText(text).then(function(){var b=document.getElementById('jsonpath-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制';},2000);}).catch(function(){});
+}
+
+queryJsonpath();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>粘贴 JSON 数据，输入 JSON Path 表达式（如 <code>$.store.book[*].title</code>），查询匹配结果。</p>
+  <p><strong>支持语法：</strong><code>$.</code> 根路径、<code>[*]</code> 通配、<code>[0]</code> 索引、<code>..</code> 递归、<code>[?(@.price>30)]</code> 过滤。</p>
+  <p><strong>隐私说明：</strong>所有数据仅在浏览器本地处理，不会上传到任何服务器。</p>
+</div>

@@ -1,0 +1,158 @@
+<!-- BMI 指数计算 Widget -->
+<div class="tool-widget">
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px;">
+    <div style="flex:0 0 120px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">⚖️ 单位制</label>
+      <select id="bmi-unit" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;" onchange="toggleBMIScale()">
+        <option value="metric">公制 (kg/cm)</option>
+        <option value="imperial">英制 (lb/in)</option>
+      </select>
+    </div>
+    <div id="bmi-height-group" style="flex:0 0 120px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">📏 身高</label>
+      <input type="number" id="bmi-height" class="tool-textarea" style="min-height:auto;padding:9px 14px;" value="170" min="1" max="999" step="0.1">
+      <span id="bmi-height-unit" style="font-size:0.75rem;color:var(--text-secondary);">厘米</span>
+    </div>
+    <div style="flex:0 0 120px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">⚖️ 体重</label>
+      <input type="number" id="bmi-weight" class="tool-textarea" style="min-height:auto;padding:9px 14px;" value="65" min="1" max="999" step="0.1">
+      <span id="bmi-weight-unit" style="font-size:0.75rem;color:var(--text-secondary);">公斤</span>
+    </div>
+    <div>
+      <button class="btn" onclick="calcBMI()" style="padding:9px 20px;">⚡ 计算</button>
+    </div>
+  </div>
+
+  <div class="output-area" id="bmi-output"></div>
+  <div class="stats-bar" id="bmi-stats"></div>
+</div>
+
+<script>
+function toggleBMIScale() {
+  var unit = document.getElementById('bmi-unit').value;
+  var heightUnit = document.getElementById('bmi-height-unit');
+  var weightUnit = document.getElementById('bmi-weight-unit');
+  var heightInput = document.getElementById('bmi-height');
+  var weightInput = document.getElementById('bmi-weight');
+
+  if (unit === 'metric') {
+    heightUnit.textContent = '厘米';
+    weightUnit.textContent = '公斤';
+    heightInput.placeholder = 'cm';
+    heightInput.step = '0.1';
+    weightInput.placeholder = 'kg';
+    weightInput.step = '0.1';
+    if (!heightInput.value || parseFloat(heightInput.value) > 300) heightInput.value = 170;
+    if (!weightInput.value || parseFloat(weightInput.value) > 500) weightInput.value = 65;
+  } else {
+    heightUnit.textContent = '英寸';
+    weightUnit.textContent = '磅';
+    heightInput.placeholder = 'in';
+    heightInput.step = '0.1';
+    weightInput.placeholder = 'lb';
+    weightInput.step = '0.1';
+    if (!heightInput.value || parseFloat(heightInput.value) > 120) heightInput.value = 67;
+    if (!weightInput.value || parseFloat(weightInput.value) > 500) weightInput.value = 143;
+  }
+}
+
+function calcBMI() {
+  var unit = document.getElementById('bmi-unit').value;
+  var height = parseFloat(document.getElementById('bmi-height').value);
+  var weight = parseFloat(document.getElementById('bmi-weight').value);
+  var output = document.getElementById('bmi-output');
+  var stats = document.getElementById('bmi-stats');
+
+  if (isNaN(height) || height <= 0 || isNaN(weight) || weight <= 0) {
+    output.innerHTML = '⚠️ 请输入有效的身高和体重';
+    stats.textContent = '';
+    return;
+  }
+
+  var bmi, bmiCategory, bmiColor, bmiDesc;
+  if (unit === 'metric') {
+    // height in cm -> convert to meters
+    bmi = weight / ((height / 100) * (height / 100));
+  } else {
+    // height in inches, weight in pounds
+    bmi = (weight / (height * height)) * 703;
+  }
+
+  bmi = Math.round(bmi * 10) / 10;
+
+  if (bmi < 18.5) {
+    bmiCategory = '偏瘦 (Underweight)';
+    bmiColor = '#f59e0b';
+    bmiDesc = '体重过轻，建议增加营养摄入，适当增肌。BMI < 18.5';
+  } else if (bmi < 24) {
+    bmiCategory = '正常 (Normal)';
+    bmiColor = '#16a34a';
+    bmiDesc = '体重在健康范围内，继续保持良好的饮食习惯和适量运动。18.5 ≤ BMI < 24';
+  } else if (bmi < 28) {
+    bmiCategory = '超重 (Overweight)';
+    bmiColor = '#f59e0b';
+    bmiDesc = '体重超标，建议控制饮食、增加运动量。24 ≤ BMI < 28';
+  } else {
+    bmiCategory = '肥胖 (Obese)';
+    bmiColor = '#dc2626';
+    bmiDesc = '体重过高，建议咨询医生制定科学的减重计划。BMI ≥ 28';
+  }
+
+  // WHO standard for additional context
+  var whoCategory = '';
+  if (bmi < 18.5) whoCategory = '偏瘦';
+  else if (bmi < 25) whoCategory = '正常';
+  else if (bmi < 30) whoCategory = '超重';
+  else if (bmi < 35) whoCategory = 'I 级肥胖';
+  else if (bmi < 40) whoCategory = 'II 级肥胖';
+  else whoCategory = 'III 级肥胖';
+
+  // Calculate healthy weight range
+  var healthyLow, healthyHigh;
+  if (unit === 'metric') {
+    var hInMeters = height / 100;
+    healthyLow = Math.round(18.5 * hInMeters * hInMeters * 10) / 10;
+    healthyHigh = Math.round(24 * hInMeters * hInMeters * 10) / 10;
+  } else {
+    healthyLow = Math.round(18.5 * (height * height) / 703 * 10) / 10;
+    healthyHigh = Math.round(24.9 * (height * height) / 703 * 10) / 10;
+  }
+
+  var html = '<div style="padding:16px;text-align:center;">';
+  html += '<div style="font-size:2.5rem;font-weight:900;color:' + bmiColor + ';margin-bottom:4px;">' + bmi + '</div>';
+  html += '<div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:8px;">BMI 指数</div>';
+  html += '<div style="display:inline-block;background:' + bmiColor + '22;color:' + bmiColor + ';padding:6px 18px;border-radius:20px;font-weight:700;font-size:0.95rem;margin-bottom:12px;">' + bmiCategory + '</div>';
+  html += '<div style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:14px;">' + bmiDesc + '</div>';
+
+  // BMI Scale bar
+  html += '<div style="height:12px;background:var(--bg-card);border-radius:6px;overflow:hidden;margin-bottom:10px;position:relative;">';
+  html += '<div style="height:100%;background:linear-gradient(90deg, #f59e0b 0%, #16a34a 18%, #16a34a 24%, #f59e0b 36%, #dc2626 100%);border-radius:6px;"></div>';
+  // Indicator
+  var pos = Math.min(Math.max((bmi / 40) * 100, 2), 98);
+  html += '<div style="position:absolute;top:-4px;left:calc(' + pos + '% - 8px);width:16px;height:20px;background:' + bmiColor + ';border-radius:4px;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div>';
+  html += '</div>';
+  html += '<div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-secondary);margin-bottom:14px;">';
+  html += '<span>偏瘦</span><span>正常</span><span>超重</span><span>肥胖</span>';
+  html += '</div>';
+
+  // Details
+  html += '<table style="width:100%;border-collapse:collapse;font-size:0.8rem;text-align:left;margin-top:10px;">';
+  html += '<tr><td style="padding:6px 8px;color:var(--text-secondary);">WHO 分类</td><td style="padding:6px 8px;font-weight:600;">' + whoCategory + '</td></tr>';
+  html += '<tr><td style="padding:6px 8px;color:var(--text-secondary);">健康体重范围</td><td style="padding:6px 8px;font-weight:600;">' + healthyLow + ' — ' + healthyHigh + ' ' + (unit === 'metric' ? '公斤' : '磅') + '</td></tr>';
+  html += '<tr><td style="padding:6px 8px;color:var(--text-secondary);">身高</td><td style="padding:6px 8px;font-weight:600;">' + height + ' ' + (unit === 'metric' ? '厘米' : '英寸') + '</td></tr>';
+  html += '<tr><td style="padding:6px 8px;color:var(--text-secondary);">体重</td><td style="padding:6px 8px;font-weight:600;">' + weight + ' ' + (unit === 'metric' ? '公斤' : '磅') + '</td></tr>';
+  html += '</table>';
+
+  html += '</div>';
+  output.innerHTML = html;
+
+  stats.innerHTML = '<span>📊 BMI: ' + bmi + '</span><span>' + (unit === 'metric' ? '⚖️ 公制' : '⚖️ 英制') + '</span><span>🏷️ ' + bmiCategory.split('(')[0].trim() + '</span>';
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入身高和体重，选择单位制（公制或英制），点击「计算」即可获取 BMI 指数和健康评价。</p>
+  <p><strong>评价标准（中国标准）：</strong>偏瘦(&lt;18.5)、正常(18.5-24)、超重(24-28)、肥胖(≥28)。同时提供 WHO 国际标准参考。</p>
+  <p><strong>单位切换：</strong>公制（厘米/公斤）或英制（英寸/磅），自动换算。</p>
+  <p><strong>适用场景：</strong>健康管理、体重控制、体检自测、健身评估。</p>
+</div>

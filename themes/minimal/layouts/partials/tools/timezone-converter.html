@@ -1,0 +1,152 @@
+<!-- Timezone Converter Widget -->
+<div class="tool-widget">
+  <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end;">
+    <div style="flex:1;min-width:160px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">🌍 源时区</label>
+      <select id="tz-from" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-size:0.82rem;color:var(--text);cursor:pointer;"></select>
+    </div>
+    <div style="flex:1;min-width:160px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">🌍 目标时区</label>
+      <select id="tz-to" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-size:0.82rem;color:var(--text);cursor:pointer;"></select>
+    </div>
+  </div>
+
+  <div style="margin-bottom:14px;">
+    <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">🕐 日期时间</label>
+    <input type="datetime-local" id="tz-datetime" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:0.88rem;background:var(--bg);color:var(--text);">
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="convertTZ()">🔄 转换</button>
+    <button class="btn btn-outline btn-sm" onclick="setNowTZ()">🕐 当前时间</button>
+    <button class="btn btn-outline btn-sm" onclick="swapTZ()">↕️ 交换时区</button>
+    <button class="btn btn-outline btn-sm" id="tz-copy-btn" onclick="copyTZ()">📋 复制结果</button>
+  </div>
+
+  <pre class="output-area" id="tz-output"></pre>
+</div>
+
+<script>
+var _tzList = [
+  'UTC', 'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles',
+  'America/Toronto', 'America/Vancouver', 'America/Mexico_City', 'America/Sao_Paulo',
+  'America/Argentina/Buenos_Aires', 'Europe/London', 'Europe/Paris', 'Europe/Berlin',
+  'Europe/Madrid', 'Europe/Rome', 'Europe/Amsterdam', 'Europe/Stockholm', 'Europe/Moscow',
+  'Europe/Istanbul', 'Europe/Zurich', 'Europe/Helsinki', 'Africa/Cairo', 'Africa/Lagos',
+  'Africa/Johannesburg', 'Asia/Dubai', 'Asia/Shanghai', 'Asia/Tokyo', 'Asia/Seoul',
+  'Asia/Hong_Kong', 'Asia/Singapore', 'Asia/Taipei', 'Asia/Kolkata', 'Asia/Bangkok',
+  'Asia/Kuala_Lumpur', 'Asia/Jakarta', 'Asia/Manila', 'Asia/Karachi', 'Asia/Dhaka',
+  'Asia/Riyadh', 'Asia/Tehran', 'Asia/Jerusalem', 'Australia/Sydney', 'Australia/Melbourne',
+  'Australia/Perth', 'Pacific/Auckland', 'Pacific/Honolulu', 'Pacific/Fiji',
+  'America/Anchorage', 'America/Halifax', 'America/Phoenix'
+];
+
+function populateTZSelects() {
+  var fromEl = document.getElementById('tz-from');
+  var toEl = document.getElementById('tz-to');
+  var localTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  for (var i = 0; i < _tzList.length; i++) {
+    var tz = _tzList[i];
+    var label = tz.replace(/_/g, ' ').replace(/\//g, ' / ');
+    var opt1 = document.createElement('option');
+    opt1.value = tz; opt1.textContent = label;
+    if (tz === localTZ) opt1.selected = true;
+    fromEl.appendChild(opt1);
+
+    var opt2 = document.createElement('option');
+    opt2.value = tz; opt2.textContent = label;
+    if (tz === 'Asia/Shanghai') opt2.selected = true;
+    toEl.appendChild(opt2);
+  }
+}
+
+function convertTZ() {
+  var fromTZ = document.getElementById('tz-from').value;
+  var toTZ = document.getElementById('tz-to').value;
+  var dtVal = document.getElementById('tz-datetime').value;
+  var output = document.getElementById('tz-output');
+
+  if (!dtVal) { output.textContent = '⚠️ 请选择日期时间'; return; }
+
+  try {
+    var date = new Date(dtVal);
+    if (isNaN(date.getTime())) { output.textContent = '❌ 无效的日期时间'; return; }
+
+    // Format with Intl
+    var fromOpts = { timeZone: fromTZ, year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, weekday: 'long' };
+    var toOpts = { timeZone: toTZ, year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, weekday: 'long' };
+
+    var fromStr = new Intl.DateTimeFormat('zh-CN', fromOpts).format(date);
+    var toStr = new Intl.DateTimeFormat('zh-CN', toOpts).format(date);
+
+    // UTC time
+    var utcStr = date.toUTCString();
+
+    // Offset info
+    var fromOffset = -date.getTimezoneOffset() / 60; // local to UTC
+    // Get target offset via string parse
+    var toDateStr = new Intl.DateTimeFormat('zh-CN', { timeZone: toTZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(date);
+    var parts = toDateStr.split(/[/, :\s]+/);
+    var toDate = new Date(parts[2] + '-' + parts[0] + '-' + parts[1] + 'T' + parts[3] + ':' + parts[4] + ':' + parts[5]);
+    var toOffset = (toDate - date) / 3600000;
+
+    function offsetStr(offset) {
+      var sign = offset >= 0 ? '+' : '';
+      var hours = Math.floor(Math.abs(offset));
+      var mins = Math.round((Math.abs(offset) - hours) * 60);
+      return 'UTC' + sign + hours + (mins > 0 ? ':' + mins.toString().padStart(2,'0') : '');
+    }
+
+    output.textContent =
+      '🌍 源时区：' + fromTZ.replace(/_/g, ' ') + '  (' + offsetStr(fromOffset) + ')\n' +
+      '📅 ' + fromStr + '\n\n' +
+      '🌍 目标时区：' + toTZ.replace(/_/g, ' ') + '  (' + offsetStr(toOffset) + ')\n' +
+      '📅 ' + toStr + '\n\n' +
+      '🌐 UTC：' + utcStr + '\n' +
+      '🔄 时差：' + (toOffset >= 0 ? '+' : '') + toOffset.toFixed(1) + ' 小时';
+  } catch(e) {
+    output.textContent = '❌ 转换失败: ' + e.message;
+  }
+}
+
+function setNowTZ() {
+  var now = new Date();
+  var iso = now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0') + 'T' +
+    String(now.getHours()).padStart(2, '0') + ':' +
+    String(now.getMinutes()).padStart(2, '0');
+  document.getElementById('tz-datetime').value = iso;
+  convertTZ();
+}
+
+function swapTZ() {
+  var fromEl = document.getElementById('tz-from');
+  var toEl = document.getElementById('tz-to');
+  var tmp = fromEl.value;
+  fromEl.value = toEl.value;
+  toEl.value = tmp;
+  convertTZ();
+}
+
+function copyTZ() {
+  var text = document.getElementById('tz-output').textContent;
+  if (!text || text.indexOf('⚠️') === 0 || text.indexOf('❌') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('tz-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+populateTZSelects();
+setNowTZ();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择源时区和目标时区 → 设置日期时间 → 自动显示两地时间及时差。</p>
+  <p><strong>时区列表：</strong>包含全球 50+ 主流时区，支持 IANA 时区标识符。</p>
+  <p><strong>快捷功能：</strong>「当前时间」快速填入此刻，「交换时区」互换源和目标。</p>
+  <p><strong>适用场景：</strong>国际会议安排、跨国协作时间协调、旅行时差查询。</p>
+</div>

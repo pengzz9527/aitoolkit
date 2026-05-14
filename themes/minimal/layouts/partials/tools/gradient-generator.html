@@ -1,0 +1,35 @@
+<!-- CSS 渐变生成器 Widget -->
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">渐变类型</label>
+<select id="gg-type" style="width:100%;padding:8px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.85rem;margin-bottom:12px;" onchange="ggGenerate()">
+  <option value="linear">线性渐变 (Linear)</option>
+  <option value="radial">径向渐变 (Radial)</option>
+</select>
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">颜色 1</label>
+<input type="color" id="gg-c1" value="#6366f1" style="width:100%;height:40px;border:none;padding:0;cursor:pointer;margin-bottom:12px;" oninput="ggGenerate()">
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">颜色 2</label>
+<input type="color" id="gg-c2" value="#ec4899" style="width:100%;height:40px;border:none;padding:0;cursor:pointer;margin-bottom:12px;" oninput="ggGenerate()">
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">角度 / 形状</label>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+  <input type="range" id="gg-angle" min="0" max="360" value="135" style="flex:1;accent-color:var(--primary);" oninput="document.getElementById('gg-angle-label').textContent=this.value+'°';ggGenerate()">
+  <span id="gg-angle-label" style="font-size:0.85rem;font-weight:600;min-width:40px;text-align:center;">135°</span>
+</div>
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" id="gg-copy-btn" onclick="ggCopyCSS()">📋 复制 CSS</button>
+</div>
+<div class="output-area" id="gg-output" style="text-align:center;height:120px;border-radius:8px;"></div>
+<div class="stats-bar" id="gg-stats"></div>
+<script>
+function ggGenerate(){var type=document.getElementById('gg-type').value;var c1=document.getElementById('gg-c1').value;var c2=document.getElementById('gg-c2').value;var angle=parseInt(document.getElementById('gg-angle').value);
+var css=type==='linear'?'background: linear-gradient('+angle+'deg, '+c1+', '+c2+');':'background: radial-gradient(circle, '+c1+', '+c2+');';
+document.getElementById('gg-output').style.cssText=css+'height:120px;border-radius:8px;';
+document.getElementById('gg-stats').innerHTML='<span>🎨 '+css+'</span>';}
+function ggCopyCSS(){var type=document.getElementById('gg-type').value;var c1=document.getElementById('gg-c1').value;var c2=document.getElementById('gg-c2').value;var angle=parseInt(document.getElementById('gg-angle').value);
+var css=type==='linear'?'background: linear-gradient('+angle+'deg, '+c1+', '+c2+');':'background: radial-gradient(circle, '+c1+', '+c2+');';
+navigator.clipboard.writeText(css).then(function(){var b=document.getElementById('gg-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制 CSS';},2000);}).catch(function(){});}
+ggGenerate();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择渐变类型 → 选取颜色 → 调整角度 → 实时预览并复制 CSS 代码。</p>
+  <p><strong>支持类型：</strong>线性渐变 (linear-gradient) 和径向渐变 (radial-gradient)。</p>
+  <p><strong>适用场景：</strong>按钮背景、页面背景、卡片装饰等 UI 设计。</p>
+</div>

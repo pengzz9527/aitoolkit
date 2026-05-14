@@ -1,0 +1,158 @@
+<!-- Number Base Converter Widget -->
+<div class="tool-widget">
+  <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end;">
+    <div style="flex:1;min-width:180px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">🔢 输入数字</label>
+      <input type="text" id="nbc-input" class="tool-textarea" style="font-family:var(--font-mono);min-height:auto;padding:10px 14px;" value="255" placeholder="输入数字...">
+    </div>
+    <div style="flex:0 0 130px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">⬅️ 源进制</label>
+      <select id="nbc-from-base" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font-mono);font-size:0.85rem;color:var(--text);cursor:pointer;">
+        <option value="2">二进制 (2)</option>
+        <option value="8">八进制 (8)</option>
+        <option value="10" selected>十进制 (10)</option>
+        <option value="16">十六进制 (16)</option>
+        <option value="36">三十六进制 (36)</option>
+      </select>
+    </div>
+    <div style="flex:0 0 130px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">➡️ 目标进制</label>
+      <select id="nbc-to-base" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font-mono);font-size:0.85rem;color:var(--text);cursor:pointer;">
+        <option value="2">二进制 (2)</option>
+        <option value="8">八进制 (8)</option>
+        <option value="10">十进制 (10)</option>
+        <option value="16" selected>十六进制 (16)</option>
+        <option value="36">三十六进制 (36)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="convertNBC()">🔄 转换</button>
+    <button class="btn btn-outline btn-sm" onclick="swapNBC()">↕️ 交换进制</button>
+    <button class="btn btn-outline btn-sm" onclick="clearNBC()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="nbc-copy-btn" onclick="copyNBC()">📋 复制结果</button>
+  </div>
+
+  <div class="output-area" id="nbc-output" style="font-family:var(--font-mono);text-align:center;font-size:1.1rem;word-break:break-all;">FF</div>
+  <div class="stats-bar" id="nbc-stats">
+    <span>🔤 源: 十进制 (10)</span>
+    <span>🎯 结果: 十六进制 (16)</span>
+  </div>
+
+  <div style="margin-top:14px;padding:12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);">
+    <div style="font-size:0.82rem;font-weight:600;margin-bottom:8px;">📊 快速转换（2-36进制）</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;font-size:0.76rem;font-family:var(--font-mono);" id="nbc-quick"></div>
+  </div>
+</div>
+
+<script>
+function convertNBC() {
+  var input = document.getElementById('nbc-input').value.trim();
+  var fromBase = parseInt(document.getElementById('nbc-from-base').value);
+  var toBase = parseInt(document.getElementById('nbc-to-base').value);
+  var output = document.getElementById('nbc-output');
+  var stats = document.getElementById('nbc-stats');
+
+  if (!input) {
+    output.textContent = '—';
+    stats.innerHTML = '<span>⬅️ ' + getBaseName(fromBase) + '</span><span>➡️ ' + getBaseName(toBase) + '</span>';
+    renderNBCQuick('');
+    return;
+  }
+
+  // Parse — handle common prefixes
+  var clean = input;
+  var prefixes = {2:/^0[bB]/, 8:/^0[oO]/, 16:/^0[xX]/};
+  if (prefixes[fromBase]) clean = clean.replace(prefixes[fromBase], '');
+
+  // Validate digits for source base
+  var valid = true;
+  for (var i = 0; i < clean.length; i++) {
+    var c = clean[i];
+    var digit = parseInt(c, fromBase);
+    if (isNaN(digit) || digit >= fromBase) { valid = false; break; }
+  }
+
+  if (!valid) {
+    output.textContent = '❌ 输入包含无效字符（' + getBaseName(fromBase) + ' 允许: 0-' + Math.min(fromBase-1,9) + (fromBase > 10 ? ' and a-' + String.fromCharCode(86 + fromBase) : '') + '）';
+    stats.innerHTML = '';
+    return;
+  }
+
+  var decimalValue = parseInt(clean, fromBase);
+  if (isNaN(decimalValue) || decimalValue > Number.MAX_SAFE_INTEGER) {
+    output.textContent = '❌ 数值超出 JavaScript 安全范围';
+    stats.innerHTML = '';
+    return;
+  }
+
+  var result = decimalValue.toString(toBase).toUpperCase();
+  output.textContent = result;
+
+  stats.innerHTML = '<span>⬅️ 源: ' + getBaseName(fromBase) + '</span>' +
+    '<span>➡️ 结果: ' + getBaseName(toBase) + '</span>' +
+    '<span>🔢 十进制值: ' + decimalValue + '</span>';
+
+  renderNBCQuick(decimalValue);
+}
+
+function getBaseName(b) {
+  var names = {
+    2: '二进制 (2)', 3: '三进制 (3)', 4: '四进制 (4)', 5: '五进制 (5)',
+    6: '六进制 (6)', 7: '七进制 (7)', 8: '八进制 (8)', 9: '九进制 (9)',
+    10: '十进制 (10)', 16: '十六进制 (16)', 36: '三十六进制 (36)'
+  };
+  return names[b] || '进制 (' + b + ')';
+}
+
+function renderNBCQuick(dec) {
+  var el = document.getElementById('nbc-quick');
+  if (dec === '' || isNaN(dec)) {
+    el.innerHTML = '<span style="color:var(--text-secondary);grid-column:1/-1;text-align:center;">输入数字后显示快速对照</span>';
+    return;
+  }
+  var bases = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36];
+  var html = '';
+  for (var i = 0; i < bases.length; i++) {
+    html += '<span><strong>' + bases[i] + ':</strong> ' + dec.toString(bases[i]).toUpperCase() + '</span>';
+  }
+  el.innerHTML = html;
+}
+
+function swapNBC() {
+  var fromEl = document.getElementById('nbc-from-base');
+  var toEl = document.getElementById('nbc-to-base');
+  var tmp = fromEl.value;
+  fromEl.value = toEl.value;
+  toEl.value = tmp;
+  convertNBC();
+}
+
+function clearNBC() {
+  document.getElementById('nbc-input').value = '';
+  convertNBC();
+}
+
+function copyNBC() {
+  var text = document.getElementById('nbc-output').textContent;
+  if (!text || text.indexOf('❌') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('nbc-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+document.getElementById('nbc-input').addEventListener('input', convertNBC);
+document.getElementById('nbc-from-base').addEventListener('change', convertNBC);
+document.getElementById('nbc-to-base').addEventListener('change', convertNBC);
+convertNBC();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入数字 → 选择源进制和目标进制 → 实时转换。支持 2 到 36 进制任意互转。</p>
+  <p><strong>支持进制：</strong>二进制(2) 到 三十六进制(36)，使用 0-9 和 A-Z 表示数字。</p>
+  <p><strong>快捷功能：</strong>点击「交换进制」可互换源和目标进制，快速对照显示所有进制的转换结果。</p>
+  <p><strong>注意：</strong>输入支持常见前缀（0b 二进制、0o 八进制、0x 十六进制），会自定识别。</p>
+</div>

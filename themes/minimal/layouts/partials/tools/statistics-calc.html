@@ -1,0 +1,160 @@
+<!-- Statistics Calculator Widget -->
+<div class="tool-widget">
+  <div style="margin-bottom:14px;">
+    <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">📊 输入数字列表</label>
+    <textarea id="stats-input" class="tool-textarea" rows="4" placeholder="请输入数字，用逗号、空格或换行分隔...">23, 45, 67, 12, 89, 34, 56, 78, 90, 11</textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="calcStats()">📊 计算统计</button>
+    <button class="btn btn-outline btn-sm" onclick="clearStats()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="stats-copy-btn" onclick="copyStats()">📋 复制结果</button>
+  </div>
+
+  <div id="stats-results" style="margin-top:14px;">
+    <div class="stats-bar" style="margin-top:0;">
+      <span><strong>📏 数量:</strong> <span id="stats-count">10</span></span>
+      <span><strong>📊 总和:</strong> <span id="stats-sum">525</span></span>
+      <span><strong>🎯 平均值:</strong> <span id="stats-mean">52.50</span></span>
+      <span><strong>🏅 中位数:</strong> <span id="stats-median">55.00</span></span>
+    </div>
+    <div class="stats-bar" style="margin-top:8px;">
+      <span><strong>🔥 众数:</strong> <span id="stats-mode">—</span></span>
+      <span><strong>📈 标准差:</strong> <span id="stats-stddev">28.56</span></span>
+      <span><strong>📉 方差:</strong> <span id="stats-variance">815.45</span></span>
+      <span><strong>⬆️ 最大值:</strong> <span id="stats-max">90</span></span>
+      <span><strong>⬇️ 最小值:</strong> <span id="stats-min">11</span></span>
+    </div>
+    <div class="stats-bar" style="margin-top:8px;">
+      <span><strong>📐 范围:</strong> <span id="stats-range">79</span></span>
+      <span><strong>📊 四分位距:</strong> <span id="stats-iqr">—</span></span>
+    </div>
+  </div>
+</div>
+
+<script>
+function calcStats() {
+  var input = document.getElementById('stats-input').value.trim();
+  if (!input) { clearStatsDisplay(); return; }
+
+  // Parse numbers — split by comma, space, or newline
+  var parts = input.split(/[\s,，\n]+/).filter(function(s) { return s.trim() !== ''; });
+  var nums = [];
+  for (var i = 0; i < parts.length; i++) {
+    var n = parseFloat(parts[i].trim());
+    if (!isNaN(n)) nums.push(n);
+  }
+
+  if (nums.length === 0) { clearStatsDisplay(); return; }
+
+  // Sort for calculations
+  var sorted = nums.slice().sort(function(a,b) { return a - b; });
+  var n = sorted.length;
+
+  // Sum
+  var sum = 0;
+  for (var i = 0; i < n; i++) sum += sorted[i];
+
+  // Mean
+  var mean = sum / n;
+
+  // Median
+  var median;
+  if (n % 2 === 1) {
+    median = sorted[Math.floor(n / 2)];
+  } else {
+    median = (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
+  }
+
+  // Mode
+  var freq = {};
+  for (var i = 0; i < n; i++) {
+    var key = sorted[i].toString();
+    freq[key] = (freq[key] || 0) + 1;
+  }
+  var maxFreq = 0;
+  var modeVals = [];
+  for (var key in freq) {
+    if (freq[key] > maxFreq) { maxFreq = freq[key]; modeVals = [parseFloat(key)]; }
+    else if (freq[key] === maxFreq) { modeVals.push(parseFloat(key)); }
+  }
+  var modeStr = maxFreq <= 1 ? '无众数' : modeVals.map(function(v) { return v.toFixed(2); }).join(', ');
+
+  // Variance & Standard Deviation
+  var varianceSum = 0;
+  for (var i = 0; i < n; i++) varianceSum += Math.pow(sorted[i] - mean, 2);
+  var variance = varianceSum / n;
+  var stddev = Math.sqrt(variance);
+
+  // Min, Max, Range
+  var minVal = sorted[0];
+  var maxVal = sorted[n - 1];
+  var range = maxVal - minVal;
+
+  // IQR (Interquartile Range)
+  var q1, q3;
+  if (n % 2 === 1) {
+    var lower = sorted.slice(0, Math.floor(n / 2));
+    var upper = sorted.slice(Math.floor(n / 2) + 1);
+  } else {
+    var lower = sorted.slice(0, n / 2);
+    var upper = sorted.slice(n / 2);
+  }
+  var lN = lower.length;
+  if (lN % 2 === 1) { q1 = lower[Math.floor(lN / 2)]; }
+  else { q1 = (lower[lN / 2 - 1] + lower[lN / 2]) / 2; }
+  var uN = upper.length;
+  if (uN % 2 === 1) { q3 = upper[Math.floor(uN / 2)]; }
+  else { q3 = (upper[uN / 2 - 1] + upper[uN / 2]) / 2; }
+  var iqr = q3 - q1;
+
+  function fmt(v) { return typeof v === 'number' ? v.toFixed(2) : v; }
+
+  document.getElementById('stats-count').textContent = n;
+  document.getElementById('stats-sum').textContent = fmt(sum);
+  document.getElementById('stats-mean').textContent = fmt(mean);
+  document.getElementById('stats-median').textContent = fmt(median);
+  document.getElementById('stats-mode').textContent = modeStr;
+  document.getElementById('stats-stddev').textContent = fmt(stddev);
+  document.getElementById('stats-variance').textContent = fmt(variance);
+  document.getElementById('stats-max').textContent = fmt(maxVal);
+  document.getElementById('stats-min').textContent = fmt(minVal);
+  document.getElementById('stats-range').textContent = fmt(range);
+  document.getElementById('stats-iqr').textContent = fmt(iqr);
+}
+
+function clearStatsDisplay() {
+  var ids = ['stats-count','stats-sum','stats-mean','stats-median','stats-mode','stats-stddev','stats-variance','stats-max','stats-min','stats-range','stats-iqr'];
+  for (var i = 0; i < ids.length; i++) document.getElementById(ids[i]).textContent = '—';
+}
+
+function clearStats() {
+  document.getElementById('stats-input').value = '';
+  clearStatsDisplay();
+}
+
+function copyStats() {
+  var lines = [];
+  var labels = ['数量','总和','平均值','中位数','众数','标准差','方差','最大值','最小值','范围','四分位距'];
+  var ids = ['stats-count','stats-sum','stats-mean','stats-median','stats-mode','stats-stddev','stats-variance','stats-max','stats-min','stats-range','stats-iqr'];
+  for (var i = 0; i < ids.length; i++) {
+    lines.push(labels[i] + ': ' + document.getElementById(ids[i]).textContent);
+  }
+  var text = '📊 统计结果\n' + lines.join('\n');
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('stats-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+document.getElementById('stats-input').addEventListener('input', calcStats);
+calcStats();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入数字列表（用逗号、空格或换行分隔），自动计算基础统计量。</p>
+  <p><strong>统计指标：</strong>数量、总和、平均值、中位数、众数、标准差（总体）、方差（总体）、最大值、最小值、范围、四分位距。</p>
+  <p><strong>注意：</strong>众数仅在有重复值时显示；非数字内容会被自动跳过。</p>
+  <p><strong>适用场景：</strong>数据分析、考试成绩统计、实验数据处理、报表生成。</p>
+</div>

@@ -1,0 +1,121 @@
+<!-- 子网计算 Widget -->
+<div class="tool-widget">
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px;">
+    <div style="flex:1;min-width:160px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">🌐 IP 地址</label>
+      <input type="text" id="sc-ip" class="tool-textarea" style="min-height:auto;padding:9px 14px;font-family:var(--font);" value="192.168.1.0" placeholder="例如: 192.168.1.0">
+    </div>
+    <div style="flex:0 0 100px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">CIDR</label>
+      <select id="sc-cidr" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;">
+        <option value="8">8 (255.0.0.0)</option>
+        <option value="16">16 (255.255.0.0)</option>
+        <option value="24" selected>24 (255.255.255.0)</option>
+        <option value="25">25 (255.255.255.128)</option>
+        <option value="26">26 (255.255.255.192)</option>
+        <option value="27">27 (255.255.255.224)</option>
+        <option value="28">28 (255.255.255.240)</option>
+        <option value="29">29 (255.255.255.248)</option>
+        <option value="30">30 (255.255.255.252)</option>
+        <option value="31">31 (255.255.255.254)</option>
+        <option value="32">32 (255.255.255.255)</option>
+      </select>
+    </div>
+    <div>
+      <button class="btn" onclick="calcSubnet()" style="padding:9px 20px;">⚡ 计算</button>
+    </div>
+  </div>
+
+  <div class="output-area" id="sc-output"></div>
+  <div class="stats-bar" id="sc-stats"></div>
+</div>
+
+<script>
+function ipToInt(ip) {
+  var parts = ip.split('.');
+  return ((parseInt(parts[0]) || 0) << 24) + ((parseInt(parts[1]) || 0) << 16) + ((parseInt(parts[2]) || 0) << 8) + (parseInt(parts[3]) || 0);
+}
+
+function intToIp(num) {
+  return ((num >>> 24) & 255) + '.' + ((num >>> 16) & 255) + '.' + ((num >>> 8) & 255) + '.' + (num & 255);
+}
+
+function calcSubnet() {
+  var ipStr = document.getElementById('sc-ip').value.trim();
+  var cidr = parseInt(document.getElementById('sc-cidr').value);
+  var output = document.getElementById('sc-output');
+  var stats = document.getElementById('sc-stats');
+
+  // Validate IP
+  var ipParts = ipStr.split('.');
+  if (ipParts.length !== 4) { output.textContent = '⚠️ 请输入有效的 IPv4 地址（如 192.168.1.0）'; stats.textContent = ''; return; }
+  for (var i = 0; i < 4; i++) {
+    var n = parseInt(ipParts[i]);
+    if (isNaN(n) || n < 0 || n > 255) { output.textContent = '⚠️ IP 地址格式无效'; stats.textContent = ''; return; }
+  }
+
+  var ipInt = ipToInt(ipStr);
+  var mask = ~((1 << (32 - cidr)) - 1);
+  var network = ipInt & mask;
+  var broadcast = network | (~mask >>> 0);
+
+  // Calculate subnet details
+  var wildcard = (~mask >>> 0);
+  var totalHosts = Math.pow(2, 32 - cidr);
+  var usableHosts = totalHosts - 2;
+  if (cidr >= 31) usableHosts = totalHosts; // /31 and /32 special cases
+
+  var netIp = intToIp(network);
+  var bcastIp = intToIp(broadcast);
+  var maskIp = intToIp(mask);
+  var wildcardIp = intToIp(wildcard);
+
+  var firstHost = cidr >= 31 ? '-' : intToIp(network + 1);
+  var lastHost = cidr >= 31 ? '-' : intToIp(broadcast - 1);
+
+  var hexMask = '0x' + ((mask >>> 24) & 255).toString(16).toUpperCase() +
+    ((mask >>> 16) & 255).toString(16).toUpperCase().padStart(2,'0') +
+    ((mask >>> 8) & 255).toString(16).toUpperCase().padStart(2,'0') +
+    (mask & 255).toString(16).toUpperCase().padStart(2,'0');
+
+  var binaryIp = [];
+  for (var b = 0; b < 4; b++) {
+    binaryIp.push(('00000000' + parseInt(ipParts[b]).toString(2)).slice(-8));
+  }
+
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:0.82rem;">';
+  html += '<thead><tr style="background:var(--primary-light);"><th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:160px;">属性</th><th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);">值</th></tr></thead><tbody>';
+
+  var items = [
+    {label:'IP 地址',value:ipStr},
+    {label:'子网掩码',value:maskIp + ' (' + cidr + ')'},
+    {label:'通配符掩码',value:wildcardIp},
+    {label:'十六进制掩码',value:hexMask},
+    {label:'二进制 IP',value:binaryIp.join('.')},
+    {label:'网络地址',value:netIp,highlight:true},
+    {label:'广播地址',value:bcastIp,highlight:true},
+    {label:'可用主机范围',value:firstHost + ' — ' + lastHost},
+    {label:'可用主机数',value:usableHosts < 0 ? 0 : usableHosts},
+    {label:'总地址数',value:totalHosts}
+  ];
+
+  items.forEach(function(item, idx) {
+    var bg = idx % 2 === 0 ? 'background:var(--bg-card);' : 'background:var(--bg);';
+    var valStyle = item.highlight ? 'font-weight:700;color:var(--primary);' : '';
+    html += '<tr style="' + bg + '">';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;">' + item.label + '</td>';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);font-family:monospace;font-size:0.8rem;' + valStyle + '">' + item.value + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  output.innerHTML = html;
+  stats.innerHTML = '<span>🌐 ' + netIp + '/' + cidr + '</span><span>📋 CIDR: /' + cidr + '</span><span>🖥️ 可用主机: ' + usableHosts + '</span>';
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入 IPv4 地址和选择 CIDR 前缀长度，点击「计算」即可获取子网详细信息。</p>
+  <p><strong>计算结果：</strong>网络地址、广播地址、子网掩码、通配符掩码、可用主机范围、地址数统计。</p>
+  <p><strong>特殊说明：</strong>/31 和 /32 子网无有效可用主机；子网计算基于标准 CIDR 规则。</p>
+  <p><strong>适用场景：</strong>网络规划、IP 地址分配、子网划分、网络工程师日常计算。</p>
+</div>

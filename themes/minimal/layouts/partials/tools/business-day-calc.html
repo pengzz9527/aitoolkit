@@ -1,0 +1,193 @@
+<!-- Business Day Calculator Widget -->
+<div class="tool-widget">
+  <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end;">
+    <div style="flex:1;min-width:200px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">📅 开始日期</label>
+      <input type="date" id="bday-start" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:0.88rem;background:var(--bg);color:var(--text);">
+    </div>
+    <div style="flex:1;min-width:200px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">📅 结束日期</label>
+      <input type="date" id="bday-end" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:0.88rem;background:var(--bg);color:var(--text);">
+    </div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;align-items:center;">
+    <label style="font-size:0.82rem;font-weight:600;">🚫 排除周末：</label>
+    <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;cursor:pointer;">
+      <input type="checkbox" id="bday-exclude-sat" checked onchange="calcBday()"> 星期六
+    </label>
+    <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;cursor:pointer;">
+      <input type="checkbox" id="bday-exclude-sun" checked onchange="calcBday()"> 星期日
+    </label>
+    <label style="display:flex;align-items:center;gap:6px;font-size:0.82rem;cursor:pointer;">
+      <input type="checkbox" id="bday-include-end" checked onchange="calcBday()"> 包含结束日
+    </label>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="calcBday()">📊 计算工作日</button>
+    <button class="btn btn-outline btn-sm" onclick="setBdayThisMonth()">📅 本月</button>
+    <button class="btn btn-outline btn-sm" onclick="setBdayThisYear()">📅 今年</button>
+    <button class="btn btn-outline btn-sm" id="bday-copy-btn" onclick="copyBday()">📋 复制结果</button>
+  </div>
+
+  <div id="bday-results" style="margin-top:14px;">
+    <div class="stats-bar" style="margin-top:0;">
+      <span><strong>💼 工作日:</strong> <span id="bday-workdays" style="font-size:1.2rem;color:var(--primary);font-weight:700;">—</span></span>
+      <span><strong>📅 总天数:</strong> <span id="bday-total-days">—</span></span>
+      <span><strong>🎉 周末:</strong> <span id="bday-weekends">—</span></span>
+      <span><strong>📊 工作日占比:</strong> <span id="bday-ratio">—</span></span>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;padding:12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);">
+    <div style="font-size:0.82rem;font-weight:600;margin-bottom:8px;">📋 工作日月历预览</div>
+    <div style="max-height:200px;overflow-y:auto;font-size:0.78rem;font-family:var(--font-mono);" id="bday-preview"></div>
+  </div>
+</div>
+
+<script>
+function calcBday() {
+  var startVal = document.getElementById('bday-start').value;
+  var endVal = document.getElementById('bday-end').value;
+  var excludeSat = document.getElementById('bday-exclude-sat').checked;
+  var excludeSun = document.getElementById('bday-exclude-sun').checked;
+  var includeEnd = document.getElementById('bday-include-end').checked;
+
+  if (!startVal || !endVal) { clearBdayDisplay(); return; }
+
+  var start = new Date(startVal);
+  var end = new Date(endVal);
+  start.setHours(0,0,0,0);
+  end.setHours(0,0,0,0);
+
+  if (start > end) { clearBdayDisplay(); return; }
+
+  var totalDays = 0;
+  var workDays = 0;
+  var weekendDays = 0;
+  var current = new Date(start);
+  var previewDates = [];
+  var currentMonth = -1;
+
+  while (current <= end) {
+    var dayOfWeek = current.getDay(); // 0=Sun, 6=Sat
+    var isWeekend = (excludeSat && dayOfWeek === 6) || (excludeSun && dayOfWeek === 0);
+
+    if (!isWeekend) {
+      workDays++;
+    } else {
+      weekendDays++;
+    }
+    totalDays++;
+
+    // Preview: show first few months
+    var month = current.getMonth();
+    if (previewDates.length < 100 || month !== currentMonth) {
+      var d = new Date(current);
+      previewDates.push({ date: d, isWeekend: isWeekend, dayOfWeek: dayOfWeek });
+    }
+    if (month !== currentMonth) currentMonth = month;
+
+    current.setDate(current.getDate() + 1);
+    if (!includeEnd && current > end) break;
+  }
+
+  if (!includeEnd) {
+    totalDays--;
+    var lastDay = end.getDay();
+    var isLastWeekend = (excludeSat && lastDay === 6) || (excludeSun && lastDay === 0);
+    if (isLastWeekend) weekendDays--;
+    else workDays--;
+  }
+
+  document.getElementById('bday-workdays').textContent = workDays;
+  document.getElementById('bday-total-days').textContent = totalDays;
+  document.getElementById('bday-weekends').textContent = weekendDays;
+  document.getElementById('bday-ratio').textContent = totalDays > 0 ? (workDays / totalDays * 100).toFixed(1) + '%' : '—';
+
+  // Render preview
+  var dayNames = ['日', '一', '二', '三', '四', '五', '六'];
+  var html = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-weight:600;padding:4px 0;border-bottom:1px solid var(--border);text-align:center;">' +
+    '<span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>';
+
+  var prevMonth = -1;
+  for (var i = 0; i < previewDates.length; i++) {
+    var p = previewDates[i];
+    var monthChanged = p.date.getMonth() !== prevMonth;
+    if (monthChanged && i > 0) {
+      html += '<div style="grid-column:1/-1;font-size:0.72rem;color:var(--text-secondary);padding:4px 0 2px;border-top:1px solid var(--border);margin-top:4px;">' +
+        (p.date.getFullYear()) + '年' + (p.date.getMonth() + 1) + '月</div>';
+    }
+    prevMonth = p.date.getMonth();
+
+    if (i === 0) {
+      // Add empty cells for first day offset
+      var firstDay = p.date.getDay();
+      for (var j = 0; j < firstDay; j++) {
+        html += '<span></span>';
+      }
+    }
+
+    var cls = p.isWeekend ? ' style="color:#ef4444;opacity:0.5;"' : '';
+    html += '<span' + cls + '>' + p.date.getDate() + '</span>';
+
+    if (p.date.getDay() === 6) {
+      html += '</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;">';
+    }
+  }
+
+  document.getElementById('bday-preview').innerHTML = html;
+}
+
+function clearBdayDisplay() {
+  var ids = ['bday-workdays','bday-total-days','bday-weekends','bday-ratio'];
+  for (var i = 0; i < ids.length; i++) document.getElementById(ids[i]).textContent = '—';
+  document.getElementById('bday-preview').innerHTML = '';
+}
+
+function setBdayThisMonth() {
+  var now = new Date();
+  var start = new Date(now.getFullYear(), now.getMonth(), 1);
+  var end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  document.getElementById('bday-start').value = toDateStr(start);
+  document.getElementById('bday-end').value = toDateStr(end);
+  calcBday();
+}
+
+function setBdayThisYear() {
+  var now = new Date();
+  var start = new Date(now.getFullYear(), 0, 1);
+  var end = new Date(now.getFullYear(), 11, 31);
+  document.getElementById('bday-start').value = toDateStr(start);
+  document.getElementById('bday-end').value = toDateStr(end);
+  calcBday();
+}
+
+function toDateStr(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function copyBday() {
+  var text = '📊 工作日计算结果\n' +
+    '💼 工作日: ' + document.getElementById('bday-workdays').textContent + '\n' +
+    '📅 总天数: ' + document.getElementById('bday-total-days').textContent + '\n' +
+    '🎉 周末: ' + document.getElementById('bday-weekends').textContent + '\n' +
+    '📊 工作日占比: ' + document.getElementById('bday-ratio').textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('bday-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+// Set defaults: current month
+setBdayThisMonth();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择开始和结束日期 → 自动计算两个日期之间的工作日数量。</p>
+  <p><strong>自定义选项：</strong>可以选择排除星期六和/或星期日，以及是否包含结束日。</p>
+  <p><strong>日历预览：</strong>显示日期范围内的日历简图，红色标记为周末。</p>
+  <p><strong>适用场景：</strong>项目管理工期计算、请假天数规划、工时报表统计、合同履约日期计算。</p>
+</div>

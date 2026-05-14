@@ -1,0 +1,102 @@
+<!-- XML 格式化/压缩 Widget -->
+<div class="mode-toggle" id="xml-format-mode">
+  <button class="btn btn-sm active" id="xml-format-btn" onclick="setXmlMode('format')">📐 格式化</button>
+  <button class="btn btn-sm btn-outline" id="xml-compress-btn" onclick="setXmlMode('compress')">🗜️ 压缩</button>
+</div>
+<textarea id="xml-input" class="tool-textarea" placeholder="在此粘贴 XML 数据..." rows="8">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;root&gt;
+  &lt;items&gt;
+    &lt;item id="1"&gt;
+      &lt;name&gt;AI Toolkit&lt;/name&gt;
+      &lt;type&gt;dev&lt;/type&gt;
+    &lt;/item&gt;
+  &lt;/items&gt;
+&lt;/root&gt;</textarea>
+<div class="btn-row">
+  <button class="btn" onclick="processXml()">⚡ 执行</button>
+  <button class="btn btn-outline btn-sm" onclick="clearXml()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="xml-copy-btn" onclick="copyXml()">📋 复制</button>
+</div>
+<pre class="output-area" id="xml-output"></pre>
+<div class="stats-bar" id="xml-stats"></div>
+<script>
+var _xmlMode = 'format';
+
+function setXmlMode(mode){
+  _xmlMode = mode;
+  document.getElementById('xml-format-btn').className = mode==='format'?'btn btn-sm active':'btn btn-sm btn-outline';
+  document.getElementById('xml-compress-btn').className = mode==='compress'?'btn btn-sm active':'btn btn-sm btn-outline';
+  processXml();
+}
+
+function _xmlFormat(xml){
+  var formatted = '';
+  var indent = 0;
+  var pad = '  ';
+  xml = xml.replace(/>\s*</g,'><').replace(/></g,'>\n<');
+  var lines = xml.split(String.fromCharCode(10));
+  for(var i=0;i<lines.length;i++){
+    var line = lines[i].trim();
+    if(!line) continue;
+    if(line.indexOf('</')===0){
+      indent--;
+      formatted += pad.repeat(Math.max(0,indent)) + line + '\n';
+    } else if(line.indexOf('<![CDATA[')===0 || line.indexOf('<?')===0){
+      formatted += pad.repeat(indent) + line + '\n';
+    } else if(line.indexOf('<')===0 && line.indexOf('</')!==0 && line.lastIndexOf('/')!==line.length-1 && line.indexOf('/>')<0){
+      formatted += pad.repeat(indent) + line + '\n';
+      indent++;
+    } else if(line.indexOf('<')===0 && (line.lastIndexOf('/')===line.length-1||line.indexOf('/>')>=0)){
+      formatted += pad.repeat(indent) + line + '\n';
+    } else {
+      formatted += pad.repeat(indent) + line + '\n';
+    }
+  }
+  return formatted.trim();
+}
+
+function processXml(){
+  var input = document.getElementById('xml-input').value.trim();
+  var out = document.getElementById('xml-output');
+  var stats = document.getElementById('xml-stats');
+  if(!input){out.textContent='⚠️ 请输入 XML 数据';stats.textContent='';return;}
+  try {
+    var parser = new DOMParser();
+    var dom = parser.parseFromString(input,'text/xml');
+    var parseErr = dom.querySelector('parsererror');
+    if(parseErr){throw new Error(parseErr.textContent);}
+    var serializer = new XMLSerializer();
+    var cleanXml = serializer.serializeToString(dom);
+    if(_xmlMode==='format'){
+      out.textContent = _xmlFormat(cleanXml);
+    } else {
+      out.textContent = cleanXml.replace(/>\s*</g,'><');
+    }
+    var lines = out.textContent.split(String.fromCharCode(10)).length;
+    stats.innerHTML = '<span>✅ 有效 XML</span><span>📏 '+out.textContent.length+' 字符</span><span>📃 '+lines+' 行</span>';
+  } catch(e){
+    out.textContent = '❌ XML 解析错误:'+String.fromCharCode(10)+e.message;
+    stats.innerHTML = '<span style="color:#dc2626">❌ 无效 XML</span>';
+  }
+}
+
+function clearXml(){
+  document.getElementById('xml-input').value='';
+  document.getElementById('xml-output').textContent='';
+  document.getElementById('xml-stats').textContent='';
+}
+
+function copyXml(){
+  var text=document.getElementById('xml-output').textContent;
+  if(!text||text.indexOf('⚠️')===0||text.indexOf('❌')===0)return;
+  navigator.clipboard.writeText(text).then(function(){var b=document.getElementById('xml-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制';},2000);}).catch(function(){});
+}
+
+document.getElementById('xml-input').addEventListener('input',processXml);
+processXml();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>粘贴 XML 数据，切换「格式化」美化缩进或「压缩」去除空白。</p>
+  <p><strong>适用场景：</strong>XML 配置文件维护、API 响应调试、数据交换格式整理。</p>
+  <p><strong>隐私说明：</strong>所有数据仅在浏览器本地处理，不会上传到任何服务器。</p>
+</div>

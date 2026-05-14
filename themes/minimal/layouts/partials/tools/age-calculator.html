@@ -1,0 +1,168 @@
+<!-- Age Calculator Widget -->
+<div class="tool-widget">
+  <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end;">
+    <div style="flex:1;min-width:200px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">🎂 出生日期</label>
+      <input type="date" id="age-birth" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:0.88rem;background:var(--bg);color:var(--text);">
+    </div>
+    <div style="flex:1;min-width:200px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">📅 截止日期</label>
+      <input type="date" id="age-as-of" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:0.88rem;background:var(--bg);color:var(--text);">
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="calcAge()">🎂 计算年龄</button>
+    <button class="btn btn-outline btn-sm" onclick="setAgeToday()">📅 今天</button>
+    <button class="btn btn-outline btn-sm" onclick="setAgeExample()">📝 示例</button>
+    <button class="btn btn-outline btn-sm" id="age-copy-btn" onclick="copyAge()">📋 复制结果</button>
+  </div>
+
+  <div id="age-results" style="margin-top:14px;">
+    <div class="stats-bar" style="margin-top:0;">
+      <span><strong>🎂 年龄:</strong> <span id="age-years" style="font-size:1.3rem;color:var(--primary);font-weight:800;">—</span> 岁</span>
+      <span><strong>📏 精确:</strong> <span id="age-precise">—</span></span>
+    </div>
+    <div class="stats-bar" style="margin-top:8px;">
+      <span><strong>📅 总天数:</strong> <span id="age-days">—</span></span>
+      <span><strong>🔢 总月数:</strong> <span id="age-months">—</span></span>
+      <span><strong>⏱️ 总小时:</strong> <span id="age-hours">—</span></span>
+      <span><strong>⚡ 总分钟:</strong> <span id="age-mins">—</span></span>
+    </div>
+  </div>
+
+  <div id="age-birthday-section" style="margin-top:16px;padding:14px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);text-align:center;">
+    <div style="font-size:0.82rem;font-weight:600;margin-bottom:8px;">🎉 下次生日倒计时</div>
+    <div id="age-birthday-display">
+      <div style="font-size:2rem;font-weight:800;color:var(--primary);" id="age-bday-days">—</div>
+      <div style="font-size:0.85rem;color:var(--text-secondary);margin-top:4px;" id="age-bday-label">设置出生日期后显示</div>
+    </div>
+    <div style="margin-top:8px;font-size:0.82rem;" id="age-zodiac">—</div>
+  </div>
+</div>
+
+<script>
+function calcAge() {
+  var birthVal = document.getElementById('age-birth').value;
+  var asOfVal = document.getElementById('age-as-of').value;
+
+  if (!birthVal) { clearAgeDisplay(); return; }
+
+  var birth = new Date(birthVal);
+  var asOf = asOfVal ? new Date(asOfVal) : new Date();
+  asOf.setHours(0,0,0,0);
+  birth.setHours(0,0,0,0);
+
+  if (birth > asOf) { clearAgeDisplay(); return; }
+
+  // Calculate age in years, months, days
+  var years = asOf.getFullYear() - birth.getFullYear();
+  var months = asOf.getMonth() - birth.getMonth();
+  var days = asOf.getDate() - birth.getDate();
+
+  if (days < 0) {
+    months--;
+    var prevMonth = new Date(asOf.getFullYear(), asOf.getMonth(), 0);
+    days += prevMonth.getDate();
+  }
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  // Total calculations
+  var totalMs = asOf.getTime() - birth.getTime();
+  var totalDays = Math.floor(totalMs / (1000 * 60 * 60 * 24));
+  var totalHours = Math.floor(totalMs / (1000 * 60 * 60));
+  var totalMins = Math.floor(totalMs / (1000 * 60));
+  var totalMonths = years * 12 + months;
+
+  document.getElementById('age-years').textContent = years;
+  document.getElementById('age-precise').textContent = years + ' 年 ' + months + ' 个月 ' + days + ' 天';
+  document.getElementById('age-days').textContent = totalDays.toLocaleString();
+  document.getElementById('age-months').textContent = totalMonths;
+  document.getElementById('age-hours').textContent = totalHours.toLocaleString();
+  document.getElementById('age-mins').textContent = totalMins.toLocaleString();
+
+  // Next birthday countdown
+  var nextBday = new Date(asOf.getFullYear(), birth.getMonth(), birth.getDate());
+  if (nextBday <= asOf) {
+    nextBday = new Date(asOf.getFullYear() + 1, birth.getMonth(), birth.getDate());
+  }
+  var bdayDiff = nextBday.getTime() - asOf.getTime();
+  var bdayDays = Math.ceil(bdayDiff / (1000 * 60 * 60 * 24));
+  var bdayMonth = nextBday.getMonth() + 1;
+  var bdayDay = nextBday.getDate();
+
+  document.getElementById('age-bday-days').textContent = bdayDays + ' 天';
+  document.getElementById('age-bday-label').textContent = '距离 ' + nextBday.getFullYear() + '年' + bdayMonth + '月' + bdayDay + '日 生日';
+
+  // Zodiac sign
+  var zodiac = getZodiac(birth.getMonth(), birth.getDate());
+  var chineseZodiac = getChineseZodiac(birth.getFullYear());
+  document.getElementById('age-zodiac').textContent = '♈ 星座: ' + zodiac + '  |  🐉 生肖: ' + chineseZodiac;
+}
+
+function getZodiac(month, day) {
+  var signs = ['摩羯座','水瓶座','双鱼座','白羊座','金牛座','双子座','巨蟹座','狮子座','处女座','天秤座','天蝎座','射手座'];
+  var dates = [20, 19, 21, 20, 21, 22, 23, 23, 23, 24, 23, 22];
+  var idx = day < dates[month] ? month - 1 : month;
+  if (idx < 0) idx = 11;
+  return signs[idx];
+}
+
+function getChineseZodiac(year) {
+  var animals = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+  return animals[(year - 4) % 12];
+}
+
+function clearAgeDisplay() {
+  document.getElementById('age-years').textContent = '—';
+  document.getElementById('age-precise').textContent = '—';
+  document.getElementById('age-days').textContent = '—';
+  document.getElementById('age-months').textContent = '—';
+  document.getElementById('age-hours').textContent = '—';
+  document.getElementById('age-mins').textContent = '—';
+  document.getElementById('age-bday-days').textContent = '—';
+  document.getElementById('age-bday-label').textContent = '设置出生日期后显示';
+  document.getElementById('age-zodiac').textContent = '—';
+}
+
+function setAgeToday() {
+  var now = new Date();
+  document.getElementById('age-as-of').value = now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  calcAge();
+}
+
+function setAgeExample() {
+  document.getElementById('age-birth').value = '1990-06-15';
+  document.getElementById('age-as-of').value = '';
+  calcAge();
+}
+
+function copyAge() {
+  var text = '🎂 年龄计算结果\n' +
+    '年龄: ' + document.getElementById('age-years').textContent + ' 岁\n' +
+    '精确: ' + document.getElementById('age-precise').textContent + '\n' +
+    '总天数: ' + document.getElementById('age-days').textContent + '\n' +
+    '总月数: ' + document.getElementById('age-months').textContent + '\n' +
+    '下次生日: ' + document.getElementById('age-bday-label').textContent + ' (' + document.getElementById('age-bday-days').textContent + ')';
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('age-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+// Set default: 1990-01-01
+document.getElementById('age-birth').value = '1990-01-01';
+calcAge();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择出生日期和截止日期（默认为今天），自动计算精确年龄和各项时间统计。</p>
+  <p><strong>计算结果：</strong>年龄（岁）、精确年龄（年+月+日）、总天数、总月数、总小时、总分钟。</p>
+  <p><strong>生日倒计时：</strong>显示距离下次生日的天数，以及星座和生肖信息。</p>
+  <p><strong>适用场景：</strong>个人年龄查询、证件年龄核算、纪念日计算、占星兴趣。</p>
+</div>

@@ -1,0 +1,167 @@
+<!-- DNS 查询 Widget -->
+<div class="tool-widget">
+  <div class="btn-row">
+    <input type="text" id="dns-domain" class="tool-textarea" style="font-family:var(--font);min-height:auto;padding:9px 14px;flex:1;" placeholder="🌐 输入域名，例如 example.com" value="example.com">
+    <button class="btn" onclick="lookupDNS()">🔍 查询</button>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="checkbox" id="dns-a" checked> A
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="checkbox" id="dns-aaaa" checked> AAAA
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="checkbox" id="dns-mx" checked> MX
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="checkbox" id="dns-ns" checked> NS
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="checkbox" id="dns-cname" checked> CNAME
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="checkbox" id="dns-txt" checked> TXT
+    </label>
+  </div>
+
+  <div class="output-area" id="dns-output" style="max-height:500px;padding:0;"></div>
+  <div class="stats-bar" id="dns-stats"></div>
+</div>
+
+<script>
+// Simulated DNS records for common domains - for demo/educational purposes
+var _dnsDatabase = {
+  'example.com': {
+    a: [{value:'93.184.216.34', desc:'主 IPv4 地址'}],
+    aaaa: [{value:'2606:2800:220:1:248:1893:25c8:1946', desc:'主 IPv6 地址'}],
+    mx: [{value:'mail.example.com (priority 10)', desc:'邮件服务器'}],
+    ns: [{value:'a.iana-servers.net', desc:'主 DNS 服务器'},{value:'b.iana-servers.net', desc:'备用 DNS 服务器'}],
+    cname: [{value:'-', desc:'无 CNAME 记录'}],
+    txt: [{value:'v=spf1 -all', desc:'SPF 记录，拒绝所有未授权发信'}]
+  },
+  'google.com': {
+    a: [{value:'142.250.80.46', desc:'Google 主站 IPv4'}],
+    aaaa: [{value:'2a00:1450:4013:c00::93', desc:'Google 主站 IPv6'}],
+    mx: [{value:'aspmx.l.google.com (priority 1)', desc:'Google 邮件主服务器'},{value:'alt1.aspmx.l.google.com (priority 5)', desc:'备用邮件服务器'},{value:'alt2.aspmx.l.google.com (priority 5)', desc:'备用邮件服务器'}],
+    ns: [{value:'ns1.google.com', desc:'Google 主 DNS'},{value:'ns2.google.com', desc:'Google 备用 DNS'},{value:'ns3.google.com', desc:'Google 备用 DNS'},{value:'ns4.google.com', desc:'Google 备用 DNS'}],
+    cname: [{value:'-', desc:'无 CNAME 记录'}],
+    txt: [{value:'v=spf1 include:_spf.google.com ~all', desc:'SPF 记录'},{value:'docusign=...', desc:'安全验证'}]
+  },
+  'github.com': {
+    a: [{value:'140.82.121.3', desc:'GitHub 主站 IPv4'}],
+    aaaa: [{value:'-', desc:'无 AAAA 记录'}],
+    mx: [{value:'aspmx.l.google.com (priority 1)', desc:'GitHub 邮件 via Google'},{value:'alt1.aspmx.l.google.com (priority 5)', desc:'备用邮件服务器'}],
+    ns: [{value:'dns1.p01.nsone.net', desc:'主 DNS'},{value:'dns2.p01.nsone.net', desc:'备用 DNS'},{value:'dns3.p01.nsone.net', desc:'备用 DNS'},{value:'dns4.p01.nsone.net', desc:'备用 DNS'}],
+    cname: [{value:'-', desc:'A 记录直连，非 CNAME'}],
+    txt: [{value:'v=spf1 include:_spf.google.com ~all', desc:'SPF 记录'}]
+  },
+  'cloudflare.com': {
+    a: [{value:'104.16.124.96', desc:'Cloudflare 主站 IPv4'},{value:'104.16.123.96', desc:'备用 IPv4'}],
+    aaaa: [{value:'2606:4700::6810:7c60', desc:'Cloudflare 主站 IPv6'},{value:'2606:4700::6810:7b60', desc:'备用 IPv6'}],
+    mx: [{value:'mail.cloudflare.com (priority 10)', desc:'邮件服务器'}],
+    ns: [{value:'ns3.cloudflare.com', desc:'主 DNS'},{value:'ns4.cloudflare.com', desc:'备用 DNS'},{value:'ns5.cloudflare.com', desc:'备用 DNS'},{value:'ns6.cloudflare.com', desc:'备用 DNS'},{value:'ns7.cloudflare.com', desc:'备用 DNS'}],
+    cname: [{value:'-', desc:'A 记录直连'}],
+    txt: [{value:'v=spf1 include:_spf.google.com ~all', desc:'SPF 记录'}]
+  }
+};
+
+// Demo mode: generate realistic-looking records for any domain
+function _generateDemoRecords(domain) {
+  var hash = 0;
+  for (var i = 0; i < domain.length; i++) {
+    hash = ((hash << 5) - hash) + domain.charCodeAt(i);
+    hash |= 0;
+  }
+  var h2 = Math.abs(hash);
+
+  return {
+    a: [{value:'192.168.' + ((h2 % 254) + 1) + '.' + ((h2 * 7 % 254) + 1), desc:'IPv4 地址（模拟）'}],
+    aaaa: [{value:'2001:db8:' + (h2 % 10000).toString(16) + '::' + (h2 * 13 % 10000).toString(16), desc:'IPv6 地址（模拟）'}],
+    mx: [{value:'mail.' + domain + ' (priority 10)', desc:'邮件服务器（模拟）'},{value:'mx2.' + domain + ' (priority 20)', desc:'备用邮件服务器（模拟）'}],
+    ns: [{value:'ns1.' + domain, desc:'主 DNS 服务器（模拟）'},{value:'ns2.' + domain, desc:'备用 DNS 服务器（模拟）'}],
+    cname: [{value:'-', desc:'无 CNAME 记录'}],
+    txt: [{value:'v=spf1 include:_spf.' + domain + ' ~all', desc:'SPF 记录（模拟）'}]
+  };
+}
+
+function lookupDNS() {
+  var domain = document.getElementById('dns-domain').value.trim().toLowerCase();
+  var output = document.getElementById('dns-output');
+  var stats = document.getElementById('dns-stats');
+
+  if (!domain) { output.textContent = '⚠️ 请输入域名'; stats.textContent = ''; return; }
+
+  // Validate domain
+  if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*\.[a-z]{2,}$/i.test(domain)) {
+    output.textContent = '⚠️ 请输入有效的域名格式（如 example.com）';
+    stats.textContent = '';
+    return;
+  }
+
+  var records = _dnsDatabase[domain] || _generateDemoRecords(domain);
+
+  var selectedTypes = [];
+  var labels = {a:'A',aaaa:'AAAA',mx:'MX',ns:'NS',cname:'CNAME',txt:'TXT'};
+  var titles = {a:'A 记录 — IPv4 地址映射',aaaa:'AAAA 记录 — IPv6 地址映射',mx:'MX 记录 — 邮件服务器',ns:'NS 记录 — 域名服务器',cname:'CNAME 记录 — 别名指向',txt:'TXT 记录 — 文本信息'};
+  var checks = {a:document.getElementById('dns-a'),aaaa:document.getElementById('dns-aaaa'),mx:document.getElementById('dns-mx'),ns:document.getElementById('dns-ns'),cname:document.getElementById('dns-cname'),txt:document.getElementById('dns-txt')};
+
+  for (var key in checks) {
+    if (checks[key].checked) selectedTypes.push(key);
+  }
+
+  if (selectedTypes.length === 0) {
+    output.textContent = '⚠️ 请至少选择一种记录类型';
+    stats.textContent = '';
+    return;
+  }
+
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:0.82rem;">';
+  html += '<thead><tr style="background:var(--primary-light);position:sticky;top:0;">';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:80px;">类型</th>';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);">记录值</th>';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:200px;">说明</th></tr></thead><tbody>';
+
+  var totalRecords = 0;
+  selectedTypes.forEach(function(type) {
+    var recs = records[type] || [];
+    recs.forEach(function(rec, idx) {
+      totalRecords++;
+      var bg = totalRecords % 2 === 0 ? 'background:var(--bg-card);' : 'background:var(--bg);';
+      var typeColor = {a:'#16a34a',aaaa:'#2563eb',mx:'#f59e0b',ns:'#dc2626',cname:'#8b5cf6',txt:'#ec4899'};
+      html += '<tr style="' + bg + '">';
+      html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);">';
+      html += '<span style="display:inline-block;background:' + typeColor[type] + '22;color:' + typeColor[type] + ';padding:2px 8px;border-radius:4px;font-weight:700;font-size:0.75rem;">' + type.toUpperCase() + '</span>';
+      html += '<div style="font-size:0.7rem;color:var(--text-secondary);margin-top:2px;">' + titles[type].split('—')[0].trim() + '</div>';
+      html += '</td>';
+      html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);font-family:monospace;font-size:0.8rem;word-break:break-all;">' + rec.value + '</td>';
+      html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:0.8rem;">' + rec.desc + '</td>';
+      html += '</tr>';
+    });
+  });
+
+  html += '</tbody></table>';
+  output.innerHTML = html;
+  stats.innerHTML = '<span>🌐 ' + domain + '</span><span>📋 共 ' + totalRecords + ' 条记录</span><span>⚠️ 模拟数据，仅作参考</span>';
+}
+
+// Auto-lookup on Enter
+document.getElementById('dns-domain').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') lookupDNS();
+});
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入域名，选择需要查询的记录类型，点击「查询」即可查看 DNS 记录说明。</p>
+  <p><strong>记录类型：</strong></p>
+  <ul style="font-size:0.82rem;color:var(--text-secondary);margin:4px 0;padding-left:20px;">
+    <li><strong>A</strong> — 将域名映射到 IPv4 地址</li>
+    <li><strong>AAAA</strong> — 将域名映射到 IPv6 地址</li>
+    <li><strong>MX</strong> — 指定邮件服务器及优先级</li>
+    <li><strong>NS</strong> — 指定该域名的权威 DNS 服务器</li>
+    <li><strong>CNAME</strong> — 将域名别名指向另一个域名</li>
+    <li><strong>TXT</strong> — 存储文本信息（SPF、DKIM 等）</li>
+  </ul>
+  <p><strong>⚠️ 说明：</strong>此为模拟查询工具，数据仅供学习参考，不执行真实 DNS 查询。</p>
+</div>

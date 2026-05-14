@@ -1,0 +1,90 @@
+<!-- 标点符号移除 Widget -->
+<div class="tool-widget">
+  <textarea id="pr-input" class="tool-textarea" placeholder="在此输入需要处理标点符号的文本..." rows="8">你好，世界！这是一个测试。包含各种标点符号：逗号、句号、问号？感叹号！引号"括号()【】等等...</textarea>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:12px 0;">
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
+      <input type="radio" name="pr-mode" id="pr-remove" checked> 🗑️ 移除标点
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
+      <input type="radio" name="pr-mode" id="pr-keep"> 🔍 保留标点（仅移除非标点）
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
+      <input type="checkbox" id="pr-whitespace"> 保留空格
+    </label>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="processPunctuation()">⚡ 执行</button>
+    <button class="btn btn-outline btn-sm" onclick="clearPunctuation()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="pr-copy-btn" onclick="copyPunctuation()">📋 复制结果</button>
+  </div>
+
+  <pre class="output-area" id="pr-output"></pre>
+  <div class="stats-bar" id="pr-stats"></div>
+</div>
+
+<script>
+function processPunctuation() {
+  var input = document.getElementById('pr-input').value;
+  var output = document.getElementById('pr-output');
+  var stats = document.getElementById('pr-stats');
+  if (!input.trim()) { output.textContent = '⚠️ 请输入文本'; stats.textContent = ''; return; }
+
+  var removeMode = document.getElementById('pr-remove').checked;
+  var keepSpace = document.getElementById('pr-whitespace').checked;
+
+  // Define punctuation characters (Chinese + English)
+  var punctChars = '，。、！？：；""''（）【】《》—…·～　,。!?;:\'\"()[]{}<>@#$%^&*_+=|\\/`~-';
+
+  var result = '';
+  var punctCount = 0;
+  var otherCount = 0;
+
+  for (var i = 0; i < input.length; i++) {
+    var ch = input[i];
+    if (punctChars.indexOf(ch) >= 0) {
+      punctCount++;
+      if (!removeMode) {
+        result += ch;
+      } else if (keepSpace) {
+        result += ' ';
+      }
+    } else {
+      otherCount++;
+      result += ch;
+    }
+  }
+
+  // Clean up multiple spaces if needed
+  if (removeMode && keepSpace) {
+    result = result.replace(/ +/g, ' ').trim();
+  }
+
+  output.textContent = result;
+  stats.innerHTML = '<span>🔣 标点符号: ' + punctCount + ' 个</span><span>📏 原始字符: ' + input.length + ' → 处理后: ' + result.length + '</span><span>' + (removeMode ? '🗑️ 移除模式' : '🔍 保留模式') + '</span>';
+}
+
+function clearPunctuation() {
+  document.getElementById('pr-input').value = '';
+  document.getElementById('pr-output').textContent = '';
+  document.getElementById('pr-stats').textContent = '';
+}
+
+function copyPunctuation() {
+  var text = document.getElementById('pr-output').textContent;
+  if (!text || text.indexOf('⚠️') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('pr-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入文本，选择「移除标点」或「保留标点」模式，点击「执行」即可处理。</p>
+  <p><strong>功能说明：</strong>移除模式删除所有标点符号；保留模式仅保留标点而移除其他字符。可选项「保留空格」将标点替换为空格。</p>
+  <p><strong>支持标点：</strong>中英文标点符号（逗号、句号、引号、括号、破折号等）。</p>
+  <p><strong>适用场景：</strong>文本清洗、数据预处理、关键词提取、文本分析。</p>
+</div>

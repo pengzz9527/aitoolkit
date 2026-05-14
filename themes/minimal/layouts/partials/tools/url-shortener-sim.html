@@ -1,0 +1,141 @@
+<!-- URL 短链接生成 Widget -->
+<div class="tool-widget">
+  <div class="btn-row" style="margin-bottom:10px;">
+    <input type="url" id="us-url" class="tool-textarea" style="font-family:var(--font);min-height:auto;padding:9px 14px;flex:1;" placeholder="🔗 输入长 URL，例如 https://example.com/very/long/url" value="https://example.com/very/long/url/with/many/parameters?foo=bar&baz=qux">
+    <button class="btn" onclick="shortenURL()">🔗 生成短链</button>
+  </div>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
+    <div style="flex:0 0 120px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">📏 短码长度</label>
+      <select id="us-length" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;">
+        <option value="4">4 字符</option>
+        <option value="6" selected>6 字符</option>
+        <option value="8">8 字符</option>
+        <option value="10">10 字符</option>
+      </select>
+    </div>
+    <div style="flex:0 0 120px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">🔤 字符集</label>
+      <select id="us-charset" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;">
+        <option value="alnum">字母+数字</option>
+        <option value="lower">小写字母</option>
+        <option value="upper">大写字母</option>
+        <option value="hex">十六进制</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="output-area" id="us-output" style="min-height:50px;"></div>
+  <div class="btn-row" style="margin-top:10px;">
+    <button class="btn btn-outline btn-sm" id="us-copy-btn" onclick="copyShortened()">📋 复制短链接</button>
+    <button class="btn btn-outline btn-sm" onclick="clearURL()">🗑️ 清空</button>
+  </div>
+  <div class="stats-bar" id="us-stats"></div>
+</div>
+
+<script>
+function hashString(str, length, charset) {
+  var chars = '';
+  if (charset === 'alnum') chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  else if (charset === 'lower') chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  else if (charset === 'upper') chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  else if (charset === 'hex') chars = '0123456789abcdef';
+
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    var ch = str.charCodeAt(i);
+    hash = ((hash << 7) - hash) + ch;
+    hash |= 0;
+  }
+
+  var result = '';
+  var absHash = Math.abs(hash);
+  for (var j = 0; j < length; j++) {
+    result += chars[absHash % chars.length];
+    absHash = Math.floor(absHash / chars.length);
+    if (absHash === 0) absHash = Math.abs(hash + j * 7919);
+  }
+  return result;
+}
+
+function shortenURL() {
+  var url = document.getElementById('us-url').value.trim();
+  var length = parseInt(document.getElementById('us-length').value);
+  var charset = document.getElementById('us-charset').value;
+  var output = document.getElementById('us-output');
+  var stats = document.getElementById('us-stats');
+
+  if (!url) { output.innerHTML = '⚠️ 请输入 URL'; stats.textContent = ''; return; }
+
+  // Auto-add protocol if missing
+  if (!/^https?:\/\//i.test(url)) {
+    url = 'https://' + url;
+  }
+
+  // Basic URL validation
+  try {
+    new URL(url);
+  } catch(e) {
+    output.innerHTML = '⚠️ 请输入有效的 URL（如 https://example.com）';
+    stats.textContent = '';
+    return;
+  }
+
+  var shortCode = hashString(url, length, charset);
+  var shortUrl = 'https://go.aitk/' + shortCode;
+
+  var html = '<div style="padding:14px;">';
+  html += '<div style="margin-bottom:10px;"><span style="font-size:0.8rem;color:var(--text-secondary);">原始 URL：</span>';
+  html += '<div style="font-size:0.82rem;word-break:break-all;color:var(--text);margin-top:2px;">' + escapeHtml(url) + '</div></div>';
+  html += '<div style="margin-bottom:10px;"><span style="font-size:0.8rem;color:var(--text-secondary);">短链接：</span>';
+  html += '<div style="font-size:1.1rem;font-weight:700;color:var(--primary);word-break:break-all;margin-top:2px;cursor:pointer;" onclick="selectShortUrlText()" id="us-short-url">' + shortUrl + '</div></div>';
+  html += '<div style="display:flex;gap:10px;flex-wrap:wrap;">';
+  html += '<span style="display:inline-flex;align-items:center;gap:4px;font-size:0.8rem;background:var(--bg-card);padding:4px 10px;border-radius:var(--radius-xs);border:1px solid var(--border);">🔑 短码: <strong>' + shortCode + '</strong></span>';
+  html += '<span style="display:inline-flex;align-items:center;gap:4px;font-size:0.8rem;background:var(--bg-card);padding:4px 10px;border-radius:var(--radius-xs);border:1px solid var(--border);">📏 长度: ' + length + '</span>';
+  html += '<span style="display:inline-flex;align-items:center;gap:4px;font-size:0.8rem;background:var(--bg-card);padding:4px 10px;border-radius:var(--radius-xs);border:1px solid var(--border);">🔤 ' + charset + '</span>';
+  html += '</div></div>';
+
+  output.innerHTML = html;
+  stats.innerHTML = '<span>🔗 压缩率: ' + url.length + ' → ' + shortUrl.length + ' 字符 (' + Math.round((1 - shortUrl.length / url.length) * 100) + '%)</span>';
+}
+
+function selectShortUrlText() {
+  var el = document.getElementById('us-short-url');
+  if (el) {
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+}
+
+function copyShortened() {
+  var el = document.getElementById('us-short-url');
+  if (!el) return;
+  var text = el.textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('us-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制短链接'; }, 2000);
+  }).catch(function() {});
+}
+
+function clearURL() {
+  document.getElementById('us-url').value = '';
+  document.getElementById('us-output').textContent = '';
+  document.getElementById('us-stats').textContent = '';
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入长 URL，选择短码长度和字符集，点击「生成短链」即可生成短链接。</p>
+  <p><strong>原理：</strong>基于 URL 字符串的哈希算法生成固定长度的唯一短码。相同 URL 会生成相同的短码。</p>
+  <p><strong>选项功能：</strong>短码长度（4-10 字符）、字符集（字母+数字/小写/大写/十六进制）。</p>
+  <p><strong>⚠️ 说明：</strong>此为模拟工具，生成的数据仅供演示，不支持真正的 URL 跳转。</p>
+</div>

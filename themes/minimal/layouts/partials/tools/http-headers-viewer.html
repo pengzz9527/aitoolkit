@@ -1,0 +1,115 @@
+<!-- HTTP 请求头解析 Widget -->
+<div class="tool-widget">
+  <textarea id="hhv-input" class="tool-textarea" placeholder="在此粘贴 HTTP 请求头...&#10;例如:&#10;Host: example.com&#10;User-Agent: Mozilla/5.0&#10;Accept: */*&#10;Content-Type: application/json" rows="10">Host: example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+Accept: text/html,application/xhtml+xml
+Accept-Language: zh-CN,zh;q=0.9
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+Cache-Control: no-cache</textarea>
+
+  <div class="btn-row">
+    <button class="btn" onclick="parseHeaders()">🔍 解析</button>
+    <button class="btn btn-outline btn-sm" onclick="clearHeaders()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="hhv-copy-btn" onclick="copyHeaders()">📋 复制表格</button>
+  </div>
+
+  <div class="output-area" id="hhv-output" style="max-height:500px;padding:0;"></div>
+  <div class="stats-bar" id="hhv-stats"></div>
+</div>
+
+<script>
+function parseHeaders() {
+  var input = document.getElementById('hhv-input').value;
+  var output = document.getElementById('hhv-output');
+  var stats = document.getElementById('hhv-stats');
+  if (!input.trim()) { output.textContent = '⚠️ 请粘贴 HTTP 请求头'; stats.textContent = ''; return; }
+
+  var lines = input.split('\n');
+  var headers = [];
+  var requestLine = '';
+
+  lines.forEach(function(line) {
+    var trimmed = line.trim();
+    if (!trimmed) return;
+    // Check if it's a request line (starts with METHOD)
+    if (/^(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS|CONNECT|TRACE)\s/.test(trimmed)) {
+      requestLine = trimmed;
+      return;
+    }
+    var idx = trimmed.indexOf(':');
+    if (idx > 0) {
+      var name = trimmed.substring(0, idx).trim();
+      var value = trimmed.substring(idx + 1).trim();
+      if (name) {
+        headers.push({ name: name, value: value });
+      }
+    }
+  });
+
+  if (headers.length === 0 && !requestLine) {
+    output.textContent = '⚠️ 未识别到有效的 HTTP 请求头';
+    stats.textContent = '';
+    return;
+  }
+
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:0.82rem;">';
+  html += '<thead><tr style="background:var(--primary-light);position:sticky;top:0;">';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:200px;">Header 名称</th>';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);">值</th></tr></thead><tbody>';
+
+  if (requestLine) {
+    var parts = requestLine.split(/\s+/);
+    var method = parts[0] || '';
+    var path = parts[1] || '';
+    var version = parts[2] || '';
+    html += '<tr style="background:var(--bg-card);">';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:700;color:var(--primary);">请求行</td>';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);">';
+    html += '<span style="display:inline-block;background:var(--primary-light);color:var(--primary);padding:2px 8px;border-radius:4px;font-weight:700;">' + escapeHtml(method) + '</span> ';
+    html += '<span>' + escapeHtml(path) + '</span> ';
+    if (version) html += '<span style="color:var(--text-secondary);font-size:0.75rem;">' + escapeHtml(version) + '</span>';
+    html += '</td></tr>';
+  }
+
+  headers.forEach(function(h, idx) {
+    var bg = idx % 2 === 0 ? 'background:var(--bg-card);' : 'background:var(--bg);';
+    html += '<tr style="' + bg + '">';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;white-space:nowrap;">' + escapeHtml(h.name) + '</td>';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary);word-break:break-all;">' + escapeHtml(h.value) + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  output.innerHTML = html;
+  stats.innerHTML = '<span>📋 共 ' + headers.length + ' 个请求头</span>' + (requestLine ? '<span>🚀 包含请求行</span>' : '');
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function clearHeaders() {
+  document.getElementById('hhv-input').value = '';
+  document.getElementById('hhv-output').textContent = '';
+  document.getElementById('hhv-stats').textContent = '';
+}
+
+function copyHeaders() {
+  var output = document.getElementById('hhv-output');
+  var text = output.textContent || output.innerText;
+  if (!text || text.indexOf('⚠️') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('hhv-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制表格'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>在输入框中粘贴 HTTP 请求头（包括请求行），点击「解析」按钮即可生成结构化表格。</p>
+  <p><strong>支持格式：</strong>标准的 HTTP 请求头格式（Header-Name: value），支持 GET/POST 等请求行。</p>
+  <p><strong>适用场景：</strong>调试 HTTP 请求、分析 API 调用、日志分析、网络抓包结果整理。</p>
+</div>

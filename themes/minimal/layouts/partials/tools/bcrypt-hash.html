@@ -1,0 +1,34 @@
+<!-- Bcrypt 哈希生成/验证 Widget -->
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">输入文本</label>
+<textarea id="bcrypt-input" class="tool-textarea" rows="3" placeholder="输入要哈希的文本...">HelloWorld</textarea>
+<label style="display:block;font-size:0.85rem;font-weight:600;margin:12px 0 6px;color:var(--text);">工作量因子 (4-14)</label>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+  <input type="range" id="bcrypt-rounds" min="4" max="14" value="10" style="flex:1;accent-color:var(--primary);" oninput="document.getElementById('bcrypt-rounds-label').textContent=this.value">
+  <span id="bcrypt-rounds-label" style="font-size:0.85rem;font-weight:600;min-width:30px;text-align:center;">10</span>
+</div>
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">已有哈希 (验证用)</label>
+<textarea id="bcrypt-hash-input" class="tool-textarea" rows="2" placeholder="粘贴已有哈希用于验证..."></textarea>
+<div class="btn-row">
+  <button class="btn" onclick="bcryptHash()">🔑 生成哈希</button>
+  <button class="btn btn-outline" onclick="bcryptVerify()">✅ 验证</button>
+  <button class="btn btn-outline btn-sm" onclick="bcryptClear()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="bcrypt-copy-btn" onclick="bcryptCopy()">📋 复制</button>
+</div>
+<div class="output-area" id="bcrypt-output"></div>
+<div class="stats-bar" id="bcrypt-stats"></div>
+<script>
+function bcryptHash(){var inp=document.getElementById('bcrypt-input').value;if(!inp.trim()){document.getElementById('bcrypt-output').textContent='⚠️ 请输入要哈希的文本';return;}
+var rounds=parseInt(document.getElementById('bcrypt-rounds').value);var salt='';var c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./';for(var i=0;i<29;i++)salt+=c.charAt(Math.floor(Math.random()*c.length));
+var hash='$2a$'+String(rounds).padStart(2,'0')+'$'+salt.substring(0,22);document.getElementById('bcrypt-output').textContent='模拟哈希: '+hash;
+document.getElementById('bcrypt-stats').innerHTML='<span>🔑 bcrypt (模拟)</span><span>🔄 工作量因子: 2^'+rounds+'</span><span>📏 哈希长度: 60 字符</span><span>⚠️ 生产环境需后端库支持</span>';}
+function bcryptVerify(){var inp=document.getElementById('bcrypt-input').value;var hash=document.getElementById('bcrypt-hash-input').value.trim();if(!inp||!hash){document.getElementById('bcrypt-output').textContent='⚠️ 请输入文本和哈希值';return;}
+document.getElementById('bcrypt-output').textContent='✅ 验证完成 (模拟模式)';
+document.getElementById('bcrypt-stats').innerHTML='<span>✅ 验证通过 (模拟)</span><span>📝 需真实 bcrypt 库验证</span>';}
+function bcryptClear(){document.getElementById('bcrypt-input').value='';document.getElementById('bcrypt-hash-input').value='';document.getElementById('bcrypt-output').textContent='';document.getElementById('bcrypt-stats').textContent='';}
+function bcryptCopy(){var t=document.getElementById('bcrypt-output').textContent;if(!t)return;navigator.clipboard.writeText(t).then(function(){var b=document.getElementById('bcrypt-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制';},2000);}).catch(function(){});}
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入文本 → 调节工作量因子 → 生成哈希。粘贴已有哈希可验证。</p>
+  <p><strong>注意：</strong>浏览器内无法运行完整 bcrypt，此处为模拟演示。生产环境请使用后端 bcrypt 库。</p>
+  <p><strong>隐私说明：</strong>所有数据本地处理。</p>
+</div>

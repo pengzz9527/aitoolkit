@@ -1,0 +1,122 @@
+<!-- 端口扫描模拟 Widget -->
+<div class="tool-widget">
+  <div class="btn-row" style="margin-bottom:10px;">
+    <input type="text" id="ps-host" class="tool-textarea" style="font-family:var(--font);min-height:auto;padding:9px 14px;flex:1;" placeholder="🌐 输入主机名或 IP 地址" value="scanme.nmap.org">
+    <button class="btn" onclick="scanPorts()">🔍 扫描</button>
+  </div>
+
+  <div style="margin-bottom:10px;">
+    <span style="font-size:0.82rem;font-weight:600;">📡 选择要扫描的端口：</span>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;" id="ps-port-list"></div>
+
+  <div class="output-area" id="ps-output" style="max-height:500px;padding:0;"></div>
+  <div class="stats-bar" id="ps-stats"></div>
+</div>
+
+<script>
+var _commonPorts = [
+  { port: 21, name:'FTP', desc:'文件传输协议 — 用于文件上传/下载', risk:'info' },
+  { port: 22, name:'SSH', desc:'安全 Shell — 远程登录与命令执行', risk:'info' },
+  { port: 23, name:'Telnet', desc:'远程终端协议 — 明文传输，不安全', risk:'high' },
+  { port: 25, name:'SMTP', desc:'简单邮件传输协议 — 邮件发送', risk:'info' },
+  { port: 53, name:'DNS', desc:'域名系统 — 域名解析服务', risk:'info' },
+  { port: 80, name:'HTTP', desc:'超文本传输协议 — Web 服务', risk:'info' },
+  { port: 110, name:'POP3', desc:'邮局协议 v3 — 邮件接收', risk:'info' },
+  { port: 143, name:'IMAP', desc:'互联网邮件访问协议 — 邮件读取', risk:'info' },
+  { port: 443, name:'HTTPS', desc:'安全超文本传输协议 — 加密 Web 服务', risk:'low' },
+  { port: 445, name:'SMB', desc:'服务器消息块 — Windows 文件共享', risk:'high' },
+  { port: 993, name:'IMAPS', desc:'安全 IMAP — 加密邮件读取', risk:'low' },
+  { port: 995, name:'POP3S', desc:'安全 POP3 — 加密邮件接收', risk:'low' },
+  { port: 1433, name:'MSSQL', desc:'Microsoft SQL Server 数据库', risk:'medium' },
+  { port: 1521, name:'Oracle', desc:'Oracle 数据库默认端口', risk:'medium' },
+  { port: 3306, name:'MySQL', desc:'MySQL/MariaDB 数据库', risk:'medium' },
+  { port: 3389, name:'RDP', desc:'远程桌面协议 — Windows 远程桌面', risk:'medium' },
+  { port: 5432, name:'PostgreSQL', desc:'PostgreSQL 数据库', risk:'medium' },
+  { port: 5900, name:'VNC', desc:'虚拟网络计算 — 远程桌面', risk:'medium' },
+  { port: 6379, name:'Redis', desc:'Redis 缓存数据库', risk:'medium' },
+  { port: 8080, name:'HTTP-Alt', desc:'HTTP 备用端口 — 常用代理/开发服务器', risk:'info' },
+  { port: 8443, name:'HTTPS-Alt', desc:'HTTPS 备用端口 — 安全开发服务器', risk:'low' },
+  { port: 27017, name:'MongoDB', desc:'MongoDB 数据库默认端口', risk:'medium' }
+];
+
+function initPortList() {
+  var container = document.getElementById('ps-port-list');
+  _commonPorts.forEach(function(p) {
+    var label = document.createElement('label');
+    label.style.cssText = 'font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;padding:4px 6px;background:var(--bg-card);border-radius:var(--radius-xs);border:1px solid var(--border);';
+    label.innerHTML = '<input type="checkbox" class="ps-port-cb" value="' + p.port + '" checked> ' + p.port + ' <span style="color:var(--text-secondary);">' + p.name + '</span>';
+    container.appendChild(label);
+  });
+}
+
+function scanPorts() {
+  var host = document.getElementById('ps-host').value.trim();
+  var output = document.getElementById('ps-output');
+  var stats = document.getElementById('ps-stats');
+
+  if (!host) { output.textContent = '⚠️ 请输入主机名或 IP 地址'; stats.textContent = ''; return; }
+
+  var checkboxes = document.querySelectorAll('.ps-port-cb:checked');
+  if (checkboxes.length === 0) { output.textContent = '⚠️ 请至少选择一个端口'; stats.textContent = ''; return; }
+
+  var selectedPorts = [];
+  checkboxes.forEach(function(cb) { selectedPorts.push(parseInt(cb.value)); });
+
+  // Simulate scan - randomly open/closed for demo
+  var results = [];
+  selectedPorts.forEach(function(port) {
+    var info = _commonPorts.find(function(p) { return p.port === port; });
+    // Simulate: well-known common ports are likely "open", others random
+    var isOpen = Math.random() > 0.3;
+    var isCommon = port < 1024;
+    if (isCommon) isOpen = Math.random() > 0.15;
+    results.push({
+      port: port,
+      name: info ? info.name : '未知',
+      desc: info ? info.desc : '未登记的端口服务',
+      risk: info ? info.risk : 'info',
+      status: isOpen ? 'open' : (Math.random() > 0.5 ? 'filtered' : 'closed')
+    });
+  });
+
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:0.82rem;">';
+  html += '<thead><tr style="background:var(--primary-light);position:sticky;top:0;">';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:60px;">端口</th>';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:60px;">状态</th>';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:80px;">服务</th>';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:60px;">风险</th>';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);">说明</th></tr></thead><tbody>';
+
+  var openCount = 0;
+  results.forEach(function(r, idx) {
+    var bg = idx % 2 === 0 ? 'background:var(--bg-card);' : 'background:var(--bg);';
+    var statusColor = r.status === 'open' ? '#16a34a' : (r.status === 'filtered' ? '#f59e0b' : '#6b7280');
+    var statusIcon = r.status === 'open' ? '🟢' : (r.status === 'filtered' ? '🟡' : '⚫');
+    var riskColor = r.risk === 'high' ? '#dc2626' : (r.risk === 'medium' ? '#f59e0b' : (r.risk === 'low' ? '#16a34a' : '#6b7280'));
+    var riskLabel = r.risk === 'high' ? '高危' : (r.risk === 'medium' ? '中危' : (r.risk === 'low' ? '低危' : '信息'));
+
+    if (r.status === 'open') openCount++;
+    html += '<tr style="' + bg + '">';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:700;">' + r.port + '</td>';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);color:' + statusColor + ';">' + statusIcon + ' ' + r.status + '</td>';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;">' + r.name + '</td>';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);"><span style="display:inline-block;background:' + riskColor + '22;color:' + riskColor + ';padding:2px 6px;border-radius:4px;font-size:0.7rem;font-weight:600;">' + riskLabel + '</span></td>';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:0.8rem;">' + r.desc + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  output.innerHTML = html;
+  stats.innerHTML = '<span>🌐 ' + host + '</span><span>📋 扫描 ' + results.length + ' 个端口</span><span>🟢 开放: ' + openCount + '</span><span>⚠️ 模拟数据，仅作参考</span>';
+}
+
+initPortList();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入主机名或 IP 地址，选择要扫描的端口，点击「扫描」即可模拟端口扫描。</p>
+  <p><strong>端口状态：</strong>🟢 open（开放）、🟡 filtered（可能被过滤）、⚫ closed（关闭）。</p>
+  <p><strong>风险等级：</strong>高危（建议关闭）、中危（注意安全配置）、低危（安全服务）、信息（常规服务）。</p>
+  <p><strong>⚠️ 说明：</strong>此为模拟工具，所有扫描结果均为随机模拟，不执行真实端口扫描。</p>
+</div>

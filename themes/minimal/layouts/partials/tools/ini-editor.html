@@ -1,0 +1,86 @@
+<!-- INI 配置文件解析 Widget -->
+<textarea id="ini-input" class="tool-textarea" placeholder="在此粘贴 INI 配置文本..." rows="8">[database]
+host = localhost
+port = 3306
+username = admin
+password = secret123
+
+[server]
+host = 0.0.0.0
+port = 8080
+debug = true
+
+[app]
+name = AI Toolkit
+version = 1.0.0
+language = zh-CN</textarea>
+<div class="btn-row">
+  <button class="btn" onclick="parseIni()">🔍 解析</button>
+  <button class="btn btn-outline btn-sm" onclick="clearIni()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="ini-copy-btn" onclick="copyIniOutput()">📋 复制</button>
+</div>
+<div class="output-area" id="ini-output" style="padding:0;"></div>
+<div class="stats-bar" id="ini-stats"></div>
+<script>
+function parseIni(){
+  var input = document.getElementById('ini-input').value;
+  var out = document.getElementById('ini-output');
+  var stats = document.getElementById('ini-stats');
+  if(!input.trim()){out.innerHTML='<span style=\"display:block;padding:20px;color:var(--text-secondary);\">⚠️ 请输入 INI 数据</span>';stats.textContent='';return;}
+  var lines = input.split(String.fromCharCode(10));
+  var html = '';
+  var currentSection = '';
+  var totalKeys = 0;
+  html += '<div style=\"padding:12px;\">';
+  for(var i=0;i<lines.length;i++){
+    var line = lines[i];
+    var trimmed = line.trim();
+    if(!trimmed){continue;}
+    if(trimmed.indexOf('#')===0||trimmed.indexOf(';')===0){
+      html += '<div style=\"color:var(--text-secondary);font-style:italic;padding:2px 0;margin:2px 0;\">'+_iniEscape(trimmed)+'</div>';
+      continue;
+    }
+    if(trimmed.indexOf('[')===0&&trimmed.indexOf(']')>0){
+      currentSection = trimmed.replace(/\[|\]/g,'');
+      html += '<div style=\"font-weight:700;font-size:0.9rem;padding:6px 0 4px;margin-top:8px;border-bottom:1px solid var(--border-color);color:var(--accent);\">📁 ['+_iniEscape(currentSection)+']</div>';
+      continue;
+    }
+    var eqIdx = trimmed.indexOf('=');
+    if(eqIdx>0){
+      var key = trimmed.substring(0,eqIdx).trim();
+      var val = trimmed.substring(eqIdx+1).trim();
+      totalKeys++;
+      html += '<div style=\"display:flex;padding:3px 0 3px 12px;font-size:0.85rem;border-left:2px solid var(--border-color);margin:2px 0;\">';
+      html += '<span style=\"font-weight:600;min-width:120px;color:var(--text-primary);\">'+_iniEscape(key)+'</span>';
+      html += '<span style=\"color:var(--text-secondary);margin:0 8px;\">=</span>';
+      html += '<span style=\"color:var(--accent);word-break:break-all;\">'+_iniEscape(val)+'</span>';
+      html += '</div>';
+    }
+  }
+  html += '</div>';
+  out.innerHTML = html;
+  stats.innerHTML = '<span>✅ 解析完成</span><span>📋 共 '+(currentSection?'多个 ':'')+'键值对: '+totalKeys+' 个</span>';
+}
+
+function _iniEscape(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function clearIni(){
+  document.getElementById('ini-input').value='';
+  document.getElementById('ini-output').innerHTML='';
+  document.getElementById('ini-stats').textContent='';
+}
+
+function copyIniOutput(){
+  var out = document.getElementById('ini-output');
+  var text = out.textContent || out.innerText;
+  if(!text) return;
+  navigator.clipboard.writeText(text).then(function(){var b=document.getElementById('ini-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制';},2000);}).catch(function(){});
+}
+
+parseIni();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>粘贴 INI 格式配置文本，自动解析其中的节（Section）和键值对并高亮显示。</p>
+  <p><strong>适用场景：</strong>读取配置文件、INI 格式调试、配置迁移整理。</p>
+  <p><strong>隐私说明：</strong>所有数据仅在浏览器本地处理，不会上传到任何服务器。</p>
+</div>

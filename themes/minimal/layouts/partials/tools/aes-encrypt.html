@@ -1,0 +1,37 @@
+<!-- AES 加密/解密 Widget -->
+<label style="display:block;font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text);">密钥 (16/24/32 字符)</label>
+<input id="aes-key" class="tool-textarea" style="resize:none;height:38px;padding:8px 12px;margin-bottom:12px;" placeholder="请输入 AES 密钥..." value="1234567890123456">
+<textarea id="aes-input" class="tool-textarea" rows="6" placeholder="输入要加密或解密的文本...">Hello World</textarea>
+<div class="btn-row">
+  <button class="btn" onclick="aesEncrypt()">🔒 加密</button>
+  <button class="btn btn-outline" onclick="aesDecrypt()">🔓 解密</button>
+  <button class="btn btn-outline btn-sm" onclick="aesClear()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="aes-copy-btn" onclick="aesCopy()">📋 复制</button>
+</div>
+<div class="output-area" id="aes-output"></div>
+<div class="stats-bar" id="aes-stats"></div>
+<script>
+function _a2b(s){return Uint8Array.from(atob(s),function(c){return c.charCodeAt(0)});}
+function _b2a(b){return btoa(String.fromCharCode.apply(null,new Uint8Array(b)));}
+function _str2ab(s){return new TextEncoder().encode(s);}
+function _ab2str(b){return new TextDecoder().decode(b);}
+function _getKey(){var k=document.getElementById('aes-key').value;if(k.length!==16&&k.length!==24&&k.length!==32){document.getElementById('aes-output').textContent='⚠️ 密钥长度必须是16、24或32字符';return null;}return k;}
+async function aesEncrypt(){var k=_getKey();if(!k)return;var inp=document.getElementById('aes-input').value;if(!inp.trim()){document.getElementById('aes-output').textContent='⚠️ 请输入要加密的文本';return;}
+var key=await crypto.subtle.importKey('raw',_str2ab(k),{name:'AES-CBC'},false,['encrypt']);
+var iv=crypto.getRandomValues(new Uint8Array(16));var enc=await crypto.subtle.encrypt({name:'AES-CBC',iv:iv},key,_str2ab(inp));
+var combined=new Uint8Array(iv.length+enc.byteLength);combined.set(iv);combined.set(new Uint8Array(enc),iv.length);
+document.getElementById('aes-output').textContent=_b2a(combined);
+document.getElementById('aes-stats').innerHTML='<span>🔒 AES-CBC 加密完成</span><span>📏 输出: '+combined.length+' 字节</span>';}
+async function aesDecrypt(){var k=_getKey();if(!k)return;var inp=document.getElementById('aes-input').value.trim();if(!inp){document.getElementById('aes-output').textContent='⚠️ 请输入要解密的Base64文本';return;}
+try{var raw=_a2b(inp);var iv=raw.slice(0,16);var data=raw.slice(16);var key=await crypto.subtle.importKey('raw',_str2ab(k),{name:'AES-CBC'},false,['decrypt']);
+var dec=await crypto.subtle.decrypt({name:'AES-CBC',iv:iv},key,data);document.getElementById('aes-output').textContent=_ab2str(dec);
+document.getElementById('aes-stats').innerHTML='<span>🔓 AES-CBC 解密成功</span><span>📏 输出: '+dec.byteLength+' 字符</span>';}
+catch(e){document.getElementById('aes-output').textContent='❌ 解密失败: '+e.message;document.getElementById('aes-stats').innerHTML='<span style="color:#dc2626">❌ 解密错误</span>';}}
+function aesClear(){document.getElementById('aes-input').value='';document.getElementById('aes-output').textContent='';document.getElementById('aes-stats').textContent='';}
+function aesCopy(){var t=document.getElementById('aes-output').textContent;if(!t)return;navigator.clipboard.writeText(t).then(function(){var b=document.getElementById('aes-copy-btn');b.textContent='✅ 已复制';setTimeout(function(){b.textContent='📋 复制';},2000);}).catch(function(){});}
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入16/24/32位密钥 → 输入明文/密文 → 点击加密或解密。密文输出为 Base64 格式。</p>
+  <p><strong>算法：</strong>AES-CBC 模式，IV 自动生成并拼接在密文头部。</p>
+  <p><strong>隐私说明：</strong>所有处理在浏览器本地完成，密钥不会上传。</p>
+</div>

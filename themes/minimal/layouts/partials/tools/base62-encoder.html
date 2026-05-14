@@ -1,0 +1,228 @@
+<!-- Base62 Encoder/Decoder Widget -->
+<div class="tool-widget">
+  <div class="mode-toggle" id="b62-mode-toggle">
+    <button class="btn btn-sm active" id="b62-mode-encode" onclick="setB62Mode('encode')">✏️ 文本 → Base62</button>
+    <button class="btn btn-sm btn-outline" id="b62-mode-decode" onclick="setB62Mode('decode')">✏️ Base62 → 文本</button>
+  </div>
+
+  <textarea id="b62-input" class="tool-textarea" rows="5" placeholder="在此粘贴文本...">Hello, AI Toolkit! 你好！</textarea>
+
+  <div class="btn-row">
+    <button class="btn" onclick="convertB62()">🔄 转换</button>
+    <button class="btn btn-outline btn-sm" onclick="clearB62()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="b62-copy-btn" onclick="copyB62()">📋 复制结果</button>
+    <button class="btn btn-outline btn-sm" onclick="swapB62()">↕️ 交换</button>
+  </div>
+
+  <pre class="output-area" id="b62-output"></pre>
+  <div class="stats-bar" id="b62-stats"></div>
+
+  <div style="margin-top:14px;padding:12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);">
+    <div style="font-size:0.82rem;font-weight:600;margin-bottom:6px;">🔤 Base62 字符集 (0-9, A-Z, a-z)</div>
+    <div style="font-size:0.78rem;font-family:var(--font-mono);word-break:break-all;color:var(--text-secondary);">
+      0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+    </div>
+  </div>
+</div>
+
+<script>
+var _b62Mode = 'encode';
+var _base62Chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+function setB62Mode(mode) {
+  _b62Mode = mode;
+  document.getElementById('b62-mode-encode').className = mode === 'encode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('b62-mode-decode').className = mode === 'decode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  var input = document.getElementById('b62-input');
+  input.placeholder = mode === 'encode' ? '在此粘贴文本...' : '在此粘贴 Base62 字符串...';
+  convertB62();
+}
+
+function _encodeB62(str) {
+  // Convert string to Base62 using big integer arithmetic
+  // First, convert UTF-8 string to a big number
+  var bytes = [];
+  for (var i = 0; i < str.length; i++) {
+    var code = str.charCodeAt(i);
+    if (code < 128) {
+      bytes.push(code);
+    } else if (code < 2048) {
+      bytes.push(192 | (code >> 6));
+      bytes.push(128 | (code & 63));
+    } else if (code < 65536) {
+      bytes.push(224 | (code >> 12));
+      bytes.push(128 | ((code >> 6) & 63));
+      bytes.push(128 | (code & 63));
+    } else {
+      bytes.push(240 | (code >> 18));
+      bytes.push(128 | ((code >> 12) & 63));
+      bytes.push(128 | ((code >> 6) & 63));
+      bytes.push(128 | (code & 63));
+    }
+  }
+
+  if (bytes.length === 0) return '';
+
+  // Convert bytes to base-62 using big integer (array of digits)
+  var digits = [0]; // big endian, single digit
+
+  for (var i = 0; i < bytes.length; i++) {
+    var carry = bytes[i];
+    for (var j = digits.length - 1; j >= 0; j--) {
+      carry += digits[j] * 256;
+      digits[j] = carry % 62;
+      carry = Math.floor(carry / 62);
+    }
+    while (carry > 0) {
+      digits.unshift(carry % 62);
+      carry = Math.floor(carry / 62);
+    }
+  }
+
+  // Convert to characters
+  var result = '';
+  for (var i = 0; i < digits.length; i++) {
+    result += _base62Chars[digits[i]];
+  }
+  return result;
+}
+
+function _decodeB62(b62str) {
+  // Convert Base62 string back to bytes
+  // First, convert to array of digit values
+  var digits = [];
+  for (var i = 0; i < b62str.length; i++) {
+    var ch = b62str[i];
+    var val = _base62Chars.indexOf(ch);
+    if (val < 0) throw new Error('无效的 Base62 字符: ' + ch);
+    digits.push(val);
+  }
+
+  if (digits.length === 0) return '';
+
+  // Convert from base-62 to base-256 (bytes)
+  var bytes = [0]; // big endian
+
+  for (var i = 0; i < digits.length; i++) {
+    var carry = digits[i];
+    for (var j = bytes.length - 1; j >= 0; j--) {
+      carry += bytes[j] * 62;
+      bytes[j] = carry % 256;
+      carry = Math.floor(carry / 256);
+    }
+    while (carry > 0) {
+      bytes.unshift(carry % 256);
+      carry = Math.floor(carry / 256);
+    }
+  }
+
+  // Convert bytes to UTF-8 string
+  var result = '';
+  var i = 0;
+  while (i < bytes.length) {
+    var b1 = bytes[i];
+    if (b1 < 128) {
+      result += String.fromCharCode(b1);
+      i++;
+    } else if (b1 < 224 && i + 1 < bytes.length) {
+      result += String.fromCharCode(((b1 & 31) << 6) | (bytes[i + 1] & 63));
+      i += 2;
+    } else if (b1 < 240 && i + 2 < bytes.length) {
+      result += String.fromCharCode(((b1 & 15) << 12) | ((bytes[i + 1] & 63) << 6) | (bytes[i + 2] & 63));
+      i += 3;
+    } else if (i + 3 < bytes.length) {
+      var code = ((b1 & 7) << 18) | ((bytes[i + 1] & 63) << 12) | ((bytes[i + 2] & 63) << 6) | (bytes[i + 3] & 63);
+      if (code > 0xFFFF) {
+        code -= 0x10000;
+        result += String.fromCharCode(0xD800 + (code >> 10), 0xDC00 + (code & 0x3FF));
+      } else {
+        result += String.fromCharCode(code);
+      }
+      i += 4;
+    } else {
+      break;
+    }
+  }
+
+  return result;
+}
+
+function convertB62() {
+  var input = document.getElementById('b62-input').value;
+  var output = document.getElementById('b62-output');
+  var stats = document.getElementById('b62-stats');
+
+  if (!input.trim()) {
+    output.textContent = '';
+    stats.textContent = '';
+    return;
+  }
+
+  try {
+    if (_b62Mode === 'encode') {
+      var encoded = _encodeB62(input);
+      output.textContent = encoded;
+      stats.innerHTML = '<span>📏 原始长度: ' + input.length + ' 字符 (' + new TextEncoder().encode(input).length + ' 字节)</span><span>📦 Base62: ' + encoded.length + ' 字符</span>' +
+        '<span>📊 压缩比: ' + (encoded.length > 0 ? (input.length / encoded.length).toFixed(2) : '—') + 'x</span>';
+    } else {
+      var decoded = _decodeB62(input.trim());
+      output.textContent = decoded;
+      stats.innerHTML = '<span>📦 Base62: ' + input.trim().length + ' 字符</span><span>📏 解码后: ' + decoded.length + ' 字符</span>';
+    }
+  } catch(e) {
+    output.textContent = '❌ 转换失败: ' + e.message;
+    stats.textContent = '';
+  }
+}
+
+function clearB62() {
+  document.getElementById('b62-input').value = '';
+  document.getElementById('b62-output').textContent = '';
+  document.getElementById('b62-stats').textContent = '';
+}
+
+function copyB62() {
+  var text = document.getElementById('b62-output').textContent;
+  if (!text || text.indexOf('❌') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('b62-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+function swapB62() {
+  var output = document.getElementById('b62-output').textContent;
+  if (!output || output.indexOf('❌') === 0) return;
+  document.getElementById('b62-input').value = output;
+  var newMode = _b62Mode === 'encode' ? 'decode' : 'encode';
+  setB62Mode(newMode);
+}
+
+// Use polyfill for older browsers
+if (typeof TextEncoder === 'undefined') {
+  globalThis.TextEncoder = function() {
+    this.encode = function(str) {
+      var bytes = [];
+      for (var i = 0; i < str.length; i++) {
+        var code = str.charCodeAt(i);
+        if (code < 128) bytes.push(code);
+        else if (code < 2048) { bytes.push(192 | (code >> 6)); bytes.push(128 | (code & 63)); }
+        else if (code < 65536) { bytes.push(224 | (code >> 12)); bytes.push(128 | ((code >> 6) & 63)); bytes.push(128 | (code & 63)); }
+        else { bytes.push(240 | (code >> 18)); bytes.push(128 | ((code >> 12) & 63)); bytes.push(128 | ((code >> 6) & 63)); bytes.push(128 | (code & 63)); }
+      }
+      return { length: bytes.length };
+    };
+  };
+}
+
+document.getElementById('b62-input').addEventListener('input', convertB62);
+convertB62();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择编码或解码模式 → 输入文本或 Base62 字符串 → 实时转换。</p>
+  <p><strong>Base62：</strong>使用 62 个字符（0-9, A-Z, a-z）进行编码，无特殊符号，适合 URL 安全传输。</p>
+  <p><strong>支持 Unicode：</strong>完整支持中文、Emoji 等多字节字符的编码与解码。</p>
+  <p><strong>适用场景：</strong>URL 短链接 ID 生成、文件路径编码、数据紧凑存储、唯一标识符生成。</p>
+</div>

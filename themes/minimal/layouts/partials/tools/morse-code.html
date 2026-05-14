@@ -1,0 +1,207 @@
+<!-- Morse Code Converter Widget -->
+<div class="tool-widget">
+  <div class="mode-toggle" id="morse-mode-toggle">
+    <button class="btn btn-sm active" id="morse-mode-encode" onclick="setMorseMode('encode')">✏️ 文本 → 摩斯码</button>
+    <button class="btn btn-sm btn-outline" id="morse-mode-decode" onclick="setMorseMode('decode')">✏️ 摩斯码 → 文本</button>
+  </div>
+
+  <textarea id="morse-input" class="tool-textarea" rows="5" placeholder="输入文本...">SOS 2024</textarea>
+
+  <div class="btn-row">
+    <button class="btn" onclick="convertMorse()">🔄 转换</button>
+    <button class="btn btn-outline btn-sm" onclick="clearMorse()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="morse-copy-btn" onclick="copyMorse()">📋 复制结果</button>
+    <button class="btn btn-outline btn-sm" onclick="swapMorse()">↕️ 交换</button>
+    <button class="btn btn-outline btn-sm" onclick="playMorse()">🔊 播放</button>
+  </div>
+
+  <pre class="output-area" id="morse-output"></pre>
+  <div class="stats-bar" id="morse-stats"></div>
+</div>
+
+<script>
+var _morseMode = 'encode';
+
+var _morseToChar = {
+  '.-': 'A', '-...': 'B', '-.-.': 'C', '-..': 'D', '.': 'E',
+  '..-.': 'F', '--.': 'G', '....': 'H', '..': 'I', '.---': 'J',
+  '-.-': 'K', '.-..': 'L', '--': 'M', '-.': 'N', '---': 'O',
+  '.--.': 'P', '--.-': 'Q', '.-.': 'R', '...': 'S', '-': 'T',
+  '..-': 'U', '...-': 'V', '.--': 'W', '-..-': 'X', '-.--': 'Y',
+  '--..': 'Z',
+  '-----': '0', '.----': '1', '..---': '2', '...--': '3', '....-': '4',
+  '.....': '5', '-....': '6', '--...': '7', '---..': '8', '----.': '9',
+  '.-.-.-': '.', '--..--': ',', '..--..': '?', '.----.': '\'',
+  '-.-.--': '!', '-..-.': '/', '-.--.': '(', '-.--.-': ')',
+  '.-...': '&', '---...': ':', '-.-.-.': ';', '-...-': '=',
+  '.-.-.': '+', '-....-': '-', '..--.-': '_', '.-..-.': '"',
+  '...-..-': '$', '.--.-.': '@', '...---...': 'SOS'
+};
+
+var _charToMorse = {};
+for (var key in _morseToChar) {
+  _charToMorse[_morseToChar[key]] = key;
+}
+
+function setMorseMode(mode) {
+  _morseMode = mode;
+  document.getElementById('morse-mode-encode').className = mode === 'encode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('morse-mode-decode').className = mode === 'decode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  var input = document.getElementById('morse-input');
+  input.placeholder = mode === 'encode' ? '输入文本...' : '输入摩斯码 (空格分隔字母, / 或 | 分隔单词)...';
+  convertMorse();
+}
+
+function convertMorse() {
+  var input = document.getElementById('morse-input').value;
+  var output = document.getElementById('morse-output');
+  var stats = document.getElementById('morse-stats');
+
+  if (!input.trim()) {
+    output.textContent = '';
+    stats.textContent = '';
+    return;
+  }
+
+  try {
+    if (_morseMode === 'encode') {
+      // Text to Morse
+      var words = input.toUpperCase().split(/\s+/);
+      var resultParts = [];
+      for (var w = 0; w < words.length; w++) {
+        var word = words[w];
+        var letters = [];
+        for (var i = 0; i < word.length; i++) {
+          var ch = word[i];
+          if (ch === ' ') continue;
+          if (_charToMorse[ch]) {
+            letters.push(_charToMorse[ch]);
+          } else {
+            // Try to handle the char as-is for unknown
+            letters.push(ch);
+          }
+        }
+        resultParts.push(letters.join(' '));
+      }
+      var result = resultParts.join(' / ');
+
+      output.textContent = result;
+
+      var charCount = input.replace(/\s/g, '').length;
+      var morseCount = result.split(' ').length;
+      stats.innerHTML = '<span>📏 字符: ' + input.length + '</span><span>📦 摩斯码长度: ' + result.length + ' 字符</span><span>🔤 码元: ' + morseCount + '</span>';
+    } else {
+      // Morse to Text
+      var words = input.trim().split(/\s*\/\s*|\s*\|\s*|\n+/);
+      var resultParts = [];
+      for (var w = 0; w < words.length; w++) {
+        var letters = words[w].trim().split(/\s+/);
+        var wordResult = '';
+        for (var i = 0; i < letters.length; i++) {
+          var code = letters[i].trim();
+          if (!code) continue;
+          if (_morseToChar[code]) {
+            wordResult += _morseToChar[code];
+          } else {
+            wordResult += '?';
+          }
+        }
+        resultParts.push(wordResult);
+      }
+      var result = resultParts.join(' ');
+
+      output.textContent = result;
+
+      var morseSegments = input.trim().split(/\s+/).length;
+      stats.innerHTML = '<span>📦 摩斯码段: ' + morseSegments + '</span><span>📏 解码后: ' + result.length + ' 字符</span>';
+    }
+  } catch(e) {
+    output.textContent = '❌ 转换失败: ' + e.message;
+    stats.textContent = '';
+  }
+}
+
+function clearMorse() {
+  document.getElementById('morse-input').value = '';
+  document.getElementById('morse-output').textContent = '';
+  document.getElementById('morse-stats').textContent = '';
+}
+
+function copyMorse() {
+  var text = document.getElementById('morse-output').textContent;
+  if (!text || text.indexOf('❌') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('morse-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+function swapMorse() {
+  var output = document.getElementById('morse-output').textContent;
+  if (!output || output.indexOf('❌') === 0) return;
+  document.getElementById('morse-input').value = output;
+  // Switch mode
+  var newMode = _morseMode === 'encode' ? 'decode' : 'encode';
+  setMorseMode(newMode);
+}
+
+function playMorse() {
+  var morseText = _morseMode === 'encode' ? document.getElementById('morse-output').textContent : document.getElementById('morse-input').value;
+  if (!morseText || morseText.indexOf('❌') === 0) return;
+
+  try {
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    var dotDuration = 0.08; // seconds
+    var freq = 700; // Hz
+
+    var symbols = [];
+    for (var i = 0; i < morseText.length; i++) {
+      var ch = morseText[i];
+      if (ch === '.') { symbols.push({ type: 'dot', dur: dotDuration }); }
+      else if (ch === '-') { symbols.push({ type: 'dash', dur: dotDuration * 3 }); }
+      else if (ch === ' ') { symbols.push({ type: 'gap', dur: dotDuration }); }
+      else if (ch === '/') { symbols.push({ type: 'gap', dur: dotDuration * 3 }); }
+    }
+
+    var currentTime = audioCtx.currentTime;
+    var totalDuration = 0;
+    for (var i = 0; i < symbols.length; i++) {
+      var s = symbols[i];
+      if (s.type === 'gap') {
+        totalDuration += s.dur;
+        continue;
+      }
+      var oscillator = audioCtx.createOscillator();
+      var gainNode = audioCtx.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(freq, currentTime + totalDuration);
+      gainNode.gain.setValueAtTime(0.5, currentTime + totalDuration);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, currentTime + totalDuration + s.dur);
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.start(currentTime + totalDuration);
+      oscillator.stop(currentTime + totalDuration + s.dur);
+      totalDuration += s.dur + dotDuration; // inter-symbol gap
+    }
+
+    var btn = document.getElementById('morse-copy-btn');
+    var originalText = btn.textContent;
+    btn.textContent = '🔊 播放中';
+    setTimeout(function() { btn.textContent = originalText; }, totalDuration * 1000 + 500);
+  } catch(e) {
+    // Audio not supported
+  }
+}
+
+document.getElementById('morse-input').addEventListener('input', convertMorse);
+convertMorse();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择转换方向 → 输入文本或摩斯码 → 实时转换。空格分隔字母，<code>/</code> 或 <code>|</code> 分隔单词。</p>
+  <p><strong>支持字符：</strong>A-Z、0-9、部分标点符号（. , ? ! / & : ; = + - _ " $ @）。</p>
+  <p><strong>播放功能：</strong>点击「播放」可将摩斯码以音频形式播放（需浏览器支持 AudioContext）。</p>
+  <p><strong>SOS：</strong>国际通用的摩斯码求救信号 <code>... --- ...</code>。</p>
+</div>

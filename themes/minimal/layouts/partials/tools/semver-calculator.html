@@ -1,0 +1,137 @@
+<!-- SemVer 版本号比较 Widget -->
+<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:6px;">📦 版本号 A</label>
+<input type="text" id="sv-version-a" class="tool-textarea" style="font-family:var(--font-mono);min-height:auto;padding:12px 14px;" value="1.2.3" placeholder="输入版本号，如 1.2.3">
+<label style="font-size:0.85rem;font-weight:600;display:block;margin:8px 0 6px;">📦 版本号 B</label>
+<input type="text" id="sv-version-b" class="tool-textarea" style="font-family:var(--font-mono);min-height:auto;padding:12px 14px;" value="2.0.0" placeholder="输入版本号，如 2.0.0">
+<div class="btn-row">
+  <button class="btn" onclick="compareSemver()">⚖️ 比较</button>
+  <button class="btn btn-outline btn-sm" onclick="clearSemver()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" onclick="swapSemver()">🔄 交换</button>
+</div>
+<div class="output-area" id="sv-output" style="text-align:center;padding:16px;"></div>
+<pre class="output-area" id="sv-detail" style="margin-top:12px;"></pre>
+<div class="stats-bar" id="sv-stats"></div>
+<script>
+function _svParse(v){
+  var result = {major:0, minor:0, patch:0, pre:null, build:null, valid:true};
+  if(!v||typeof v!=='string'){result.valid=false;return result;}
+  v=v.trim();
+  if(v.indexOf('v')===0) v=v.substring(1);
+  var parts=v.split('+');
+  result.build=parts[1]||null;
+  var mainParts=parts[0].split('-');
+  result.pre=mainParts[1]||null;
+  var nums=mainParts[0].split('.');
+  result.major=parseInt(nums[0])||0;
+  result.minor=parseInt(nums[1])||0;
+  result.patch=parseInt(nums[2])||0;
+  if(isNaN(result.major)||isNaN(result.minor)||isNaN(result.patch)){result.valid=false;}
+  return result;
+}
+
+function _svCompare(a,b){
+  if(a.major!==b.major) return a.major<b.major?-1:1;
+  if(a.minor!==b.minor) return a.minor<b.minor?-1:1;
+  if(a.patch!==b.patch) return a.patch<b.patch?-1:1;
+  if(a.pre!==null && b.pre===null) return -1;
+  if(a.pre===null && b.pre!==null) return 1;
+  if(a.pre!==null && b.pre!==null){
+    var aParts=a.pre.split('.');
+    var bParts=b.pre.split('.');
+    var minLen=Math.min(aParts.length,bParts.length);
+    for(var i=0;i<minLen;i++){
+      var aIsNum=!isNaN(parseInt(aParts[i]));
+      var bIsNum=!isNaN(parseInt(bParts[i]));
+      if(aIsNum && bIsNum){
+        var an=parseInt(aParts[i]),bn=parseInt(bParts[i]);
+        if(an!==bn) return an<bn?-1:1;
+      } else if(aIsNum && !bIsNum) return -1;
+      else if(!aIsNum && bIsNum) return 1;
+      else {
+        if(aParts[i]!==bParts[i]) return aParts[i]<bParts[i]?-1:1;
+      }
+    }
+    return aParts.length<bParts.length?-1:1;
+  }
+  return 0;
+}
+
+function compareSemver(){
+  var va=document.getElementById('sv-version-a').value.trim();
+  var vb=document.getElementById('sv-version-b').value.trim();
+  var out=document.getElementById('sv-output');
+  var detail=document.getElementById('sv-detail');
+  var stats=document.getElementById('sv-stats');
+  if(!va||!vb){out.innerHTML='<span style=\"color:var(--text-secondary);\">⚠️ 请输入两个版本号</span>';detail.textContent='';stats.textContent='';return;}
+  var pa=_svParse(va);
+  var pb=_svParse(vb);
+  if(!pa.valid){out.innerHTML='<span style=\"color:#dc2626;\">❌ 版本号 A 格式无效</span>';detail.textContent='';return;}
+  if(!pb.valid){out.innerHTML='<span style=\"color:#dc2626;\">❌ 版本号 B 格式无效</span>';detail.textContent='';return;}
+  var cmp=_svCompare(pa,pb);
+  var resultHtml='';
+  var detailLines=[];
+  detailLines.push('版本 A: '+va+'  ➜  major='+pa.major+', minor='+pa.minor+', patch='+pa.patch+(pa.pre?' pre='+pa.pre:'')+(pa.build?' build='+pa.build:''));
+  detailLines.push('版本 B: '+vb+'  ➜  major='+pb.major+', minor='+pb.minor+', patch='+pb.patch+(pb.pre?' pre='+pb.pre:'')+(pb.build?' build='+pb.build:''));
+  detailLines.push('');
+  if(cmp===0){
+    resultHtml='<span style=\"font-size:1.5rem;font-weight:700;color:var(--accent);\">A = B</span><br><span style=\"color:var(--text-secondary);\">两个版本完全相同</span>';
+  } else if(cmp<0){
+    resultHtml='<span style=\"font-size:1.5rem;font-weight:700;color:#16a34a;\">A &lt; B</span><br><span style=\"color:var(--text-secondary);\">版本 A 小于版本 B</span>';
+  } else {
+    resultHtml='<span style=\"font-size:1.5rem;font-weight:700;color:#16a34a;\">A &gt; B</span><br><span style=\"color:var(--text-secondary);\">版本 A 大于版本 B</span>';
+  }
+  // Add pre-release & build info
+  if(pa.pre||pb.pre){
+    detailLines.push('ℹ️ 预发布版本 (pre-release) 优先级低于正式版本');
+  }
+  if(pa.build||pb.build){
+    detailLines.push('ℹ️ 构建元数据 (build metadata) 不影响版本优先级比较');
+  }
+  // Compatibility info
+  detailLines.push('');
+  detailLines.push('📋 兼容性分析:');
+  if(pa.major===pb.major&&pa.major===0){
+    detailLines.push('  🔶 主要版本均为 0 - 不保证 API 稳定');
+  } else if(pa.major!==pb.major){
+    detailLines.push('  🔴 主版本号不同 - Major change (不兼容 API 变更)');
+  } else if(pa.minor!==pb.minor){
+    detailLines.push('  🟡 次版本号不同 - Minor change (向下兼容的功能性新增)');
+  } else if(pa.patch!==pb.patch){
+    detailLines.push('  🟢 修订号不同 - Patch change (向下兼容的问题修正)');
+  } else {
+    detailLines.push('  ⚪ 版本号完全一致');
+  }
+  var majorDiff=Math.abs(pa.major-pb.major);
+  var minorDiff=Math.abs(pa.minor-pb.minor);
+  var patchDiff=Math.abs(pa.patch-pb.patch);
+  detailLines.push('  📊 差异: '+majorDiff+' 主版本, '+minorDiff+' 次版本, '+patchDiff+' 修订');
+  out.innerHTML=resultHtml;
+  detail.textContent=detailLines.join(String.fromCharCode(10));
+  stats.innerHTML='<span>📋 '+va+' vs '+vb+'</span><span>📐 SemVer 2.0.0 规范</span>';
+}
+
+function clearSemver(){
+  document.getElementById('sv-version-a').value='';
+  document.getElementById('sv-version-b').value='';
+  document.getElementById('sv-output').innerHTML='';
+  document.getElementById('sv-detail').textContent='';
+  document.getElementById('sv-stats').textContent='';
+}
+
+function swapSemver(){
+  var a=document.getElementById('sv-version-a').value;
+  var b=document.getElementById('sv-version-b').value;
+  document.getElementById('sv-version-a').value=b;
+  document.getElementById('sv-version-b').value=a;
+  compareSemver();
+}
+
+document.getElementById('sv-version-a').addEventListener('input',compareSemver);
+document.getElementById('sv-version-b').addEventListener('input',compareSemver);
+compareSemver();
+</script>
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入两个语义化版本号，自动按照 SemVer 2.0.0 规范比较大小并显示差异详情。</p>
+  <p><strong>支持格式：</strong><code>主版本.次版本.修订</code>（如 1.2.3），可选 pre-release（如 1.2.3-alpha.1）和 build metadata。</p>
+  <p><strong>适用场景：</strong>npm 包版本管理、发布流程检查、依赖版本对比。</p>
+</div>
