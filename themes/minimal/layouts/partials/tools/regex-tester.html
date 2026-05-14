@@ -1,0 +1,76 @@
+<!-- Regex Tester Widget -->
+<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:6px;">🔍 正则表达式</label>
+<input type="text" id="regex-pattern" class="tool-textarea" style="font-family:var(--font-mono);min-height:auto;padding:12px 14px;" value="\b[A-Z]{2,}\b" placeholder="输入正则表达式...">
+<div style="display:flex;gap:8px;margin:10px 0;flex-wrap:wrap;align-items:center;">
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="checkbox" id="regex-flag-g" checked> global(g)
+  </label>
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="checkbox" id="regex-flag-i"> ignore(i)
+  </label>
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="checkbox" id="regex-flag-m"> multiline(m)
+  </label>
+  <button class="btn btn-outline btn-sm" onclick="clearRegex()">🗑️ 清空</button>
+</div>
+
+<label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:6px;">📝 测试文本</label>
+<textarea id="regex-input" class="tool-textarea" placeholder="输入测试文本..." rows="8">HELLO World
+This is AI TOOLKIT
+测试中文 MATCH</textarea>
+
+<div style="margin:12px 0;">
+  <span id="regex-count" style="font-size:0.82rem;color:var(--text-secondary);">匹配数: 0</span>
+</div>
+
+<pre class="output-area" id="regex-output" style="white-space:pre-wrap;"></pre>
+
+<script>
+function testRegex() {
+  var pattern = document.getElementById('regex-pattern').value;
+  var text = document.getElementById('regex-input').value;
+  var flags = '';
+  if (document.getElementById('regex-flag-g').checked) flags += 'g';
+  if (document.getElementById('regex-flag-i').checked) flags += 'i';
+  if (document.getElementById('regex-flag-m').checked) flags += 'm';
+  if (!pattern.trim()) { document.getElementById('regex-output').textContent = '⚠️ 请输入正则表达式'; return; }
+  try {
+    var regex = new RegExp(pattern, flags);
+    var matches = text.match(regex);
+    var count = matches ? matches.length : 0;
+    document.getElementById('regex-count').textContent = '匹配数: ' + count;
+    if (count === 0) {
+      document.getElementById('regex-output').textContent = '❌ 无匹配结果';
+      return;
+    }
+    var highlighted = text.replace(/(<|>)/g, '');
+    var reHL = new RegExp('(' + pattern.replace(/([/\\])/g, '\\$1') + ')', flags.indexOf('g') >= 0 ? flags.replace('g','') + 'g' : flags);
+    var result = highlighted.replace(reHL, '**$1**');
+    document.getElementById('regex-output').innerHTML = result;
+  } catch(e) {
+    document.getElementById('regex-output').textContent = '❌ 正则错误: ' + e.message;
+    document.getElementById('regex-count').textContent = '匹配数: 0';
+  }
+}
+
+function clearRegex() {
+  document.getElementById('regex-input').value = '';
+  document.getElementById('regex-output').textContent = '';
+  document.getElementById('regex-count').textContent = '匹配数: 0';
+}
+
+var _regexTimer = null;
+['regex-pattern','regex-input','regex-flag-g','regex-flag-i','regex-flag-m'].forEach(function(id) {
+  document.getElementById(id).addEventListener('input', function() {
+    clearTimeout(_regexTimer);
+    _regexTimer = setTimeout(testRegex, 300);
+  });
+});
+testRegex();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入正则表达式，选择匹配模式，测试文本会实时高亮匹配结果。</p>
+  <p><strong>示例：</strong><code>\b[A-Z]{2,}\b</code> 匹配所有大写单词（>=2个字母）。</p>
+  <p><strong>适用场景：</strong>日志分析、文本提取、数据清洗、表单验证调试。</p>
+</div>
