@@ -1,0 +1,6 @@
+{{ if .Site.Params.enable_ads }}
+{{ if and (ne .Site.Params.adsense_publisher_id "ca-pub-XXXXXXXXXXXXXXXX") (gt (len .Site.Params.adsense_publisher_id) 10) }}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ .Site.Params.adsense_publisher_id }}"
+     crossorigin="anonymous"></script>
+{{ end }}
+{{ end }}

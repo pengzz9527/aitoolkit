@@ -1,0 +1,76 @@
+{{ define "main" }}
+<div class="container">
+
+  {{/* ===== Hero Section ===== */}}
+  <section class="hero">
+    <h1>{{ .Site.Title }}</h1>
+    <p>{{ .Site.Params.description }}</p>
+  </section>
+
+  {{/* ===== Tools Grouped by Category ===== */}}
+  {{ $toolPages := where .Site.Pages "Type" "tools" }}
+
+  {{ if gt (len .Site.Taxonomies.categories) 0 }}
+    {{/* Categories exist — group tools by category */}}
+    {{ range $name, $taxonomy := .Site.Taxonomies.categories }}
+      {{ $toolsInCat := where $taxonomy.Pages "Type" "tools" }}
+      {{ if gt (len $toolsInCat) 0 }}
+      <section class="category-section">
+        <h2>{{ $name }}</h2>
+        <div class="tool-grid">
+          {{ range $toolsInCat }}
+          <a href="{{ .RelPermalink }}" class="tool-card">
+            {{ with .Params.icon }}<span class="tool-icon">{{ . | safeHTML }}</span>{{ end }}
+            <h3>{{ .Title }}</h3>
+            <p>{{ .Description | default .Summary }}</p>
+          </a>
+          {{ end }}
+        </div>
+      </section>
+      {{ end }}
+    {{ end }}
+
+    {{/* Tools not assigned to any category */}}
+    {{ $categorized := slice }}
+    {{ range .Site.Taxonomies.categories }}
+      {{ $categorized = $categorized | append .Pages }}
+    {{ end }}
+    {{ $uncategorized := complement $categorized $toolPages }}
+    {{ if gt (len $uncategorized) 0 }}
+    <section class="category-section">
+      <h2>其他工具</h2>
+      <div class="tool-grid">
+        {{ range $uncategorized }}
+        <a href="{{ .RelPermalink }}" class="tool-card">
+          {{ with .Params.icon }}<span class="tool-icon">{{ . | safeHTML }}</span>{{ end }}
+          <h3>{{ .Title }}</h3>
+          <p>{{ .Description | default .Summary }}</p>
+        </a>
+        {{ end }}
+      </div>
+    </section>
+    {{ end }}
+
+  {{ else }}
+    {{/* No categories — show all tools in a single grid */}}
+    {{ if gt (len $toolPages) 0 }}
+    <section class="category-section">
+      <h2>全部工具</h2>
+      <div class="tool-grid">
+        {{ range $toolPages }}
+        <a href="{{ .RelPermalink }}" class="tool-card">
+          {{ with .Params.icon }}<span class="tool-icon">{{ . | safeHTML }}</span>{{ end }}
+          <h3>{{ .Title }}</h3>
+          <p>{{ .Description | default .Summary }}</p>
+        </a>
+        {{ end }}
+      </div>
+    </section>
+    {{ end }}
+  {{ end }}
+
+  {{/* ===== Ad Slot below tool grid ===== */}}
+  {{ partial "ad-incontent.html" . }}
+
+</div>
+{{ end }}

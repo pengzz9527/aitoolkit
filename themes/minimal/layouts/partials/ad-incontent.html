@@ -1,0 +1,17 @@
+{{ if .Site.Params.enable_ads }}
+{{ if and (ne .Site.Params.adsense_publisher_id "ca-pub-XXXXXXXXXXXXXXXX") (gt (len .Site.Params.adsense_publisher_id) 10) }}
+<div class="ad-slot ad-incontent">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="{{ .Site.Params.adsense_publisher_id }}"
+       data-ad-slot="{{ .Site.Params.adsense_slot_inarticle }}"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+{{ else }}
+<div class="ad-slot ad-placeholder">
+  <div class="ad-placeholder-inner">📢 AdSense 广告位</div>
+</div>
+{{ end }}
+{{ end }}
