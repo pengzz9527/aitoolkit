@@ -1,0 +1,14 @@
+{{ if .Site.Params.enable_ads }}
+{{ if and (ne .Site.Params.adsense_publisher_id "ca-pub-XXXXXXXXXXXXXXXX") (gt (len .Site.Params.adsense_publisher_id) 10) }}
+{{/* ===== Sticky Bottom Banner Ad ===== */}}
+<div class="ad-sticky-bottom">
+  <button class="ad-close-btn" onclick="this.parentElement.style.display='none'" aria-label="关闭广告">✕</button>
+  <ins class="adsbygoogle"
+       style="display:inline-block;width:728px;height:90px"
+       data-ad-client="{{ .Site.Params.adsense_publisher_id }}"
+       data-ad-slot="{{ .Site.Params.adsense_slot_sticky }}"
+       data-ad-format="horizontal"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+{{ end }}
+{{ end }}

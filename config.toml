@@ -8,8 +8,24 @@ enableRobotsTXT = true
   description = "免费在线工具集合 — JSON格式化、文本处理、编码解码等实用在线工具，无需下载打开即用"
   keywords = "在线工具, JSON格式化, 文本计数器, Base64编码, URL编码, 免费工具"
   author = "AI Toolkit"
-  adsense_publisher_id = "ca-pub-XXXXXXXXXXXXXXXX"
+
+  # ============================================================
+  # 📢 Google AdSense 配置
+  # ============================================================
+  # AdSense 开关 — true 启用广告，false 完全关闭
   enable_ads = true
+
+  # ⚠️ 替换为你的 AdSense Publisher ID
+  # 格式: ca-pub-XXXXXXXXXXXXXXXX (16位数字)
+  # 保持 ca-pub-XXXXXXXXXXXXXXXX 不变则显示占位符，不上线真实广告
+  adsense_publisher_id = "ca-pub-XXXXXXXXXXXXXXXX"
+
+  # ⚠️ 替换为你在 AdSense 创建的广告单元 Slot ID
+  # 格式: 数字 (如 1234567890)
+  # 文章内嵌广告 (出现在工具页面底部和首页底部)
+  adsense_slot_inarticle = "1234567890"
+  # 底部固定横幅广告 (出现在页面底部，带关闭按钮)
+  adsense_slot_sticky = "1234567891"
 
 [taxonomies]
   category = "categories"

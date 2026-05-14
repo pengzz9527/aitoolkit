@@ -1,5 +1,6 @@
 {{ if .Site.Params.enable_ads }}
 {{ if and (ne .Site.Params.adsense_publisher_id "ca-pub-XXXXXXXXXXXXXXXX") (gt (len .Site.Params.adsense_publisher_id) 10) }}
+{{/* ===== In-Content Ad Unit ===== */}}
 <div class="ad-slot ad-incontent">
   <ins class="adsbygoogle"
        style="display:block"
@@ -10,8 +11,9 @@
   <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 {{ else }}
+{{/* ===== Placeholder (shown until real adsense ID is configured) ===== */}}
 <div class="ad-slot ad-placeholder">
-  <div class="ad-placeholder-inner">📢 AdSense 广告位</div>
+  <div class="ad-placeholder-inner">📢 AdSense 广告位 — 审核通过后自动展示</div>
 </div>
 {{ end }}
 {{ end }}
