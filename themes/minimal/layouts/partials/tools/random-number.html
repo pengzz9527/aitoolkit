@@ -1,0 +1,130 @@
+<!-- Random Number Generator Widget -->
+<div class="tool-widget">
+  <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+    <div style="flex:1;min-width:100px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">最小值</label>
+      <input type="number" id="rn-min" class="tool-textarea" style="min-height:auto;padding:10px 14px;" value="1" placeholder="最小值">
+    </div>
+    <div style="flex:1;min-width:100px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">最大值</label>
+      <input type="number" id="rn-max" class="tool-textarea" style="min-height:auto;padding:10px 14px;" value="100" placeholder="最大值">
+    </div>
+    <div style="flex:0 0 120px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">数量</label>
+      <input type="number" id="rn-count" class="tool-textarea" style="min-height:auto;padding:10px 14px;" value="10" min="1" max="100" placeholder="1-100">
+    </div>
+  </div>
+
+  <div style="display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="radio" name="rn-type" value="integer" checked onclick="generateRN()"> 整数
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="radio" name="rn-type" value="float" onclick="generateRN()"> 浮点数
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="checkbox" id="rn-unique" onclick="generateRN()"> 🚫 防重复
+    </label>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="generateRN()">🎲 生成</button>
+    <button class="btn btn-outline btn-sm" onclick="clearRN()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="rn-copy-btn" onclick="copyRN()">📋 复制</button>
+  </div>
+
+  <div class="output-area" id="rn-output"></div>
+  <div class="stats-bar" id="rn-stats"></div>
+</div>
+
+<script>
+function generateRN() {
+  var min = parseFloat(document.getElementById('rn-min').value);
+  var max = parseFloat(document.getElementById('rn-max').value);
+  var count = parseInt(document.getElementById('rn-count').value);
+  var isFloat = document.querySelector('input[name="rn-type"]:checked').value === 'float';
+  var unique = document.getElementById('rn-unique').checked;
+  var output = document.getElementById('rn-output');
+  var stats = document.getElementById('rn-stats');
+
+  if (isNaN(min) || isNaN(max)) { output.textContent = '⚠️ 请输入有效的范围'; stats.textContent = ''; return; }
+  if (min >= max) { output.textContent = '⚠️ 最小值必须小于最大值'; stats.textContent = ''; return; }
+  if (isNaN(count) || count < 1) count = 1;
+  if (count > 100) count = 100;
+  document.getElementById('rn-count').value = count;
+
+  if (unique && !isFloat && (max - min + 1) < count) {
+    output.textContent = '⚠️ 防重复模式下，范围内整数数量不足。范围大小: ' + (max - min + 1) + '，请求数量: ' + count;
+    stats.textContent = '';
+    return;
+  }
+
+  var results = [];
+  if (unique && !isFloat) {
+    var pool = [];
+    for (var i = min; i <= max; i++) pool.push(i);
+    for (var j = pool.length - 1; j > 0 && results.length < count; j--) {
+      var r = Math.floor(Math.random() * (j + 1));
+      results.push(pool[r]);
+      pool[r] = pool[j];
+      pool.pop();
+    }
+    if (results.length < count) results.push(pool[0]);
+  } else {
+    var used = new Set();
+    var maxAttempts = 10000;
+    var attempts = 0;
+    while (results.length < count && attempts < maxAttempts) {
+      attempts++;
+      var val;
+      if (isFloat) {
+        val = min + Math.random() * (max - min);
+        val = Math.round(val * 1000000) / 1000000;
+      } else {
+        val = Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+      if (unique) {
+        if (!used.has(val)) {
+          results.push(val);
+          used.add(val);
+        }
+      } else {
+        results.push(val);
+      }
+    }
+  }
+
+  output.textContent = results.join(isFloat ? '\n' : ', ');
+  stats.innerHTML = '<span>🎲 生成 ' + results.length + ' 个' + (isFloat ? '浮点数' : '整数') + '</span>' +
+    '<span>📊 范围: ' + min + ' ~ ' + max + '</span>';
+}
+
+function clearRN() {
+  document.getElementById('rn-output').textContent = '';
+  document.getElementById('rn-stats').textContent = '';
+}
+
+function copyRN() {
+  var text = document.getElementById('rn-output').textContent;
+  if (!text || text.indexOf('⚠️') >= 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('rn-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制'; }, 2000);
+  }).catch(function() {});
+}
+
+['rn-min','rn-max','rn-count'].forEach(function(id) {
+  document.getElementById(id).addEventListener('input', function() {
+    clearTimeout(window._rnTimer);
+    window._rnTimer = setTimeout(generateRN, 500);
+  });
+});
+generateRN();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>设置数值范围、生成数量，选择整数/浮点数、防重复选项，点击生成或等待自动刷新。</p>
+  <p><strong>注意：</strong>防重复仅对整数有效。最大生成数量为 100。浮点数保留 6 位小数。</p>
+  <p><strong>适用场景：</strong>抽奖活动、随机抽样、游戏开发测试、密码学辅助。</p>
+</div>

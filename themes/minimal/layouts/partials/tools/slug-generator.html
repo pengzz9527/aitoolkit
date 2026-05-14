@@ -1,0 +1,114 @@
+<!-- URL Slug Generator Widget -->
+<textarea id="slug-input" class="tool-textarea" placeholder="在此输入需要生成 slug 的文本（支持中文）..." rows="6">你好世界！AI Toolkit 是一个很棒的工具集</textarea>
+
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:12px 0;">
+  <label style="font-size:0.8rem;font-weight:600;">分隔符：</label>
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="radio" name="slug-sep" id="slug-sep-hyphen" checked> ➖ 连字符 (-)
+  </label>
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="radio" name="slug-sep" id="slug-sep-underscore"> 下划线 (_)
+  </label>
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="checkbox" id="slug-lowercase" checked> 🔤 转小写
+  </label>
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="checkbox" id="slug-remove-num"> 🔢 去数字
+  </label>
+</div>
+
+<div class="btn-row">
+  <button class="btn" onclick="generateSlug()">⚡ 生成</button>
+  <button class="btn btn-outline btn-sm" onclick="clearSlug()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="slug-copy-btn" onclick="copySlug()">📋 复制结果</button>
+</div>
+
+<pre class="output-area" id="slug-output"></pre>
+<div class="stats-bar" id="slug-stats"></div>
+
+<script>
+// Simple Chinese to pinyin-like mapping (just the most common chars)
+var _pinyinMap = {
+  '你':'ni','好':'hao','世':'shi','界':'jie','是':'shi','一':'yi','个':'ge','很':'hen','棒':'bang','的':'de','工':'gong','具':'ju','集':'ji',
+  '中':'zhong','文':'wen','转':'zhuan','换':'huan','生':'sheng','成':'cheng','器':'qi','使':'shi','用':'yong','简':'jian','单':'dan',
+  '欢':'huan','迎':'ying','来':'lai','到':'dao','网':'wang','站':'zhan','测':'ce','试':'shi','数':'shu','据':'ju','分':'fen','析':'xi',
+  '人':'ren','大':'da','小':'xiao','多':'duo','少':'shao','长':'chang','短':'duan','高':'gao','低':'di','新':'xin','旧':'jiu',
+  '上':'shang','下':'xia','左':'zuo','右':'you','前':'qian','后':'hou','内':'nei','外':'wai','开':'kai','关':'guan','有':'you',
+  '没':'mei','与':'yu','和':'he','或':'huo','之':'zhi','以':'yi','在':'zai','了':'le','不':'bu','也':'ye','就':'jiu','都':'dou',
+  '而':'er','及':'ji','其':'qi','中':'zhong','等':'deng','编':'bian','码':'ma','解':'jie','码':'ma','工':'gong','具':'ju','合':'he',
+  '集':'ji','工':'gong','具':'ju','箱':'xiang'
+};
+
+function _chineseToPinyin(text) {
+  var result = '';
+  for (var i = 0; i < text.length; i++) {
+    var c = text[i];
+    if (c >= '\u4e00' && c <= '\u9fff') {
+      result += _pinyinMap[c] || encodeURIComponent(c).replace(/%/g,'').toLowerCase();
+    } else {
+      result += c;
+    }
+  }
+  return result;
+}
+
+function generateSlug() {
+  var input = document.getElementById('slug-input').value.trim();
+  var out = document.getElementById('slug-output');
+  var stats = document.getElementById('slug-stats');
+  if (!input) { out.textContent = '⚠️ 请输入文本'; stats.textContent = ''; return; }
+  
+  var sep = document.getElementById('slug-sep-hyphen').checked ? '-' : '_';
+  var toLower = document.getElementById('slug-lowercase').checked;
+  var removeNum = document.getElementById('slug-remove-num').checked;
+  
+  // Convert Chinese to pinyin-like
+  var text = _chineseToPinyin(input);
+  
+  // Remove HTML tags
+  text = text.replace(/<[^>]*>/g, '');
+  
+  // Remove numbers if option selected
+  if (removeNum) text = text.replace(/[0-9]/g, '');
+  
+  // Convert to lowercase
+  if (toLower) text = text.toLowerCase();
+  
+  // Replace non-alphanumeric chars with separator
+  text = text.replace(/[^a-zA-Z0-9\u4e00-\u9fff]+/g, sep);
+  
+  // Remove leading/trailing separators
+  text = text.replace(new RegExp('^' + sep + '+|' + sep + '+$', 'g'), '');
+  
+  // Collapse multiple separators
+  text = text.replace(new RegExp(sep + '+', 'g'), sep);
+  
+  out.textContent = text || '⚠️ 无法生成 slug（输入可能不包含可转换字符）';
+  stats.innerHTML = '<span>📏 原始: ' + input.length + ' 字符</span><span>📦 Slug: ' + text.length + ' 字符</span>';
+  if (input.length > text.length) {
+    stats.innerHTML += '<span>📉 缩短 ' + (input.length - text.length) + ' 字符</span>';
+  }
+}
+
+function clearSlug() {
+  document.getElementById('slug-input').value = '';
+  document.getElementById('slug-output').textContent = '';
+  document.getElementById('slug-stats').textContent = '';
+}
+
+function copySlug() {
+  var text = document.getElementById('slug-output').textContent;
+  if (!text || text.indexOf('⚠️') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('slug-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入任意文本（支持中文），自动生成 URL 友好的 slug 字符串。</p>
+  <p><strong>中文处理：</strong>常见中文字符会转换为拼音，未收录的字符保留原始编码。</p>
+  <p><strong>适用场景：</strong>SEO 优化 URL 生成、文章标题转链接、文件命名规范。</p>
+</div>

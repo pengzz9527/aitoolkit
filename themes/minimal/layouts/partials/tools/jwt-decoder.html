@@ -1,0 +1,75 @@
+<!-- JWT Decoder Widget -->
+<textarea id="jwt-input" class="tool-textarea" placeholder="在此粘贴 JWT Token..." rows="5">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFJIFRvb2xraXQiLCJpYXQiOjE1MTYyMzkwMjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</textarea>
+
+<div class="btn-row">
+  <button class="btn" onclick="decodeJWT()">🔓 解码</button>
+  <button class="btn btn-outline btn-sm" onclick="clearJWT()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="jwt-copy-header-btn" onclick="copyJWTSection('header')">📋 复制Header</button>
+  <button class="btn btn-outline btn-sm" id="jwt-copy-payload-btn" onclick="copyJWTSection('payload')">📋 复制Payload</button>
+</div>
+
+<pre class="output-area" id="jwt-output" style="max-height:600px;"></pre>
+<div class="stats-bar" id="jwt-stats"></div>
+
+<script>
+function decodeJWT() {
+  var input = document.getElementById('jwt-input').value.trim();
+  var out = document.getElementById('jwt-output');
+  var stats = document.getElementById('jwt-stats');
+  if (!input) { out.textContent = '⚠️ 请输入 JWT Token'; stats.textContent = ''; return; }
+  var parts = input.split('.');
+  if (parts.length !== 3) {
+    out.textContent = '❌ 无效的JWT格式：需要3个由.分隔的部分（Header.Payload.Signature）';
+    stats.textContent = '';
+    return;
+  }
+  try {
+    var header = JSON.parse(atob(parts[0]));
+    var payload = JSON.parse(atob(parts[1].replace(/-/g,'+').replace(/_/g,'/')));
+    var sig = parts[2];
+    var result = '📋 Header:\n' + JSON.stringify(header, null, 2) +
+      '\n\n📋 Payload:\n' + JSON.stringify(payload, null, 2) +
+      '\n\n🔑 Signature:\n' + sig;
+    out.textContent = result;
+    var hSize = parts[0].length;
+    var pSize = parts[1].length;
+    var exp = payload.exp || payload.expiration || null;
+    var expStr = exp ? new Date(exp * 1000).toLocaleString('zh-CN') : '无';
+    stats.innerHTML = '<span>✅ 解码成功</span><span>📏 Header: ' + hSize + 'B</span><span>📦 Payload: ' + pSize + 'B</span><span>⏰ 过期: ' + expStr + '</span>';
+  } catch(e) {
+    out.textContent = '❌ 解码失败: ' + e.message + '\n\n提示：JWT Token 应该是 3 段由点号分隔的 Base64 编码字符串。';
+    stats.textContent = '';
+  }
+}
+
+function clearJWT() {
+  document.getElementById('jwt-input').value = '';
+  document.getElementById('jwt-output').textContent = '';
+  document.getElementById('jwt-stats').textContent = '';
+}
+
+var _jwtOutput = null;
+function getJWTSection(section) {
+  var text = document.getElementById('jwt-output').textContent;
+  var parts = text.split('\n\n');
+  if (section === 'header') return parts[0] ? parts[0].replace('📋 Header:\n','') : '';
+  if (section === 'payload') return parts[1] ? parts[1].replace('📋 Payload:\n','') : '';
+  return '';
+}
+
+function copyJWTSection(section) {
+  var text = getJWTSection(section);
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById(section === 'header' ? 'jwt-copy-header-btn' : 'jwt-copy-payload-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = section === 'header' ? '📋 复制Header' : '📋 复制Payload'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>粘贴 JWT Token 后点击解码，自动解析 Header、Payload 和 Signature 三部分。</p>
+  <p><strong>注意：</strong>本工具仅解码查看内容，不验证签名有效性。请勿在不可信的页面中粘贴敏感 Token。</p>
+  <p><strong>适用场景：</strong>JWT 调试、Token 内容检查、认证系统开发。</p>
+</div>

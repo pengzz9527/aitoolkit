@@ -1,0 +1,90 @@
+<!-- HTML Encoder/Decoder Widget -->
+<div class="tool-widget">
+  <div class="mode-toggle" id="he-mode-toggle">
+    <button class="btn btn-sm active" id="he-mode-encode" onclick="setHEMode('encode')">🔐 编码 (Encode)</button>
+    <button class="btn btn-sm btn-outline" id="he-mode-decode" onclick="setHEMode('decode')">🔓 解码 (Decode)</button>
+  </div>
+
+  <textarea id="he-input" class="tool-textarea" placeholder="在此粘贴文本..." rows="8">&lt;script&gt;alert('Hello &amp; World');&lt;/script&gt;</textarea>
+
+  <div class="btn-row">
+    <button class="btn" onclick="convertHE()">🔄 转换</button>
+    <button class="btn btn-outline btn-sm" onclick="clearHE()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="he-copy-btn" onclick="copyHE()">📋 复制结果</button>
+  </div>
+
+  <pre class="output-area" id="he-output"></pre>
+  <div class="stats-bar" id="he-stats"></div>
+</div>
+
+<script>
+var _heMode = 'decode';
+
+function setHEMode(mode) {
+  _heMode = mode;
+  document.getElementById('he-mode-encode').className = mode === 'encode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('he-mode-decode').className = mode === 'decode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('he-input').placeholder = mode === 'encode' ? '在此粘贴 HTML 文本...' : '在此粘贴 HTML 编码字符串...';
+  convertHE();
+}
+
+function convertHE() {
+  var input = document.getElementById('he-input').value;
+  var output = document.getElementById('he-output');
+  var stats = document.getElementById('he-stats');
+
+  if (!input.trim()) { output.textContent = ''; stats.textContent = ''; return; }
+
+  try {
+    var result;
+    if (_heMode === 'encode') {
+      result = input
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    } else {
+      result = input
+        .replace(/&#39;/g, "'")
+        .replace(/&quot;/g, '"')
+        .replace(/&gt;/g, '>')
+        .replace(/&lt;/g, '<')
+        .replace(/&amp;/g, '&');
+    }
+    output.textContent = result;
+    stats.innerHTML = '<span>📏 原始: ' + input.length + ' 字符</span><span>📦 结果: ' + result.length + ' 字符</span>';
+  } catch(e) {
+    output.textContent = '❌ ' + (_heMode === 'encode' ? '编码' : '解码') + '失败: ' + e.message;
+    stats.textContent = '';
+  }
+}
+
+function clearHE() {
+  document.getElementById('he-input').value = '';
+  document.getElementById('he-output').textContent = '';
+  document.getElementById('he-stats').textContent = '';
+}
+
+function copyHE() {
+  var text = document.getElementById('he-output').textContent;
+  if (!text || text.indexOf('❌') >= 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('he-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+document.getElementById('he-input').addEventListener('input', function() {
+  clearTimeout(window._heTimer);
+  window._heTimer = setTimeout(convertHE, 300);
+});
+convertHE();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择编码或解码模式 → 输入文本 → 点击转换或自动实时转换。</p>
+  <p><strong>编码对照：</strong><code>&amp;</code> → <code>&amp;amp;</code>，<code>&lt;</code> → <code>&amp;lt;</code>，<code>&gt;</code> → <code>&amp;gt;</code>，<code>"</code> → <code>&amp;quot;</code>，<code>'</code> → <code>&amp;#39;</code></p>
+  <p><strong>适用场景：</strong>HTML 模板中安全嵌入用户输入、防止 XSS 攻击、富文本内容预处理。</p>
+</div>

@@ -1,0 +1,113 @@
+<!-- IP 地址查询 Widget (纯前端) -->
+<div class="btn-row">
+  <button class="btn" onclick="fetchIPInfo()">🔄 获取本机信息</button>
+  <button class="btn btn-outline btn-sm" onclick="clearIPInfo()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="ip-copy-btn" onclick="copyIPInfo()">📋 复制结果</button>
+</div>
+
+<div class="output-area" id="ip-output">点击「获取本机信息」按钮查询...</div>
+<div class="stats-bar" id="ip-stats"></div>
+
+<script>
+function fetchIPInfo() {
+  var output = document.getElementById('ip-output');
+  var stats = document.getElementById('ip-stats');
+  output.textContent = '⏳ 正在获取本机信息...';
+  stats.textContent = '';
+
+  var lines = [];
+  var nav = navigator;
+
+  // Browser / User Agent
+  var ua = nav.userAgent || '未知';
+  lines.push('📱 User-Agent: ' + ua);
+
+  // Detect browser
+  var browser = '未知';
+  if (ua.indexOf('Chrome') > -1 && ua.indexOf('Edg') === -1) browser = 'Chrome';
+  else if (ua.indexOf('Firefox') > -1) browser = 'Firefox';
+  else if (ua.indexOf('Safari') > -1 && ua.indexOf('Chrome') === -1) browser = 'Safari';
+  else if (ua.indexOf('Edg') > -1) browser = 'Edge';
+  else if (ua.indexOf('OPR') > -1 || ua.indexOf('Opera') > -1) browser = 'Opera';
+  lines.push('🌐 浏览器 (Browser): ' + browser);
+
+  // Screen
+  var screen = window.screen;
+  lines.push('🖥️ 屏幕分辨率: ' + screen.width + ' × ' + screen.height + ' (色深: ' + (screen.colorDepth || '未知') + 'bit)');
+  lines.push('📐 可用区域: ' + screen.availWidth + ' × ' + screen.availHeight);
+  lines.push('🪟 窗口尺寸: ' + window.innerWidth + ' × ' + window.innerHeight);
+
+  // Language / Timezone
+  lines.push('🌍 语言 (Language): ' + (nav.language || '未知'));
+  if (nav.languages) lines.push('🗣️ 首选语言: ' + Array.from(nav.languages).join(', '));
+  lines.push('🕐 时区 (Timezone): ' + Intl.DateTimeFormat().resolvedOptions().timeZone);
+  lines.push('🕒 本地时间: ' + new Date().toLocaleString());
+
+  // Platform
+  lines.push('💻 平台 (Platform): ' + (nav.platform || '未知'));
+  lines.push('📶 在线状态: ' + (nav.onLine ? '✅ 在线' : '❌ 离线'));
+
+  output.textContent = lines.join('\n');
+
+  // Fetch public IP via api.ipify.org
+  var _ipFetchDone = false;
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://api.ipify.org?format=json', true);
+    xhr.timeout = 8000;
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        try {
+          var data = JSON.parse(xhr.responseText);
+          if (data.ip && !_ipFetchDone) {
+            _ipFetchDone = true;
+            output.textContent = '🌐 公网 IP: ' + data.ip + '\n---\n' + output.textContent;
+            stats.innerHTML = '<span>🌐 IP: ' + data.ip + '</span><span>🕐 ' + new Date().toLocaleString() + '</span><span>✅ 本机信息已获取</span>';
+          }
+        } catch(e) {}
+      } else if (!_ipFetchDone) {
+        _ipFetchDone = true;
+        stats.innerHTML = '<span>⚠️ IP 获取失败</span><span>🕐 ' + new Date().toLocaleString() + '</span>';
+      }
+    };
+    xhr.onerror = function() {
+      if (!_ipFetchDone) {
+        _ipFetchDone = true;
+        output.textContent = '⚠️ 无法获取公网 IP（本地信息仍可用）\n---\n' + output.textContent.replace(/^[\s\S]*?\n---\n/, '');
+        stats.innerHTML = '<span>⚠️ 公网 IP 不可用</span><span>🕐 ' + new Date().toLocaleString() + '</span>';
+      }
+    };
+    xhr.ontimeout = function() {
+      if (!_ipFetchDone) {
+        _ipFetchDone = true;
+        stats.innerHTML = '<span>⏰ IP 查询超时</span><span>🕐 ' + new Date().toLocaleString() + '</span>';
+      }
+    };
+    xhr.send();
+  } catch(e) {
+    stats.innerHTML = '<span>⚠️ IP 查询出错</span><span>🕐 ' + new Date().toLocaleString() + '</span>';
+  }
+}
+
+function clearIPInfo() {
+  document.getElementById('ip-output').textContent = '点击「获取本机信息」按钮查询...';
+  document.getElementById('ip-stats').textContent = '';
+}
+
+function copyIPInfo() {
+  var text = document.getElementById('ip-output').textContent;
+  if (!text || text.indexOf('⏳') === 0 || text.indexOf('点击') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('ip-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>点击「获取本机信息」按钮，自动收集浏览器环境和本地信息。</p>
+  <p><strong>公网 IP：</strong>通过 <a href="https://api.ipify.org" target="_blank" rel="noopener">api.ipify.org</a> 获取（纯前端 XHR 请求）。</p>
+  <p><strong>包含信息：</strong>公网 IP、User-Agent、浏览器类型、分辨率、窗口尺寸、语言、时区、平台、在线状态。</p>
+  <p><strong>隐私说明：</strong>公网 IP 查询使用第三方免费 API；其余信息均为浏览器本地数据。</p>
+</div>

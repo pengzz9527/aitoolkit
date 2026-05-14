@@ -1,0 +1,122 @@
+<!-- Text Case Converter Widget -->
+<textarea id="case-input" class="tool-textarea" placeholder="在此输入要转换的文本..." rows="8">hello world, AI toolkit is awesome!</textarea>
+
+<div class="btn-row">
+  <button class="btn btn-sm" onclick="caseUpper()">⬆️ 大写</button>
+  <button class="btn btn-sm btn-outline" onclick="caseLower()">⬇️ 小写</button>
+  <button class="btn btn-sm btn-outline" onclick="caseTitle()">📝 首字母大写</button>
+  <button class="btn btn-sm btn-outline" onclick="caseCamel()">🐫 camelCase</button>
+  <button class="btn btn-sm btn-outline" onclick="caseSnake()">🐍 snake_case</button>
+  <button class="btn btn-sm btn-outline" onclick="casePascal()">📐 PascalCase</button>
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="caseKebab()">➖ kebab-case</button>
+  <button class="btn btn-outline btn-sm" onclick="caseConstant()">🔠 CONSTANT_CASE</button>
+  <button class="btn btn-outline btn-sm" onclick="caseSwap()">🔄 大小写互换</button>
+  <button class="btn btn-outline btn-sm" onclick="caseClear()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="case-copy-btn" onclick="caseCopy()">📋 复制结果</button>
+</div>
+
+<pre class="output-area" id="case-output"></pre>
+<div class="stats-bar" id="case-stats"></div>
+
+<script>
+function _getInput() {
+  return document.getElementById('case-input').value;
+}
+
+function _setOutput(text, label) {
+  document.getElementById('case-output').textContent = text;
+  var len = text.length;
+  document.getElementById('case-stats').innerHTML = '<span>' + label + '</span><span>📏 ' + len + ' 字符</span>';
+}
+
+function caseUpper() {
+  var text = _getInput();
+  if (!text.trim()) { document.getElementById('case-output').textContent = '⚠️ 请输入文本'; return; }
+  _setOutput(text.toUpperCase(), '⬆️ 大写');
+}
+
+function caseLower() {
+  var text = _getInput();
+  if (!text.trim()) { document.getElementById('case-output').textContent = '⚠️ 请输入文本'; return; }
+  _setOutput(text.toLowerCase(), '⬇️ 小写');
+}
+
+function caseTitle() {
+  var text = _getInput();
+  if (!text.trim()) { document.getElementById('case-output').textContent = '⚠️ 请输入文本'; return; }
+  var result = text.replace(/\w\S*/g, function(w) {
+    return w.charAt(0).toUpperCase() + w.substr(1).toLowerCase();
+  });
+  _setOutput(result, '📝 首字母大写');
+}
+
+function caseCamel() {
+  var text = _getInput().toLowerCase();
+  if (!text.trim()) { document.getElementById('case-output').textContent = '⚠️ 请输入文本'; return; }
+  var result = text.replace(/[^a-zA-Z0-9]+(\w)/g, function(_, c) { return c.toUpperCase(); });
+  _setOutput(result, '🐫 camelCase');
+}
+
+function caseSnake() {
+  var text = _getInput().toLowerCase().trim();
+  if (!text) { document.getElementById('case-output').textContent = '⚠️ 请输入文本'; return; }
+  var result = text.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '');
+  _setOutput(result, '🐍 snake_case');
+}
+
+function casePascal() {
+  var text = _getInput().toLowerCase();
+  if (!text.trim()) { document.getElementById('case-output').textContent = '⚠️ 请输入文本'; return; }
+  var camel = text.replace(/[^a-zA-Z0-9]+(\w)/g, function(_, c) { return c.toUpperCase(); });
+  var result = camel.charAt(0).toUpperCase() + camel.substr(1);
+  _setOutput(result, '📐 PascalCase');
+}
+
+function caseKebab() {
+  var text = _getInput().toLowerCase().trim();
+  if (!text) { document.getElementById('case-output').textContent = '⚠️ 请输入文本'; return; }
+  var result = text.replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '');
+  _setOutput(result, '➖ kebab-case');
+}
+
+function caseConstant() {
+  var text = _getInput();
+  if (!text.trim()) { document.getElementById('case-output').textContent = '⚠️ 请输入文本'; return; }
+  var result = text.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '').toUpperCase();
+  _setOutput(result, '🔠 CONSTANT_CASE');
+}
+
+function caseSwap() {
+  var text = _getInput();
+  if (!text.trim()) { document.getElementById('case-output').textContent = '⚠️ 请输入文本'; return; }
+  var result = text.replace(/[a-zA-Z]/g, function(c) {
+    return c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase();
+  });
+  _setOutput(result, '🔄 大小写互换');
+}
+
+function caseClear() {
+  document.getElementById('case-input').value = '';
+  document.getElementById('case-output').textContent = '';
+  document.getElementById('case-stats').textContent = '';
+}
+
+function caseCopy() {
+  var text = document.getElementById('case-output').textContent;
+  if (!text || text.indexOf('⚠️') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('case-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>在输入框中输入文本，点击对应转换按钮即可转换大小写格式。</p>
+  <p><strong>支持格式：</strong>大写、小写、首字母大写、camelCase、snake_case、PascalCase、kebab-case、CONSTANT_CASE、大小写互换。</p>
+  <p><strong>适用场景：</strong>代码命名规范统一、文本格式化、数据预处理。</p>
+</div>

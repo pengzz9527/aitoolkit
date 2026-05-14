@@ -1,0 +1,113 @@
+<!-- Base Converter Widget -->
+<div class="tool-widget">
+  <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+    <div style="flex:1;min-width:180px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">输入数字</label>
+      <input type="text" id="bc-input" class="tool-textarea" style="font-family:var(--font-mono);min-height:auto;padding:10px 14px;" value="255" placeholder="输入数字...">
+    </div>
+    <div style="flex:0 0 130px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">源进制</label>
+      <select id="bc-base" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;">
+        <option value="2">二进制 (2)</option>
+        <option value="8">八进制 (8)</option>
+        <option value="10" selected>十进制 (10)</option>
+        <option value="16">十六进制 (16)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="bc-results" style="margin-top:0;">
+    <span><strong>二进制 (2):</strong> <span id="bc-bin">11111111</span></span>
+    <span><strong>八进制 (8):</strong> <span id="bc-oct">377</span></span>
+    <span><strong>十进制 (10):</strong> <span id="bc-dec">255</span></span>
+    <span><strong>十六进制 (16):</strong> <span id="bc-hex">ff</span></span>
+  </div>
+
+  <div class="btn-row" style="margin-top:14px;">
+    <button class="btn btn-outline btn-sm" onclick="clearBC()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="bc-copy-btn" onclick="copyBC()">📋 复制结果</button>
+  </div>
+
+  <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);">
+    <div style="font-size:0.82rem;font-weight:600;margin-bottom:8px;">📊 进制对照表</div>
+    <div style="font-size:0.78rem;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font-family:var(--font-mono);" id="bc-table">
+      <span style="color:var(--text-secondary);">Dec | Bin | Oct | Hex</span>
+    </div>
+    <div style="font-size:0.78rem;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font-family:var(--font-mono);" id="bc-table-rows"></div>
+  </div>
+</div>
+
+<script>
+function convertBC() {
+  var input = document.getElementById('bc-input').value.trim();
+  var base = parseInt(document.getElementById('bc-base').value);
+  if (!input) {
+    document.getElementById('bc-bin').textContent = '—';
+    document.getElementById('bc-oct').textContent = '—';
+    document.getElementById('bc-dec').textContent = '—';
+    document.getElementById('bc-hex').textContent = '—';
+    renderBCTable('');
+    return;
+  }
+  var prefixes = {2:/^0[bB]/, 8:/^0[oO]/, 16:/^0[xX]/};
+  var clean = input.replace(prefixes[base] || /^/, '');
+  var num = parseInt(clean, base);
+  if (isNaN(num)) {
+    document.getElementById('bc-bin').textContent = '❌ 无效';
+    document.getElementById('bc-oct').textContent = '❌ 无效';
+    document.getElementById('bc-dec').textContent = '❌ 无效';
+    document.getElementById('bc-hex').textContent = '❌ 无效';
+    renderBCTable('');
+    return;
+  }
+  document.getElementById('bc-bin').textContent = num.toString(2);
+  document.getElementById('bc-oct').textContent = num.toString(8);
+  document.getElementById('bc-dec').textContent = num.toString(10);
+  document.getElementById('bc-hex').textContent = num.toString(16);
+  renderBCTable(num);
+}
+
+function renderBCTable(num) {
+  var rows = document.getElementById('bc-table-rows');
+  if (num === '' || isNaN(num)) { rows.innerHTML = ''; return; }
+  var html = '';
+  var start = Math.max(0, num - 5);
+  var end = num + 5;
+  for (var i = start; i <= end; i++) {
+    html += '<span>' + i.toString(10) + '</span>';
+    html += '<span>' + i.toString(2) + '</span>';
+    html += '<span>' + i.toString(8) + '</span>';
+    html += '<span>' + i.toString(16) + '</span>';
+  }
+  rows.innerHTML = html;
+}
+
+function clearBC() {
+  document.getElementById('bc-input').value = '';
+  convertBC();
+}
+
+function copyBC() {
+  var bin = document.getElementById('bc-bin').textContent;
+  var oct = document.getElementById('bc-oct').textContent;
+  var dec = document.getElementById('bc-dec').textContent;
+  var hex = document.getElementById('bc-hex').textContent;
+  if (bin === '—' || bin.indexOf('❌') >= 0) return;
+  var text = 'Bin: ' + bin + ' | Oct: ' + oct + ' | Dec: ' + dec + ' | Hex: ' + hex;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('bc-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+document.getElementById('bc-input').addEventListener('input', convertBC);
+document.getElementById('bc-base').addEventListener('change', convertBC);
+convertBC();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入数字并选择源进制，实时显示其他进制的转换结果。支持二进制(0b)、八进制(0o)、十六进制(0x)前缀。</p>
+  <p><strong>适用场景：</strong>编程调试、网络地址计算、颜色值(#RRGGBB)换算、底层开发。</p>
+  <p><strong>注意：</strong>输入超出 JavaScript Number 安全范围(±2^53)的数字可能丢失精度。</p>
+</div>

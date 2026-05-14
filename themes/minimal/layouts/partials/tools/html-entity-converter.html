@@ -1,0 +1,96 @@
+<!-- HTML Entity Encoder/Decoder Widget -->
+<div class="mode-toggle" id="html-entity-mode-toggle">
+  <button class="btn btn-sm active" id="html-entity-encode" onclick="setHTMLEntityMode('encode')">✏️ 编码</button>
+  <button class="btn btn-sm btn-outline" id="html-entity-decode" onclick="setHTMLEntityMode('decode')">✏️ 解码</button>
+</div>
+
+<textarea id="html-entity-input" class="tool-textarea" placeholder="在此粘贴文本..." rows="6"><div class="container">
+  <h1>Hello &amp; Welcome</h1>
+  <p>使用 "AI Toolkit" 进行开发</p>
+</div></textarea>
+
+<div class="btn-row">
+  <button class="btn" onclick="convertHTMLEntity()">🔄 转换</button>
+  <button class="btn btn-outline btn-sm" onclick="clearHTMLEntity()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="html-entity-copy-btn" onclick="copyHTMLEntity()">📋 复制结果</button>
+</div>
+
+<pre class="output-area" id="html-entity-output"></pre>
+<div class="stats-bar" id="html-entity-stats"></div>
+
+<script>
+var _htmlEntityMode = 'encode';
+
+function setHTMLEntityMode(mode) {
+  _htmlEntityMode = mode;
+  document.getElementById('html-entity-encode').className = mode === 'encode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('html-entity-decode').className = mode === 'decode' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('html-entity-input').placeholder = mode === 'encode' ? '在此粘贴文本...' : '在此粘贴包含HTML实体的文本...';
+  if (mode === 'encode') {
+    document.getElementById('html-entity-input').value = '<div class="container">\n  <h1>Hello &amp; Welcome</h1>\n  <p>使用 "AI Toolkit" 进行开发</p>\n</div>';
+  } else {
+    document.getElementById('html-entity-input').value = '&lt;div class=&quot;container&quot;&gt;\n  &lt;h1&gt;Hello &amp;amp; Welcome&lt;/h1&gt;\n  &lt;p&gt;使用 &quot;AI Toolkit&quot; 进行开发&lt;/p&gt;\n&lt;/div&gt;';
+  }
+  convertHTMLEntity();
+}
+
+function convertHTMLEntity() {
+  var input = document.getElementById('html-entity-input').value;
+  var out = document.getElementById('html-entity-output');
+  var stats = document.getElementById('html-entity-stats');
+  if (!input) { out.textContent = ''; stats.textContent = ''; return; }
+  try {
+    if (_htmlEntityMode === 'encode') {
+      var result = input
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+      out.textContent = result;
+      stats.innerHTML = '<span>✅ 编码完成</span><span>📏 原始: ' + input.length + ' 字符</span><span>📦 编码后: ' + result.length + ' 字符</span>';
+    } else {
+      var result = input
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&#x27;/g, "'")
+        .replace(/&#x2F;/g, '/')
+        .replace(/&#x60;/g, '`')
+        .replace(/&#x3D;/g, '=');
+      out.textContent = result;
+      stats.innerHTML = '<span>✅ 解码完成</span><span>📏 原始: ' + input.length + ' 字符</span><span>📦 解码后: ' + result.length + ' 字符</span>';
+    }
+  } catch(e) {
+    out.textContent = '❌ 转换失败: ' + e.message;
+    stats.textContent = '';
+  }
+}
+
+function clearHTMLEntity() {
+  document.getElementById('html-entity-input').value = '';
+  document.getElementById('html-entity-output').textContent = '';
+  document.getElementById('html-entity-stats').textContent = '';
+}
+
+function copyHTMLEntity() {
+  var text = document.getElementById('html-entity-output').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('html-entity-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+convertHTMLEntity();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择编码或解码模式，输入文本后点击转换。</p>
+  <p><strong>编码：</strong><code>&amp; &lt; &gt; &quot; &#39;</code> 等特殊字符转义为 HTML 实体。</p>
+  <p><strong>解码：</strong>将 HTML 实体还原为原始字符。</p>
+  <p><strong>适用场景：</strong>HTML/XML 内容展示、防 XSS 编码、模板数据预处理。</p>
+</div>

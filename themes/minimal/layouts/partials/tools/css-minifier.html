@@ -1,0 +1,119 @@
+<!-- CSS Minifier Widget -->
+<div class="tool-widget">
+  <div class="mode-toggle" id="css-mode-toggle">
+    <button class="btn btn-sm active" id="css-mode-minify" onclick="setCSSMode('minify')">🗜️ 压缩</button>
+    <button class="btn btn-sm btn-outline" id="css-mode-beautify" onclick="setCSSMode('beautify')">✨ 美化</button>
+  </div>
+
+  <textarea id="css-input" class="tool-textarea" placeholder="在此粘贴 CSS 代码..." rows="8">/* 主样式表 */
+body {
+  background: #f0f2f5;
+  color: #1a1a2e;
+  font-family: system-ui, sans-serif;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* 标题样式 */
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+}</textarea>
+
+  <div class="btn-row">
+    <button class="btn" onclick="processCSS()">🔄 执行</button>
+    <button class="btn btn-outline btn-sm" onclick="clearCSS()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="css-copy-btn" onclick="copyCSS()">📋 复制结果</button>
+  </div>
+
+  <pre class="output-area" id="css-output"></pre>
+  <div class="stats-bar" id="css-stats"></div>
+</div>
+
+<script>
+var _cssMode = 'minify';
+
+function setCSSMode(mode) {
+  _cssMode = mode;
+  document.getElementById('css-mode-minify').className = mode === 'minify' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('css-mode-beautify').className = mode === 'beautify' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  var input = document.getElementById('css-input').value;
+  if (input.trim()) processCSS();
+}
+
+function processCSS() {
+  var input = document.getElementById('css-input').value;
+  var output = document.getElementById('css-output');
+  var stats = document.getElementById('css-stats');
+
+  if (!input.trim()) { output.textContent = '⚠️ 请输入 CSS 代码'; stats.textContent = ''; return; }
+
+  var result;
+  if (_cssMode === 'minify') {
+    result = input
+      .replace(/\/\*[\s\S]*?\*\//g, '')       // 移除注释
+      .replace(/\/\/[^\n]*/g, '')               // 移除单行注释
+      .replace(/\s*([{}:;,])\s*/g, '$1')        // 去除括号/冒号/分号/逗号前后的空格
+      .replace(/;\s*}/g, '}')                    // 去除最后的 ;
+      .replace(/[\n\r]+/g, '')                  // 移除换行
+      .replace(/\s{2,}/g, ' ')                  // 合并多个空格为一个
+      .replace(/\s*>\s*/g, '>')                 // 子选择器空格
+      .replace(/\s*\+\s*/g, '+')                // 相邻选择器
+      .replace(/\s*~\s*/g, '~')                 // 兄弟选择器
+      .trim();
+  } else {
+    var indentSize = 2;
+    var indent = '';
+    result = input
+      .replace(/\/\*[\s\S]*?\*\//g, function(m) { return m; })
+      .replace(/\{/g, function() {
+        var ret = ' {\n' + Array(indentSize * ++indent.length + 1).join(' ');
+        return ret;
+      })
+      .replace(/\}/g, function() {
+        if (indent.length > 0) indent = indent.slice(0, -1);
+        var ret = '\n' + Array(indentSize * indent.length + 1).join(' ') + '}';
+        return ret;
+      })
+      .replace(/;\s*/g, ';\n' + Array(indentSize * indent.length + 1).join(' '))
+      .replace(/\n\s*\n/g, '\n')
+      .trim();
+  }
+
+  output.textContent = result;
+  var originalLen = input.replace(/\s/g, '').length;
+  var resultLen = result.replace(/\s/g, '').length;
+  var savings = ((1 - resultLen / originalLen) * 100).toFixed(1);
+  stats.innerHTML = '<span>📏 原始: ' + input.length + ' 字符</span>' +
+    '<span>📦 结果: ' + result.length + ' 字符</span>' +
+    '<span>' + (_cssMode === 'minify' ? '📉 压缩比: ' + savings + '%' : '📃 ' + result.split('\n').length + ' 行') + '</span>';
+}
+
+function clearCSS() {
+  document.getElementById('css-input').value = '';
+  document.getElementById('css-output').textContent = '';
+  document.getElementById('css-stats').textContent = '';
+}
+
+function copyCSS() {
+  var text = document.getElementById('css-output').textContent;
+  if (!text || text.indexOf('⚠️') >= 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('css-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>粘贴 CSS 代码 → 选择压缩或美化模式 → 点击执行。</p>
+  <p><strong>压缩模式：</strong>去除注释和多余空格，最小化 CSS 体积。</p>
+  <p><strong>美化模式：</strong>格式化缩进，使 CSS 更易读（保留注释）。</p>
+  <p><strong>适用场景：</strong>生产环境部署压缩、代码审阅美化、样式文件优化。</p>
+</div>

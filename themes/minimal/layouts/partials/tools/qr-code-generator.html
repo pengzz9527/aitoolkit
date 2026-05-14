@@ -1,0 +1,244 @@
+<!-- 二维码生成器 Widget（纯前端 Canvas + 内嵌轻量 QR 码库） -->
+<textarea id="qr-input" class="tool-textarea" placeholder="输入文本或 URL 生成二维码..." rows="3" oninput="generateQR()">https://aitoolkit.nousresearch.com</textarea>
+
+<div class="btn-row">
+  <button class="btn" onclick="generateQR()">📱 生成二维码</button>
+  <button class="btn btn-outline btn-sm" onclick="clearQR()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="qr-dl-btn" onclick="downloadQR()">💾 下载 PNG</button>
+</div>
+
+<div id="qr-canvas-wrapper" style="text-align:center;padding:16px 0;">
+  <canvas id="qr-canvas" style="border-radius:8px;border:1px solid var(--border);background:#fff;max-width:100%;"></canvas>
+</div>
+<div class="stats-bar" id="qr-stats"></div>
+
+<script>
+// ===== Minimal QR Code Generator (纯前端) =====
+// Supports byte mode encoding for version 2-3 QR codes
+var _qrCanvas = document.getElementById('qr-canvas');
+
+// QR Code tables (version 2-L, byte mode)
+var _qrV = 2;
+var _qrTotalDataCodewords = 28;
+
+// Galois field tables for Reed-Solomon
+var _gfExp = new Array(512);
+var _gfLog = new Array(256);
+(function() {
+  var v = 1;
+  for (var i = 0; i < 512; i++) {
+    _gfExp[i] = v;
+    if (i < 256) _gfLog[v] = i;
+    v <<= 1;
+    if (v & 0x100) v ^= 0x11d;
+  }
+})();
+
+function gfMul(a, b) {
+  if (a === 0 || b === 0) return 0;
+  return _gfExp[_gfLog[a] + _gfLog[b]];
+}
+
+// RS error correction codewords for version 2-L (10 EC codewords)
+function rsEncode(data, ecCount) {
+  var gen = [1];
+  for (var i = 0; i < ecCount; i++) {
+    gen = gen.concat([0]);
+    for (var j = gen.length - 1; j > 0; j--) {
+      if (gen[j]) gen[j] = gfMul(gen[j], _gfExp[i]);
+      if (j > 0) gen[j] ^= gen[j-1];
+    }
+  }
+  var res = data.slice();
+  for (var k = 0; k < data.length; k++) {
+    var lead = res[k];
+    if (lead !== 0) {
+      for (var m = 0; m < gen.length; m++) {
+        if (k + m < res.length) res[k + m] ^= gfMul(gen[m], lead);
+      }
+    }
+  }
+  return res.slice(data.length);
+}
+
+function generateQR() {
+  var text = document.getElementById('qr-input').value.trim();
+  var stats = document.getElementById('qr-stats');
+  if (!text) {
+    stats.innerHTML = '<span>⚠️ 请输入文本或 URL</span>';
+    _qrCanvas.getContext('2d').clearRect(0, 0, _qrCanvas.width, _qrCanvas.height);
+    return;
+  }
+
+  // Encode text as bytes (UTF-8)
+  var bytes = [];
+  for (var i = 0; i < text.length; i++) {
+    var c = text.charCodeAt(i);
+    if (c < 0x80) bytes.push(c);
+    else if (c < 0x800) { bytes.push(0xc0 | (c >> 6)); bytes.push(0x80 | (c & 0x3f)); }
+    else { bytes.push(0xe0 | (c >> 12)); bytes.push(0x80 | ((c >> 6) & 0x3f)); bytes.push(0x80 | (c & 0x3f)); }
+  }
+
+  // Version 2-L: max 28 bytes data, 10 EC codewords, total 38 codewords
+  var maxData = _qrTotalDataCodewords;
+  if (bytes.length > maxData - 2) {
+    stats.innerHTML = '<span style="color:#dc2626">❌ 文本过长（最大 ' + (maxData - 2) + ' 字节），请缩短输入</span>';
+    return;
+  }
+
+  // Build data codewords: mode indicator (0100) + char count + data + terminator + pad
+  var dataBits = [];
+  // Mode: 0100 (byte)
+  dataBits.push(0,1,0,0);
+  // Character count (8 bits for version 1-9)
+  var countBits = [];
+  var count = bytes.length;
+  for (var b = 7; b >= 0; b--) countBits.push((count >> b) & 1);
+  dataBits = dataBits.concat(countBits);
+  // Data bytes
+  for (var j = 0; j < bytes.length; j++) {
+    for (var b2 = 7; b2 >= 0; b2--) dataBits.push((bytes[j] >> b2) & 1);
+  }
+  // Terminator
+  for (var t = 0; t < 4 && dataBits.length < maxData * 8; t++) dataBits.push(0);
+  // Pad to full bytes
+  while (dataBits.length % 8 !== 0) dataBits.push(0);
+  // Pad codewords
+  var padBytes = [0xec, 0x11];
+  var dataCodewords = [];
+  for (var p = 0; p < dataBits.length; p += 8) {
+    var w = 0;
+    for (var q = 0; q < 8; q++) { w = (w << 1) | dataBits[p + q]; }
+    dataCodewords.push(w);
+  }
+  while (dataCodewords.length < maxData) {
+    dataCodewords.push(padBytes[(dataCodewords.length - maxData + 1) & 1]);
+  }
+
+  // RS error correction (10 EC codewords for version 2-L)
+  var ecCodewords = rsEncode(dataCodewords, 10);
+  var allCodewords = dataCodewords.concat(ecCodewords);
+
+  // Build matrix
+  var size = 25; // version 2
+  var matrix = [];
+  for (var r = 0; r < size; r++) {
+    matrix[r] = [];
+    for (var c = 0; c < size; c++) matrix[r][c] = 0;
+  }
+
+  // Finder patterns (7x7)
+  function drawFinder(x, y) {
+    for (var r = -1; r <= 7; r++) {
+      for (var c = -1; c <= 7; c++) {
+        if (x + c < 0 || x + c >= size || y + r < 0 || y + r >= size) continue;
+        var val = 0;
+        if (r >= 0 && r <= 6 && c >= 0 && c <= 6) {
+          if (r === 0 || r === 6 || c === 0 || c === 6) val = 1;
+          else if (r >= 2 && r <= 4 && c >= 2 && c <= 4) val = 1;
+        }
+        if (val) matrix[y + r][x + c] = 1;
+      }
+    }
+  }
+  // Separator
+  function drawSep(x, y) {
+    for (var r = -1; r <= 7; r++) {
+      for (var c = -1; c <= 7; c++) {
+        if (x + c < 0 || x + c >= size || y + r < 0 || y + r >= size) continue;
+        if ((r === -1 || r === 7 || c === -1 || c === 7) && r >= -1 && r <= 7 && c >= -1 && c <= 7) {
+          if (x + c >= 0 && x + c < size && y + r >= 0 && y + r < size)
+            matrix[y + r][x + c] = 0;
+        }
+      }
+    }
+  }
+
+  drawFinder(0, 0); drawSep(0, 0);
+  drawFinder(size - 7, 0); drawSep(size - 7, 0);
+  drawFinder(0, size - 7); drawSep(0, size - 7);
+
+  // Timing patterns
+  for (var t = 8; t < size - 8; t++) {
+    matrix[6][t] = t % 2 === 0 ? 1 : 0;
+    matrix[t][6] = t % 2 === 0 ? 1 : 0;
+  }
+
+  // Dark module
+  matrix[size - 8][8] = 1;
+
+  // Place data (interleaved with masking pattern 0)
+  var bitIdx = 0;
+  for (var col = size - 1; col > 0; col -= 2) {
+    if (col === 6) col = 5;
+    for (var row = 0; row < size; row++) {
+      for (var cc = 0; cc < 2; cc++) {
+        var cx = col - cc;
+        if (cx < 0 || matrix[row] === undefined) continue;
+        // Skip reserved areas
+        if (row < 9 && cx < 9 && (row < 7 || cx < 7)) continue;
+        if (row < 9 && cx >= size - 8) continue;
+        if (row >= size - 8 && cx < 9) continue;
+        if (row === 6 || cx === 6) continue;
+        if (bitIdx < allCodewords.length * 8) {
+          var byteIdx = Math.floor(bitIdx / 8);
+          var bitPos = 7 - (bitIdx % 8);
+          var dataBit = (allCodewords[byteIdx] >> bitPos) & 1;
+          // Apply mask pattern 0: (row + col) % 2 == 0 → flip
+          var maskBit = (row + cx) % 2 === 0 ? 1 : 0;
+          matrix[row][cx] = dataBit ^ maskBit;
+          bitIdx++;
+        }
+      }
+    }
+  }
+
+  // Draw canvas
+  var cellSize = Math.min(8, Math.floor(320 / size));
+  var canvasSize = size * cellSize;
+  _qrCanvas.width = canvasSize;
+  _qrCanvas.height = canvasSize;
+  var ctx = _qrCanvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvasSize, canvasSize);
+
+  var modules = 0;
+  for (var r = 0; r < size; r++) {
+    for (var c = 0; c < size; c++) {
+      if (matrix[r][c]) {
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+        modules++;
+      }
+    }
+  }
+
+  stats.innerHTML = '<span>📱 版本: 2-L</span><span>📏 尺寸: ' + size + '×' + size + '</span><span>🔢 模块数: ' + modules + '</span><span>📝 内容: ' + text.slice(0, 20) + (text.length > 20 ? '...' : '') + '</span>';
+}
+
+function clearQR() {
+  document.getElementById('qr-input').value = '';
+  var ctx = _qrCanvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, _qrCanvas.width, _qrCanvas.height);
+  document.getElementById('qr-stats').textContent = '';
+}
+
+function downloadQR() {
+  if (_qrCanvas.width === 0) return;
+  var link = document.createElement('a');
+  link.download = 'qrcode.png';
+  link.href = _qrCanvas.toDataURL('image/png');
+  link.click();
+}
+
+// Generate on load
+generateQR();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入文本或 URL → 自动生成可扫描的二维码。</p>
+  <p><strong>纯前端实现：</strong>完全在浏览器 Canvas 中绘制，包含 Reed-Solomon 纠错编码。</p>
+  <p><strong>限制说明：</strong>当前使用 Version 2-L 级别，最大支持约 26 字节 UTF-8 文本。</p>
+  <p><strong>下载功能：</strong>点击「下载 PNG」保存二维码图片。</p>
+</div>

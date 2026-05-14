@@ -1,0 +1,194 @@
+<!-- Unit Converter Widget -->
+<div class="tool-widget">
+  <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+    <div style="flex:0 0 140px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">📂 分类</label>
+      <select id="uc-category" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;">
+        <option value="length">长度</option>
+        <option value="weight">重量</option>
+        <option value="temperature">温度</option>
+        <option value="volume">体积</option>
+        <option value="area">面积</option>
+        <option value="speed">速度</option>
+        <option value="data">数据存储</option>
+      </select>
+    </div>
+    <div style="flex:1;min-width:120px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">数值</label>
+      <input type="number" id="uc-value" class="tool-textarea" style="min-height:auto;padding:10px 14px;" value="100" placeholder="输入数值...">
+    </div>
+    <div style="flex:0 0 130px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">源单位</label>
+      <select id="uc-from" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;"></select>
+    </div>
+    <div style="flex:0 0 130px;">
+      <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:4px;">目标单位</label>
+      <select id="uc-to" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--bg);font-family:var(--font);font-size:0.85rem;color:var(--text);cursor:pointer;"></select>
+    </div>
+  </div>
+
+  <div class="output-area" id="uc-output" style="min-height:44px;font-size:1rem;display:flex;align-items:center;"><span id="uc-result-text">100</span>&nbsp;<span id="uc-result-unit" style="color:var(--text-secondary);"></span></div>
+
+  <div class="btn-row" style="margin-top:14px;">
+    <button class="btn btn-outline btn-sm" onclick="clearUC()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="uc-copy-btn" onclick="copyUC()">📋 复制结果</button>
+  </div>
+</div>
+
+<script>
+var _ucData = {
+  length: {
+    units: [
+      {name:'毫米 (mm)', factor:0.001},
+      {name:'厘米 (cm)', factor:0.01},
+      {name:'分米 (dm)', factor:0.1},
+      {name:'米 (m)', factor:1},
+      {name:'千米 (km)', factor:1000},
+      {name:'英寸 (in)', factor:0.0254},
+      {name:'英尺 (ft)', factor:0.3048},
+      {name:'码 (yd)', factor:0.9144},
+      {name:'英里 (mi)', factor:1609.344},
+      {name:'海里 (nmi)', factor:1852},
+      {name:'光年 (ly)', factor:9.461e15}
+    ]
+  },
+  weight: {
+    units: [
+      {name:'毫克 (mg)', factor:0.000001},
+      {name:'克 (g)', factor:0.001},
+      {name:'千克 (kg)', factor:1},
+      {name:'吨 (t)', factor:1000},
+      {name:'盎司 (oz)', factor:0.0283495},
+      {name:'磅 (lb)', factor:0.453592},
+      {name:'两 (liang)', factor:0.05},
+      {name:'斤 (jin)', factor:0.5}
+    ]
+  },
+  temperature: {
+    units: [
+      {name:'摄氏度 (°C)', factor:0},
+      {name:'华氏度 (°F)', factor:1},
+      {name:'开尔文 (K)', factor:2}
+    ],
+    convert: function(val, fromIdx, toIdx) {
+      if (fromIdx === toIdx) return val;
+      var celsius;
+      if (fromIdx === 0) celsius = val;
+      else if (fromIdx === 1) celsius = (val - 32) / 1.8;
+      else celsius = val - 273.15;
+      if (toIdx === 0) return celsius;
+      else if (toIdx === 1) return celsius * 1.8 + 32;
+      else return celsius + 273.15;
+    }
+  },
+  volume: {
+    units: [
+      {name:'毫升 (mL)', factor:0.001},
+      {name:'升 (L)', factor:1},
+      {name:'立方米 (m³)', factor:1000},
+      {name:'加仑 (gal)', factor:3.78541},
+      {name:'夸脱 (qt)', factor:0.946353},
+      {name:'品脱 (pt)', factor:0.473176},
+      {name:'杯 (cup)', factor:0.236588},
+      {name:'盎司液 (fl oz)', factor:0.0295735}
+    ]
+  },
+  area: {
+    units: [
+      {name:'平方毫米 (mm²)', factor:0.000001},
+      {name:'平方厘米 (cm²)', factor:0.0001},
+      {name:'平方米 (m²)', factor:1},
+      {name:'公顷 (ha)', factor:10000},
+      {name:'平方千米 (km²)', factor:1000000},
+      {name:'平方英寸 (in²)', factor:0.00064516},
+      {name:'平方英尺 (ft²)', factor:0.092903},
+      {name:'英亩 (acre)', factor:4046.86}
+    ]
+  },
+  speed: {
+    units: [
+      {name:'米/秒 (m/s)', factor:1},
+      {name:'千米/小时 (km/h)', factor:0.277778},
+      {name:'英里/小时 (mph)', factor:0.44704},
+      {name:'节 (kn)', factor:0.514444},
+      {name:'马赫 (Mach)', factor:340.29},
+      {name:'光速 (c)', factor:299792458}
+    ]
+  },
+  data: {
+    units: [
+      {name:'比特 (bit)', factor:1/8},
+      {name:'字节 (B)', factor:1},
+      {name:'千字节 (KB)', factor:1024},
+      {name:'兆字节 (MB)', factor:1048576},
+      {name:'吉字节 (GB)', factor:1073741824},
+      {name:'太字节 (TB)', factor:1099511627776}
+    ]
+  }
+};
+
+function updateUCUnits() {
+  var cat = document.getElementById('uc-category').value;
+  var units = _ucData[cat].units;
+  var fromSel = document.getElementById('uc-from');
+  var toSel = document.getElementById('uc-to');
+  fromSel.innerHTML = '';
+  toSel.innerHTML = '';
+  units.forEach(function(u, i) {
+    fromSel.innerHTML += '<option value="' + i + '">' + u.name + '</option>';
+    toSel.innerHTML += '<option value="' + i + '">' + u.name + '</option>';
+  });
+  toSel.value = units.length > 1 ? '1' : '0';
+  convertUC();
+}
+
+function convertUC() {
+  var cat = document.getElementById('uc-category').value;
+  var val = parseFloat(document.getElementById('uc-value').value);
+  var fromIdx = parseInt(document.getElementById('uc-from').value);
+  var toIdx = parseInt(document.getElementById('uc-to').value);
+  var resultEl = document.getElementById('uc-result-text');
+  var unitEl = document.getElementById('uc-result-unit');
+
+  if (isNaN(val)) { resultEl.textContent = '⚠️ 请输入有效数值'; unitEl.textContent = ''; return; }
+
+  var data = _ucData[cat];
+  var result;
+  if (data.convert) {
+    result = data.convert(val, fromIdx, toIdx);
+  } else {
+    result = val * data.units[fromIdx].factor / data.units[toIdx].factor;
+  }
+  resultEl.textContent = result < 1e-10 || result > 1e15 ? result.toExponential(6) : result.toPrecision(10).replace(/\.?0+$/, '');
+  unitEl.textContent = data.units[toIdx].name;
+}
+
+function clearUC() {
+  document.getElementById('uc-value').value = '';
+  document.getElementById('uc-result-text').textContent = '—';
+  document.getElementById('uc-result-unit').textContent = '';
+}
+
+function copyUC() {
+  var text = document.getElementById('uc-result-text').textContent;
+  var unit = document.getElementById('uc-result-unit').textContent;
+  if (!text || text.indexOf('⚠️') >= 0) return;
+  navigator.clipboard.writeText(text + ' ' + unit).then(function() {
+    var btn = document.getElementById('uc-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+document.getElementById('uc-category').addEventListener('change', updateUCUnits);
+document.getElementById('uc-value').addEventListener('input', convertUC);
+document.getElementById('uc-from').addEventListener('change', convertUC);
+document.getElementById('uc-to').addEventListener('change', convertUC);
+updateUCUnits();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择单位分类 → 输入数值 → 选择源单位和目标单位，实时转换结果。</p>
+  <p><strong>支持的分类：</strong>长度、重量、温度、体积、面积、速度、数据存储，每种分类内置常用单位。</p>
+  <p><strong>适用场景：</strong>日常生活换算、工程设计、烹饪食谱、数据存储规划。</p>
+</div>

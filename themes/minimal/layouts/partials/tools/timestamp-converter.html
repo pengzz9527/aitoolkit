@@ -1,0 +1,118 @@
+<!-- Unix Timestamp Converter Widget -->
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+  <div style="flex:1;min-width:200px;">
+    <label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:4px;">⏱️ Unix 时间戳（秒）</label>
+    <input type="text" id="ts-unix-sec" class="tool-textarea" style="font-family:var(--font-mono);min-height:auto;padding:10px 12px;" value="1747215300" oninput="onUnixSecChange()">
+  </div>
+  <div style="flex:1;min-width:200px;">
+    <label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:4px;">⏱️ Unix 时间戳（毫秒）</label>
+    <input type="text" id="ts-unix-ms" class="tool-textarea" style="font-family:var(--font-mono);min-height:auto;padding:10px 12px;" value="1747215300000" oninput="onUnixMsChange()">
+  </div>
+</div>
+
+<div style="margin-bottom:14px;">
+  <label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:4px;">📅 日期时间选择</label>
+  <input type="datetime-local" id="ts-datetime" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:0.88rem;background:var(--bg);color:var(--text);" oninput="onDateTimeChange()">
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="setNowTS()">🕐 当前时间</button>
+  <button class="btn btn-outline btn-sm" id="ts-copy-btn" onclick="copyTS()">📋 复制全部</button>
+</div>
+
+<pre class="output-area" id="ts-output"></pre>
+
+<script>
+function _tsToDate(sec) {
+  return new Date(sec * 1000);
+}
+
+function _formatTSOutput(sec) {
+  var d = _tsToDate(sec);
+  var local = d.toLocaleString('zh-CN', {timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone});
+  var utc = d.toUTCString();
+  var now = Date.now() / 1000;
+  var diff = Math.round(now - sec);
+  var rel = '';
+  if (Math.abs(diff) < 60) rel = '刚刚';
+  else if (Math.abs(diff) < 3600) rel = Math.round(Math.abs(diff)/60) + '分钟' + (diff > 0 ? '前' : '后');
+  else if (Math.abs(diff) < 86400) rel = Math.round(Math.abs(diff)/3600) + '小时' + (diff > 0 ? '前' : '后');
+  else rel = Math.round(Math.abs(diff)/86400) + '天' + (diff > 0 ? '前' : '后');
+  if (diff > 0) rel = '（' + rel + '）';
+  else if (diff < 0) rel = '（' + rel + '）';
+  else rel = '';
+  return '🕐 Unix时间戳（秒）: ' + Math.floor(sec) + '\n' +
+    '🕐 Unix时间戳（毫秒）: ' + Math.floor(sec * 1000) + '\n\n' +
+    '📅 本地时间: ' + local + '\n' +
+    '🌐 UTC 时间: ' + utc + '\n' +
+    '⏳ 相对时间: ' + rel;
+}
+
+function onUnixSecChange() {
+  var val = document.getElementById('ts-unix-sec').value.trim();
+  var sec = parseFloat(val);
+  if (!isNaN(sec) && sec > 0) {
+    document.getElementById('ts-unix-ms').value = Math.floor(sec * 1000);
+    var d = _tsToDate(sec);
+    var iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + 'T' +
+      String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+    document.getElementById('ts-datetime').value = iso;
+    document.getElementById('ts-output').textContent = _formatTSOutput(sec);
+  }
+}
+
+function onUnixMsChange() {
+  var val = document.getElementById('ts-unix-ms').value.trim();
+  var ms = parseFloat(val);
+  if (!isNaN(ms) && ms > 0) {
+    var sec = ms / 1000;
+    document.getElementById('ts-unix-sec').value = Math.floor(sec);
+    var d = _tsToDate(sec);
+    var iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + 'T' +
+      String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+    document.getElementById('ts-datetime').value = iso;
+    document.getElementById('ts-output').textContent = _formatTSOutput(sec);
+  }
+}
+
+function onDateTimeChange() {
+  var val = document.getElementById('ts-datetime').value;
+  if (!val) return;
+  var d = new Date(val);
+  if (!isNaN(d.getTime())) {
+    var sec = d.getTime() / 1000;
+    document.getElementById('ts-unix-sec').value = Math.floor(sec);
+    document.getElementById('ts-unix-ms').value = Math.floor(sec * 1000);
+    document.getElementById('ts-output').textContent = _formatTSOutput(sec);
+  }
+}
+
+function setNowTS() {
+  var now = Date.now();
+  document.getElementById('ts-unix-ms').value = now;
+  document.getElementById('ts-unix-sec').value = Math.floor(now / 1000);
+  var d = new Date();
+  var iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + 'T' +
+    String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  document.getElementById('ts-datetime').value = iso;
+  document.getElementById('ts-output').textContent = _formatTSOutput(now / 1000);
+}
+
+function copyTS() {
+  var text = document.getElementById('ts-output').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('ts-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制全部'; }, 2000);
+  }).catch(function() {});
+}
+
+onUnixSecChange();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入 Unix 时间戳（秒/毫秒）或选择日期时间，自动实时转换显示各格式。</p>
+  <p><strong>支持格式：</strong>秒级时间戳（10位）、毫秒级时间戳（13位）、日期时间选择器。</p>
+  <p><strong>适用场景：</strong>时间戳调试、时区转换、日志时间分析、数据库时间字段处理。</p>
+</div>

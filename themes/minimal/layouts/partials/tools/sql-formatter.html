@@ -1,0 +1,118 @@
+<!-- SQL Formatter Widget -->
+<div class="tool-widget">
+  <textarea id="sql-input" class="tool-textarea" placeholder="在此粘贴 SQL 语句..." rows="8">select u.id, u.name, u.email, o.id as order_id, o.total from users u inner join orders o on u.id = o.user_id where u.status = 'active' and o.total > 100 order by o.created_at desc limit 10</textarea>
+
+  <div class="btn-row">
+    <button class="btn" onclick="formatSQL()">🔧 格式化</button>
+    <button class="btn btn-outline btn-sm" onclick="clearSQL()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="sql-copy-btn" onclick="copySQL()">📋 复制结果</button>
+  </div>
+
+  <pre class="output-area" id="sql-output"></pre>
+  <div class="stats-bar" id="sql-stats"></div>
+</div>
+
+<script>
+function formatSQL() {
+  var input = document.getElementById('sql-input').value;
+  var output = document.getElementById('sql-output');
+  var stats = document.getElementById('sql-stats');
+
+  if (!input.trim()) { output.textContent = '⚠️ 请输入 SQL 语句'; stats.textContent = ''; return; }
+
+  var sql = input
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // 关键字大写
+  var keywords = ['select', 'from', 'where', 'join', 'inner join', 'left join', 'right join', 'full join', 'cross join',
+    'on', 'and', 'or', 'not', 'in', 'exists', 'between', 'like', 'is', 'null',
+    'order by', 'group by', 'having', 'limit', 'offset',
+    'insert into', 'values', 'update', 'set', 'delete from',
+    'create table', 'alter table', 'drop table', 'create index', 'drop index',
+    'as', 'distinct', 'count', 'sum', 'avg', 'max', 'min', 'asc', 'desc',
+    'union', 'union all', 'except', 'intersect',
+    'case', 'when', 'then', 'else', 'end',
+    'with', 'recursive',
+    'into', 'from'];
+
+  var upperSql = sql;
+  // 先替换复合关键词，用占位符
+  var placeholders = {};
+  keywords.sort(function(a,b) { return b.length - a.length; }).forEach(function(kw) {
+    var regex = new RegExp('\\b' + kw.replace(/\s+/g, '\\s+') + '\\b', 'gi');
+    upperSql = upperSql.replace(regex, kw.toUpperCase());
+  });
+
+  // 格式化：关键字换行缩进
+  var indentSize = 2;
+  var indent = 0;
+
+  var result = upperSql
+    // SELECT / SELECT DISTINCT
+    .replace(/\bSELECT\b/i, 'SELECT')
+    .replace(/\bSELECT\s+/i, function(m) { return '\nSELECT\n  '; })
+    // FROM
+    .replace(/\bFROM\b/gi, '\nFROM')
+    // JOIN types
+    .replace(/\b(INNER\s+JOIN|LEFT\s+JOIN|RIGHT\s+JOIN|FULL\s+JOIN|CROSS\s+JOIN|JOIN)\b/gi, '\n$1')
+    // ON
+    .replace(/\bON\b/gi, '\n  ON')
+    // WHERE
+    .replace(/\bWHERE\b/gi, '\nWHERE')
+    // AND / OR (within WHERE/ON)
+    .replace(/\bAND\b/gi, '\n  AND')
+    .replace(/\bOR\b/gi, '\n  OR')
+    // ORDER BY / GROUP BY / HAVING
+    .replace(/\bORDER\s+BY\b/gi, '\nORDER BY')
+    .replace(/\bGROUP\s+BY\b/gi, '\nGROUP BY')
+    .replace(/\bHAVING\b/gi, '\nHAVING')
+    // LIMIT / OFFSET
+    .replace(/\bLIMIT\b/gi, '\nLIMIT')
+    .replace(/\bOFFSET\b/gi, '\nOFFSET')
+    // UNION / UNION ALL
+    .replace(/\bUNION\s+ALL\b/gi, '\nUNION ALL')
+    .replace(/\bUNION\b/gi, '\nUNION')
+    // INSERT / VALUES
+    .replace(/\bINSERT\s+INTO\b/gi, '\nINSERT INTO')
+    .replace(/\bVALUES\b/gi, '\nVALUES')
+    // UPDATE / SET
+    .replace(/\bUPDATE\b/gi, '\nUPDATE')
+    .replace(/\bSET\b/gi, '\nSET')
+    // DELETE
+    .replace(/\bDELETE\s+FROM\b/gi, '\nDELETE FROM')
+    // 对齐逗号
+    .replace(/,/g, ',\n  ')
+    // 清理多余空白
+    .replace(/\n\s+\n/g, '\n')
+    .replace(/^\n+/, '')
+    .trim();
+
+  output.textContent = result;
+  var charCount = result.length;
+  var lineCount = result.split('\n').length;
+  stats.innerHTML = '<span>📏 ' + charCount + ' 字符</span><span>📃 ' + lineCount + ' 行</span>';
+}
+
+function clearSQL() {
+  document.getElementById('sql-input').value = '';
+  document.getElementById('sql-output').textContent = '';
+  document.getElementById('sql-stats').textContent = '';
+}
+
+function copySQL() {
+  var text = document.getElementById('sql-output').textContent;
+  if (!text || text.indexOf('⚠️') >= 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('sql-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>粘贴 SQL 语句 → 点击「格式化」→ 自动关键字大写并对齐缩进。</p>
+  <p><strong>支持的语句：</strong>SELECT、INSERT、UPDATE、DELETE、CREATE TABLE、JOIN 等常用 SQL 语句。</p>
+  <p><strong>格式化规则：</strong>SELECT/FROM/WHERE/JOIN 等关键字换行，AND/OR 缩进，逗号分隔的列名换行对齐。</p>
+</div>

@@ -1,0 +1,88 @@
+<!-- ROT13/ROT47 加密解密 Widget -->
+<div class="mode-toggle" id="rot-mode-toggle">
+  <button class="btn btn-sm active" id="rot-mode-13" onclick="setRotMode('rot13')">ROT13</button>
+  <button class="btn btn-sm btn-outline" id="rot-mode-47" onclick="setRotMode('rot47')">ROT47</button>
+</div>
+
+<textarea id="rot-input" class="tool-textarea" placeholder="输入需要加密或解密的文本..." rows="6">Hello, AI Toolkit! 中文测试 123</textarea>
+
+<div class="btn-row">
+  <button class="btn" onclick="rotTransform()">🔄 转换 (加密/解密)</button>
+  <button class="btn btn-outline btn-sm" onclick="clearRot()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="rot-copy-btn" onclick="copyRot()">📋 复制结果</button>
+</div>
+
+<div class="output-area" id="rot-output"></div>
+<div class="stats-bar" id="rot-stats"></div>
+
+<script>
+var _rotMode = 'rot13';
+
+function setRotMode(mode) {
+  _rotMode = mode;
+  var labels = {rot13:'rot-mode-13',rot47:'rot-mode-47'};
+  Object.keys(labels).forEach(function(k) {
+    var el = document.getElementById(labels[k]);
+    el.className = k === mode ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  });
+  rotTransform();
+}
+
+function rotTransform() {
+  var input = document.getElementById('rot-input').value;
+  var output = document.getElementById('rot-output');
+  var stats = document.getElementById('rot-stats');
+  if (!input) { output.textContent = '⚠️ 请输入文本'; stats.textContent = ''; return; }
+
+  var result = '';
+  if (_rotMode === 'rot13') {
+    result = input.replace(/[a-zA-Z]/g, function(c) {
+      var code = c.charCodeAt(0);
+      var base = c >= 'a' ? 97 : 65;
+      return String.fromCharCode((code - base + 13) % 26 + base);
+    });
+  } else {
+    result = input.replace(/[!-~]/g, function(c) {
+      var code = c.charCodeAt(0);
+      return String.fromCharCode(33 + ((code - 33 + 47) % 94));
+    });
+  }
+  output.textContent = result;
+
+  var inputLen = input.length;
+  var outputLen = result.length;
+  var changed = 0;
+  for (var i = 0; i < inputLen; i++) {
+    if (input[i] !== result[i]) changed++;
+  }
+  stats.innerHTML = '<span>' + (_rotMode === 'rot13' ? '🔤 ROT13' : '🔤 ROT47') + '</span><span>📏 ' + outputLen + ' 字符</span><span>🔄 变动 ' + changed + '/' + inputLen + ' 字符</span>';
+}
+
+function clearRot() {
+  document.getElementById('rot-input').value = '';
+  document.getElementById('rot-output').textContent = '';
+  document.getElementById('rot-stats').textContent = '';
+}
+
+function copyRot() {
+  var text = document.getElementById('rot-output').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('rot-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+// Auto-run on input
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('rot-input').addEventListener('input', rotTransform);
+});
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入文本 → 选择 ROT13 或 ROT47 模式 → 文本自动实时转换。</p>
+  <p><strong>ROT13：</strong>只影响字母（a-zA-Z），轮换 13 位。加密和解密是同一操作。</p>
+  <p><strong>ROT47：</strong>影响所有 ASCII 可见字符（! 到 ~），轮换 47 位。适用面更广。</p>
+  <p><strong>注意：</strong>ROT 是古典凯撒密码变体，<strong>不</strong>适用于安全加密。</p>
+</div>

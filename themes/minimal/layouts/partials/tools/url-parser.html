@@ -1,0 +1,75 @@
+<!-- URL 解析器 Widget -->
+<textarea id="url-parser-input" class="tool-textarea" placeholder="输入需要解析的 URL..." rows="3">https://www.example.com:8080/path/to/page?name=张三&age=25&lang=zh-CN#section2</textarea>
+
+<div class="btn-row">
+  <button class="btn" onclick="parseURL()">🌐 解析 URL</button>
+  <button class="btn btn-outline btn-sm" onclick="clearURLParser()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="url-parser-copy-btn" onclick="copyURLParser()">📋 复制结果</button>
+</div>
+
+<div id="url-parser-output" class="output-area" style="display:none;"></div>
+<div class="stats-bar" id="url-parser-stats"></div>
+
+<script>
+function parseURL() {
+  var input = document.getElementById('url-parser-input').value.trim();
+  var output = document.getElementById('url-parser-output');
+  var stats = document.getElementById('url-parser-stats');
+  if (!input) { output.style.display = 'block'; output.textContent = '⚠️ 请输入 URL'; stats.textContent = ''; return; }
+  // Auto-prepend protocol if missing
+  if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(input)) input = 'https://' + input;
+  try {
+    var url = new URL(input);
+    var lines = [];
+    lines.push('🔗 协议 (Protocol):     ' + url.protocol);
+    lines.push('🏠 主机 (Hostname):     ' + url.hostname);
+    lines.push('🔌 端口 (Port):         ' + (url.port || '默认'));
+    lines.push('📁 路径 (Pathname):     ' + url.pathname);
+    lines.push('📍 锚点 (Hash):         ' + (url.hash || '无'));
+    if (url.search) {
+      lines.push('');
+      lines.push('📊 查询参数 (Query Parameters):');
+      var params = new URLSearchParams(url.search);
+      var maxKeyLen = 0;
+      var entries = [];
+      params.forEach(function(v, k) { entries.push([k, v]); if (k.length > maxKeyLen) maxKeyLen = k.length; });
+      entries.forEach(function(e) {
+        var pad = maxKeyLen > 20 ? 1 : maxKeyLen + 2;
+        lines.push('  ' + e[0] + ' '.repeat(Math.max(1, pad - e[0].length)) + '= ' + e[1]);
+      });
+      stats.innerHTML = '<span>✅ 解析成功</span><span>📏 URL 长度: ' + input.length + '</span><span>🔢 查询参数: ' + entries.length + ' 个</span>';
+    } else {
+      stats.innerHTML = '<span>✅ 解析成功</span><span>📏 URL 长度: ' + input.length + '</span><span>🔢 无查询参数</span>';
+    }
+    output.style.display = 'block';
+    output.textContent = lines.join('\n');
+  } catch(e) {
+    output.style.display = 'block';
+    output.textContent = '❌ URL 解析失败: ' + e.message;
+    stats.innerHTML = '<span style="color:#dc2626">❌ 无效 URL</span>';
+  }
+}
+
+function clearURLParser() {
+  document.getElementById('url-parser-input').value = '';
+  document.getElementById('url-parser-output').style.display = 'none';
+  document.getElementById('url-parser-output').textContent = '';
+  document.getElementById('url-parser-stats').textContent = '';
+}
+
+function copyURLParser() {
+  var el = document.getElementById('url-parser-output');
+  if (el.style.display === 'none' || !el.textContent) return;
+  navigator.clipboard.writeText(el.textContent).then(function() {
+    var btn = document.getElementById('url-parser-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入 URL 后点击「解析 URL」，自动拆分协议、主机、端口、路径、查询参数和锚点。</p>
+  <p><strong>智能补全：</strong>未输入协议时自动添加 <code>https://</code>。</p>
+  <p><strong>适用场景：</strong>API 调试、URL 结构分析、爬虫开发。</p>
+</div>

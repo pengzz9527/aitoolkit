@@ -1,0 +1,74 @@
+<!-- Word Counter Widget -->
+<div class="tool-widget">
+  <textarea id="wc-input" class="tool-textarea" placeholder="在此输入或粘贴中英文文本..." rows="10">你好世界 Hello World! 这是一个测试文本，用于统计字数。Let's count words and characters. 2025年，AI技术飞速发展。</textarea>
+
+  <div class="stats-bar" id="wc-stats">
+    <span>🀄 中文字数: <strong id="wc-cn">16</strong></span>
+    <span>🔤 英文单词: <strong id="wc-en">10</strong></span>
+    <span>📏 总字符(含空格): <strong id="wc-total">73</strong></span>
+    <span>📏 总字符(无空格): <strong id="wc-nospace">61</strong></span>
+    <span>🔣 标点符号: <strong id="wc-punct">6</strong></span>
+    <span>📃 行数: <strong id="wc-lines">1</strong></span>
+    <span>⏱️ 阅读时间: <strong id="wc-readtime">~0 分钟</strong></span>
+  </div>
+
+  <div class="btn-row" style="margin-top:14px;">
+    <button class="btn btn-outline btn-sm" onclick="clearWC()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="wc-copy-btn" onclick="copyWC()">📋 复制统计</button>
+  </div>
+</div>
+
+<script>
+function updateWC() {
+  var text = document.getElementById('wc-input').value;
+  var cn = (text.match(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/g) || []).length;
+  var en = text.trim() ? text.trim().split(/[\s\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]+/).filter(function(w){ return w.match(/[a-zA-Z0-9]/); }).length : 0;
+  var total = text.length;
+  var noSpace = text.replace(/[\s]/g, '').length;
+  var punct = (text.match(/[，。！？、；：""''（）【】《》—·…\-\.\!\?\,\;\:\'\"\(\)\[\]\{\}]/g) || []).length;
+  var lines = text ? text.split('\n').length : 0;
+  var wordsPerMin = 200;
+  var cnReadTime = cn / 300;
+  var enReadTime = en / wordsPerMin;
+  var totalMin = cnReadTime + enReadTime;
+  var readTime = totalMin < 1 ? '&lt; 1 分钟' : '~' + Math.ceil(totalMin) + ' 分钟';
+
+  document.getElementById('wc-cn').textContent = cn;
+  document.getElementById('wc-en').textContent = en;
+  document.getElementById('wc-total').textContent = total;
+  document.getElementById('wc-nospace').textContent = noSpace;
+  document.getElementById('wc-punct').textContent = punct;
+  document.getElementById('wc-lines').textContent = lines;
+  document.getElementById('wc-readtime').innerHTML = readTime;
+}
+
+function clearWC() {
+  document.getElementById('wc-input').value = '';
+  updateWC();
+}
+
+function copyWC() {
+  var text = '中文字数: ' + document.getElementById('wc-cn').textContent + '\n' +
+    '英文单词: ' + document.getElementById('wc-en').textContent + '\n' +
+    '总字符(含空格): ' + document.getElementById('wc-total').textContent + '\n' +
+    '总字符(无空格): ' + document.getElementById('wc-nospace').textContent + '\n' +
+    '标点符号: ' + document.getElementById('wc-punct').textContent + '\n' +
+    '行数: ' + document.getElementById('wc-lines').textContent + '\n' +
+    '阅读时间: ' + document.getElementById('wc-readtime').textContent.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  if (!document.getElementById('wc-input').value) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('wc-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制统计'; }, 2000);
+  }).catch(function() {});
+}
+
+document.getElementById('wc-input').addEventListener('input', updateWC);
+updateWC();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>在输入框中粘贴或输入中英文混合文本，统计数据实时更新。</p>
+  <p><strong>统计项说明：</strong>中文字数（汉字字符）、英文单词（字母数字词）、总字符数（含/不含空格）、标点符号数、行数、预估阅读时间。</p>
+  <p><strong>阅读时间估算：</strong>中文按 300 字/分钟，英文按 200 词/分钟计算。</p>
+</div>

@@ -1,0 +1,136 @@
+<!-- Emoji Picker Widget -->
+<div class="tool-widget">
+  <div style="margin-bottom:12px;">
+    <input type="text" id="emoji-search" class="tool-textarea" style="font-family:var(--font);min-height:auto;padding:10px 14px;" placeholder="🔍 搜索 emoji..." oninput="filterEmoji()">
+  </div>
+
+  <div class="mode-toggle" id="emoji-tabs" style="flex-wrap:wrap;">
+    <button class="btn btn-sm active" data-cat="smileys" onclick="switchEmojiCat('smileys')">😀 笑脸</button>
+    <button class="btn btn-sm btn-outline" data-cat="gestures" onclick="switchEmojiCat('gestures')">👋 手势</button>
+    <button class="btn btn-sm btn-outline" data-cat="animals" onclick="switchEmojiCat('animals')">🐶 动物</button>
+    <button class="btn btn-sm btn-outline" data-cat="food" onclick="switchEmojiCat('food')">🍕 食物</button>
+    <button class="btn btn-sm btn-outline" data-cat="travel" onclick="switchEmojiCat('travel')">✈️ 旅行</button>
+    <button class="btn btn-sm btn-outline" data-cat="objects" onclick="switchEmojiCat('objects')">📦 物品</button>
+    <button class="btn btn-sm btn-outline" data-cat="symbols" onclick="switchEmojiCat('symbols')">🔣 符号</button>
+    <button class="btn btn-sm btn-outline" data-cat="flags" onclick="switchEmojiCat('flags')">🚩 旗帜</button>
+  </div>
+
+  <div id="emoji-grid" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:12px;max-height:300px;overflow-y:auto;padding:4px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);"></div>
+
+  <div id="emoji-status" style="margin-top:8px;font-size:0.82rem;color:var(--text-secondary);"></div>
+</div>
+
+<script>
+var _emojiData = {
+  smileys: [
+    '😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙',
+    '😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','😏','😒','🙄','😬','🤥',
+    '😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🥴','😵','🤯','🥺','😢','😭','😤','😠','😡','🤬',
+    '😈','👿','💀','☠️','💩','🤡','👹','👺','👻','👽','👾','🤖','😺','😸','😹','😻','😼','😽','🙀','😿','😾'
+  ],
+  gestures: [
+    '👋','🤚','🖐️','✋','🖖','👌','🤌','🤏','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','🖕','👇','☝️','👍',
+    '👎','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✍️','💅','🤳','💪','🦾','🦵','🦶','👂','🦻',
+    '👃','🧠','🫀','🫁','🦷','👅','👄','👁️','👀','🗣️','👤','👥','🫂','👶','👧','🧒','👦','👩','🧑','👨'
+  ],
+  animals: [
+    '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🙈','🙉','🙊','🐒','🐔',
+    '🐧','🐦','🐤','🐣','🐥','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐛','🦋','🐌','🐞','🐜','🦟',
+    '🦗','🕷️','🦂','🐢','🐍','🦎','🦖','🦕','🐙','🦑','🦐','🦀','🐡','🐠','🐟','🐬','🐳','🐋','🦈','🐊'
+  ],
+  food: [
+    '🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍈','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑',
+    '🥦','🥬','🥒','🌽','🥕','🧄','🧅','🥔','🍠','🥐','🍞','🥖','🥨','🧀','🥚','🍳','🥞','🧇','🥓','🥩',
+    '🍗','🍖','🦴','🌭','🍔','🍟','🍕','🫓','🥪','🥙','🧆','🌮','🌯','🥗','🥘','🫕','🥫','🍝','🍜','🍲',
+    '🍛','🍣','🍱','🥟','🦪','🍤','🍙','🍚','🍘','🍥','🥠','🥮','🍢','🍡','🍧','🍨','🍦','🥧','🧁','🍰'
+  ],
+  travel: [
+    '🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🛻','🚚','🚛','🚜','🏍️','🛵','🛺','🚲','🛴','🛹',
+    '🚏','🛣️','🛤️','⛽','🛳️','⛵','🚤','🛶','⚓','✈️','🛩️','🛫','🛬','🪂','🚁','🚟','🚠','🚡','🛰️','🚀',
+    '🛸','🏠','🏡','🏢','🏣','🏤','🏥','🏦','🏨','🏩','🏪','🏫','🏬','🏭','🏯','🏰','💒','🗼','🗽','⛲'
+  ],
+  objects: [
+    '⌚','📱','💻','⌨️','🖥️','🖨️','🖱️','🖲️','🕹️','🗜️','💽','💾','💿','📀','📼','📷','📸','📹','🎥','📽️',
+    '🎞️','📞','☎️','📟','📠','📺','📻','🎙️','🎚️','🎛️','🧭','⏱️','⏲️','⏰','🕰️','⌛','⏳','📡','🔋','🔌',
+    '💡','🔦','🕯️','🪔','🧯','🗑️','🛢️','💸','💵','💴','💶','💷','💰','💳','💎','⚖️','🔧','🔨','⚒️','🛠️'
+  ],
+  symbols: [
+    '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','💟','☮️',
+    '✝️','☪️','🕉️','☸️','✡️','🔯','🕎','☯️','☦️','🛐','⛎','♈','♉','♊','♋','♌','♍','♎','♏','♐',
+    '♑','♒','♓','🆔','⚕️','♻️','⚜️','🔰','🔱','⭕','✅','☑️','✔️','❌','❎','➕','➖','➗','✖️','💲'
+  ],
+  flags: [
+    '🏳️','🏴','🏁','🚩','🎌','🏴‍☠️','🇺🇳','🇺🇸','🇬🇧','🇨🇳','🇯🇵','🇰🇷','🇫🇷','🇩🇪','🇮🇹','🇪🇸','🇷🇺','🇧🇷','🇮🇳','🇦🇺',
+    '🇨🇦','🇲🇽','🇦🇷','🇿🇦','🇸🇪','🇳🇴','🇩🇰','🇫🇮','🇳🇱','🇧🇪','🇨🇭','🇦🇹','🇵🇹','🇬🇷','🇹🇷','🇸🇬','🇭🇰','🇹🇼','🇦🇪','🇸🇦',
+    '🇮🇱','🇵🇭','🇻🇳','🇹🇭','🇲🇾','🇮🇩','🇵🇰','🇧🇩','🇳🇬','🇰🇪','🇪🇬','🇲🇦','🇨🇱','🇨🇴','🇵🇪','🇨🇿','🇵🇱','🇭🇺','🇷🇴','🇺🇦'
+  ]
+};
+
+var _currentEmojiCat = 'smileys';
+
+function renderEmoji(list) {
+  var grid = document.getElementById('emoji-grid');
+  var status = document.getElementById('emoji-status');
+  if (list.length === 0) {
+    grid.innerHTML = '<div class="empty-state" style="width:100%;padding:20px;">没有匹配的 emoji 😶</div>';
+    status.textContent = '0 个结果';
+    return;
+  }
+  var html = '';
+  list.forEach(function(e) {
+    html += '<span style="font-size:1.6rem;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s;" ' +
+      'onmouseover="this.style.background=\'var(--primary-light)\'" ' +
+      'onmouseout="this.style.background=\'transparent\'" ' +
+      'onclick="copyEmoji(\'' + e + '\', this)" title="点击复制 ' + e + '">' + e + '</span>';
+  });
+  grid.innerHTML = html;
+  status.textContent = list.length + ' 个 emoji';
+}
+
+function switchEmojiCat(cat) {
+  _currentEmojiCat = cat;
+  document.querySelectorAll('#emoji-tabs .btn').forEach(function(btn) {
+    btn.className = btn.getAttribute('data-cat') === cat ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  });
+  var search = document.getElementById('emoji-search').value.trim();
+  if (search) {
+    filterEmoji();
+  } else {
+    renderEmoji(_emojiData[cat]);
+  }
+}
+
+function filterEmoji() {
+  var query = document.getElementById('emoji-search').value.trim().toLowerCase();
+  if (!query) {
+    renderEmoji(_emojiData[_currentEmojiCat]);
+    return;
+  }
+  var all = [];
+  Object.keys(_emojiData).forEach(function(cat) {
+    all = all.concat(_emojiData[cat]);
+  });
+  var filtered = all.filter(function(e) { return e.toLowerCase().indexOf(query) >= 0; });
+  renderEmoji(filtered);
+}
+
+function copyEmoji(emoji, el) {
+  navigator.clipboard.writeText(emoji).then(function() {
+    var orig = el.innerHTML;
+    el.innerHTML = '✅';
+    el.style.background = 'var(--primary-light)';
+    setTimeout(function() {
+      el.innerHTML = orig;
+      el.style.background = 'transparent';
+    }, 1000);
+  }).catch(function() {});
+}
+
+switchEmojiCat('smileys');
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>点击上方分类标签切换 Emoji 分组，在搜索框中输入关键词过滤，点击任意 Emoji 即可复制到剪贴板。</p>
+  <p><strong>分类：</strong>笑脸、手势、动物、食物、旅行、物品、符号、旗帜。</p>
+  <p><strong>适用场景：</strong>社交媒体发文、聊天表情选择、内容创作、UI 设计。</p>
+</div>

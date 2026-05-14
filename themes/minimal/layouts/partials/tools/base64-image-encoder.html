@@ -1,0 +1,70 @@
+<!-- Base64 图片编码器 Widget -->
+<div id="b64-drop-zone" style="border:2px dashed var(--border);border-radius:var(--radius-sm);padding:40px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);margin-bottom:12px;" ondragover="event.preventDefault();this.style.borderColor='var(--primary)';this.style.background='var(--primary-light)'" ondragleave="this.style.borderColor='var(--border)';this.style.background='var(--bg)'" ondrop="event.preventDefault();handleB64File(event.dataTransfer.files[0]);this.style.borderColor='var(--border)';this.style.background='var(--bg)'" onclick="document.getElementById('b64-file-input').click()">
+  <div style="font-size:2.5rem;margin-bottom:8px;">🖼️</div>
+  <p style="color:var(--text-secondary);font-size:0.9rem;">点击选择图片 或 拖拽图片到此处</p>
+  <p style="color:var(--text-tertiary);font-size:0.78rem;margin-top:4px;">支持 PNG / JPG / WebP / GIF</p>
+  <input type="file" id="b64-file-input" accept="image/*" style="display:none" onchange="handleB64File(this.files[0])">
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="clearB64()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="b64-copy-btn" onclick="copyB64()">📋 复制 Base64</button>
+</div>
+
+<div id="b64-preview" style="display:none;margin-bottom:10px;text-align:center;">
+  <img id="b64-preview-img" style="max-width:120px;max-height:120px;border-radius:8px;border:1px solid var(--border);" alt="预览">
+</div>
+
+<div class="output-area" id="b64-output" style="display:none;font-size:0.78rem;word-break:break-all;max-height:200px;"></div>
+<div class="stats-bar" id="b64-stats"></div>
+
+<script>
+var _b64Result = '';
+
+function handleB64File(file) {
+  if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    document.getElementById('b64-stats').innerHTML = '<span style="color:#dc2626">❌ 请选择图片文件</span>';
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    _b64Result = e.target.result;
+    document.getElementById('b64-output').style.display = 'block';
+    document.getElementById('b64-output').textContent = _b64Result;
+    document.getElementById('b64-preview').style.display = 'block';
+    document.getElementById('b64-preview-img').src = _b64Result;
+    var sizeKB = (file.size / 1024).toFixed(1);
+    var b64Len = _b64Result.length;
+    var ratio = (b64Len / file.size * 100).toFixed(0);
+    document.getElementById('b64-stats').innerHTML = '<span>📁 ' + file.name + '</span><span>📏 原图: ' + sizeKB + ' KB</span><span>🔤 Base64: ' + b64Len + ' 字符</span><span>📈 膨胀率: ~' + ratio + '%</span>';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearB64() {
+  _b64Result = '';
+  document.getElementById('b64-file-input').value = '';
+  document.getElementById('b64-output').style.display = 'none';
+  document.getElementById('b64-output').textContent = '';
+  document.getElementById('b64-preview').style.display = 'none';
+  document.getElementById('b64-preview-img').src = '';
+  document.getElementById('b64-stats').textContent = '';
+}
+
+function copyB64() {
+  if (!_b64Result) return;
+  navigator.clipboard.writeText(_b64Result).then(function() {
+    var btn = document.getElementById('b64-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制 Base64'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>点击选择或拖拽图片到虚线区域，自动生成 Base64 Data URL。</p>
+  <p><strong>预览功能：</strong>自动显示图片缩略图，点击「复制 Base64」复制完整 Data URL。</p>
+  <p><strong>适用场景：</strong>HTML 内联图片、CSS background 嵌入、小程序图片转码。</p>
+  <p><strong>隐私说明：</strong>所有数据仅在浏览器本地处理，不会上传到任何服务器。</p>
+</div>

@@ -1,0 +1,107 @@
+<!-- Text Sorter Widget -->
+<textarea id="sort-input" class="tool-textarea" placeholder="在此输入多行文本..." rows="8">banana
+apple
+cherry
+date
+apple
+elderberry</textarea>
+
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:12px 0;">
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="radio" name="sort-order" id="sort-asc" checked> ⬆️ 升序
+  </label>
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="radio" name="sort-order" id="sort-desc"> ⬇️ 降序
+  </label>
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="checkbox" id="sort-unique"> 🗑️ 去重
+  </label>
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="checkbox" id="sort-random"> 🎲 随机打乱
+  </label>
+  <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+    <input type="checkbox" id="sort-numeric"> 🔢 数字排序
+  </label>
+</div>
+
+<div class="btn-row">
+  <button class="btn" onclick="sortText()">⚡ 执行</button>
+  <button class="btn btn-outline btn-sm" onclick="clearSort()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="sort-copy-btn" onclick="copySort()">📋 复制结果</button>
+</div>
+
+<pre class="output-area" id="sort-output"></pre>
+<div class="stats-bar" id="sort-stats"></div>
+
+<script>
+function sortText() {
+  var input = document.getElementById('sort-input').value;
+  var out = document.getElementById('sort-output');
+  var stats = document.getElementById('sort-stats');
+  if (!input.trim()) { out.textContent = '⚠️ 请输入文本'; stats.textContent = ''; return; }
+  var lines = input.split('\n').filter(function(l) { return true; });
+  var totalLines = lines.length;
+  var asc = document.getElementById('sort-asc').checked;
+  var unique = document.getElementById('sort-unique').checked;
+  var random = document.getElementById('sort-random').checked;
+  var numeric = document.getElementById('sort-numeric').checked;
+
+  if (unique) {
+    var seen = {};
+    lines = lines.filter(function(l) {
+      if (seen[l]) return false;
+      seen[l] = true;
+      return true;
+    });
+  }
+
+  if (random) {
+    for (var i = lines.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = lines[i];
+      lines[i] = lines[j];
+      lines[j] = tmp;
+    }
+  } else if (numeric) {
+    lines.sort(function(a, b) {
+      var na = parseFloat(a), nb = parseFloat(b);
+      if (!isNaN(na) && !isNaN(nb)) {
+        return asc ? na - nb : nb - na;
+      }
+      var sa = String(a), sb = String(b);
+      return asc ? sa.localeCompare(sb) : sb.localeCompare(sa);
+    });
+  } else {
+    lines.sort(function(a, b) {
+      return asc ? a.localeCompare(b) : b.localeCompare(a);
+    });
+  }
+
+  var result = lines.join('\n');
+  out.textContent = result;
+  stats.innerHTML = '<span>📃 原始行数: ' + totalLines + '</span><span>📏 处理后行数: ' + lines.length + '</span>';
+  if (unique) stats.innerHTML += '<span>🗑️ 去重: ' + (totalLines - lines.length) + ' 行</span>';
+}
+
+function clearSort() {
+  document.getElementById('sort-input').value = '';
+  document.getElementById('sort-output').textContent = '';
+  document.getElementById('sort-stats').textContent = '';
+}
+
+function copySort() {
+  var text = document.getElementById('sort-output').textContent;
+  if (!text || text.indexOf('⚠️') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('sort-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入多行文本，选择排序方式和处理选项，点击「执行」即可。</p>
+  <p><strong>选项功能：</strong>升序/降序排序、去除重复行、随机打乱顺序、数字排序（混合文本时按字符串排序）。</p>
+  <p><strong>适用场景：</strong>数据整理、列表去重、文本清洗、随机抽选。</p>
+</div>

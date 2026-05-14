@@ -1,0 +1,134 @@
+<!-- JSON ↔ CSV Converter Widget -->
+<div class="mode-toggle" id="j2c-mode-toggle">
+  <button class="btn btn-sm active" id="j2c-mode-json2csv" onclick="setJ2CMode('json2csv')">📄 JSON → CSV</button>
+  <button class="btn btn-sm btn-outline" id="j2c-mode-csv2json" onclick="setJ2CMode('csv2json')">📄 CSV → JSON</button>
+</div>
+
+<textarea id="j2c-input" class="tool-textarea" placeholder="在此粘贴 JSON 数组..." rows="8">[{"name":"AI Toolkit","version":"1.0","author":"Nous Research"},{"name":"Hermes Agent","version":"3.0","author":"Nous Research"}]</textarea>
+
+<div class="btn-row">
+  <button class="btn" id="j2c-convert-btn" onclick="convertJ2C()">🔄 转换</button>
+  <button class="btn btn-outline btn-sm" onclick="clearJ2C()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="j2c-copy-btn" onclick="copyJ2C()">📋 复制结果</button>
+</div>
+
+<pre class="output-area" id="j2c-output" style="max-height:400px;"></pre>
+<div class="stats-bar" id="j2c-stats"></div>
+
+<script>
+var _j2cMode = 'json2csv';
+
+function setJ2CMode(mode) {
+  _j2cMode = mode;
+  document.getElementById('j2c-mode-json2csv').className = mode === 'json2csv' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('j2c-mode-csv2json').className = mode === 'csv2json' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  var input = document.getElementById('j2c-input');
+  input.placeholder = mode === 'json2csv' ? '在此粘贴 JSON 数组...' : '在此粘贴 CSV 文本（首行为列名）...';
+  input.value = mode === 'json2csv' ? '[{"name":"AI Toolkit","version":"1.0","author":"Nous Research"},{"name":"Hermes Agent","version":"3.0","author":"Nous Research"}]' : 'name,version,author\nAI Toolkit,1.0,Nous Research\nHermes Agent,3.0,Nous Research';
+  convertJ2C();
+}
+
+function _csvEscape(val) {
+  val = String(val);
+  if (val.indexOf(',') >= 0 || val.indexOf('"') >= 0 || val.indexOf('\n') >= 0) {
+    return '"' + val.replace(/"/g, '""') + '"';
+  }
+  return val;
+}
+
+function _csvParseLine(line) {
+  var result = [];
+  var cur = '';
+  var inQuote = false;
+  for (var i = 0; i < line.length; i++) {
+    var c = line[i];
+    if (inQuote) {
+      if (c === '"') {
+        if (i + 1 < line.length && line[i+1] === '"') {
+          cur += '"';
+          i++;
+        } else {
+          inQuote = false;
+        }
+      } else {
+        cur += c;
+      }
+    } else {
+      if (c === '"') {
+        inQuote = true;
+      } else if (c === ',') {
+        result.push(cur);
+        cur = '';
+      } else {
+        cur += c;
+      }
+    }
+  }
+  result.push(cur);
+  return result;
+}
+
+function convertJ2C() {
+  var input = document.getElementById('j2c-input').value.trim();
+  var out = document.getElementById('j2c-output');
+  var stats = document.getElementById('j2c-stats');
+  if (!input) { out.textContent = '⚠️ 请输入数据'; stats.textContent = ''; return; }
+  try {
+    if (_j2cMode === 'json2csv') {
+      var data = JSON.parse(input);
+      if (!Array.isArray(data)) { out.textContent = '❌ 需要JSON数组（[...]格式）'; stats.textContent = ''; return; }
+      if (data.length === 0) { out.textContent = '⚠️ 数组为空'; stats.textContent = ''; return; }
+      var keys = Object.keys(data[0]);
+      var lines = [];
+      lines.push(keys.map(_csvEscape).join(','));
+      data.forEach(function(row) {
+        lines.push(keys.map(function(k) { return _csvEscape(row[k] !== undefined ? row[k] : ''); }).join(','));
+      });
+      var result = lines.join('\n');
+      out.textContent = result;
+      stats.innerHTML = '<span>✅ 转换成功</span><span>📏 ' + data.length + ' 行</span><span>📋 ' + keys.length + ' 列</span>';
+    } else {
+      var lines = input.split('\n').filter(function(l) { return l.trim(); });
+      if (lines.length < 2) { out.textContent = '❌ CSV至少需要2行（表头+数据）'; stats.textContent = ''; return; }
+      var headers = _csvParseLine(lines[0]);
+      var result = [];
+      for (var i = 1; i < lines.length; i++) {
+        var vals = _csvParseLine(lines[i]);
+        var row = {};
+        headers.forEach(function(h, idx) { row[h] = vals[idx] !== undefined ? vals[idx] : ''; });
+        result.push(row);
+      }
+      out.textContent = JSON.stringify(result, null, 2);
+      stats.innerHTML = '<span>✅ 转换成功</span><span>📏 ' + result.length + ' 行</span><span>📋 ' + headers.length + ' 列</span>';
+    }
+  } catch(e) {
+    out.textContent = '❌ ' + (_j2cMode === 'json2csv' ? 'JSON' : 'CSV') + ' 解析错误:\n' + e.message;
+    stats.textContent = '';
+  }
+}
+
+function clearJ2C() {
+  document.getElementById('j2c-input').value = '';
+  document.getElementById('j2c-output').textContent = '';
+  document.getElementById('j2c-stats').textContent = '';
+}
+
+function copyJ2C() {
+  var text = document.getElementById('j2c-output').textContent;
+  if (!text || text.indexOf('⚠️') === 0 || text.indexOf('❌') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('j2c-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+convertJ2C();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择转换方向，粘贴数据后点击转换按钮即可。</p>
+  <p><strong>JSON→CSV：</strong>粘贴JSON对象数组，自动提取所有key作为列名。</p>
+  <p><strong>CSV→JSON：</strong>粘贴CSV文本（首行为列名），转换为JSON对象数组。</p>
+  <p><strong>适用场景：</strong>数据格式转换、Excel导入导出、API数据处理。</p>
+</div>

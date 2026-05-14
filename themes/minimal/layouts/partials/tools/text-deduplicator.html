@@ -1,0 +1,98 @@
+<!-- Text Deduplicator Widget -->
+<div class="tool-widget">
+  <textarea id="td-input" class="tool-textarea" placeholder="在此输入多行文本，每行一条..." rows="8">apple
+banana
+Apple
+orange
+banana
+grape
+apple
+Orange
+grape</textarea>
+
+  <div style="display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="radio" name="td-case" value="sensitive" checked> 区分大小写
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="radio" name="td-case" value="insensitive"> 不区分大小写
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="radio" name="td-order" value="first" checked> 保留首次出现
+    </label>
+    <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;">
+      <input type="radio" name="td-order" value="last"> 保留末次出现
+    </label>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="dedupText()">🔄 去重</button>
+    <button class="btn btn-outline btn-sm" onclick="clearTD()">🗑️ 清空</button>
+    <button class="btn btn-outline btn-sm" id="td-copy-btn" onclick="copyTD()">📋 复制结果</button>
+  </div>
+
+  <pre class="output-area" id="td-output"></pre>
+  <div class="stats-bar" id="td-stats"></div>
+</div>
+
+<script>
+function dedupText() {
+  var input = document.getElementById('td-input').value;
+  var caseSensitive = document.querySelector('input[name="td-case"]:checked').value === 'sensitive';
+  var keepLast = document.querySelector('input[name="td-order"]:checked').value === 'last';
+  var output = document.getElementById('td-output');
+  var stats = document.getElementById('td-stats');
+
+  if (!input.trim()) { output.textContent = '⚠️ 请输入文本'; stats.textContent = ''; return; }
+
+  var lines = input.split('\n');
+  var seen = {};
+  var result = [];
+
+  if (keepLast) {
+    for (var i = lines.length - 1; i >= 0; i--) {
+      var key = caseSensitive ? lines[i] : lines[i].toLowerCase();
+      if (!seen[key]) {
+        seen[key] = true;
+        result.unshift(lines[i]);
+      }
+    }
+  } else {
+    for (var j = 0; j < lines.length; j++) {
+      var key2 = caseSensitive ? lines[j] : lines[j].toLowerCase();
+      if (!seen[key2]) {
+        seen[key2] = true;
+        result.push(lines[j]);
+      }
+    }
+  }
+
+  output.textContent = result.join('\n');
+  var removed = lines.length - result.length;
+  stats.innerHTML = '<span>📝 原始行数: ' + lines.length + '</span>' +
+    '<span>✅ 去重后: ' + result.length + ' 行</span>' +
+    '<span>🗑️ 去除: ' + removed + ' 行</span>';
+}
+
+function clearTD() {
+  document.getElementById('td-input').value = '';
+  document.getElementById('td-output').textContent = '';
+  document.getElementById('td-stats').textContent = '';
+}
+
+function copyTD() {
+  var text = document.getElementById('td-output').textContent;
+  if (!text || text.indexOf('⚠️') >= 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('td-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入多行文本 → 选择去重模式 → 点击「去重」按钮。支持区分/不区分大小写，保留首次或末次出现的行。</p>
+  <p><strong>适用场景：</strong>数据清洗、列表去重、邮件列表整理、日志分析、CSV 数据预处理。</p>
+  <p><strong>注意：</strong>本工具按行去重，不会改变行的顺序。</p>
+</div>

@@ -1,0 +1,116 @@
+<!-- Text Diff Checker Widget -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;">
+  <div>
+    <label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:4px;">🔴 原始文本 (A)</label>
+    <textarea id="diff-input-a" class="tool-textarea" placeholder="输入原始文本 A..." rows="8">今天天气真不错
+适合出去散步
+AI Toolkit 很好用
+下午要开会</textarea>
+  </div>
+  <div>
+    <label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:4px;">🟢 修改文本 (B)</label>
+    <textarea id="diff-input-b" class="tool-textarea" placeholder="输入修改文本 B..." rows="8">今天天气非常好
+适合出去跑步
+AI Toolkit 超级好用
+下午要开会
+晚上有聚餐</textarea>
+  </div>
+</div>
+
+<div class="btn-row">
+  <button class="btn" onclick="computeDiff()">🔍 对比</button>
+  <button class="btn btn-outline btn-sm" onclick="clearDiff()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="diff-copy-btn" onclick="copyDiff()">📋 复制结果</button>
+</div>
+
+<pre class="output-area" id="diff-output" style="max-height:500px;white-space:pre-wrap;"></pre>
+<div class="stats-bar" id="diff-stats"></div>
+
+<script>
+function _lcs(a, b) {
+  var m = a.length, n = b.length;
+  var dp = [];
+  for (var i = 0; i <= m; i++) {
+    dp[i] = [];
+    for (var j = 0; j <= n; j++) dp[i][j] = 0;
+  }
+  for (var i = 1; i <= m; i++) {
+    for (var j = 1; j <= n; j++) {
+      if (a[i-1] === b[j-1]) dp[i][j] = dp[i-1][j-1] + 1;
+      else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+    }
+  }
+  // Backtrack
+  var result = [];
+  var i = m, j = n;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && a[i-1] === b[j-1]) {
+      result.push({type:'same', text:a[i-1]});
+      i--; j--;
+    } else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) {
+      result.push({type:'add', text:b[j-1]});
+      j--;
+    } else {
+      result.push({type:'del', text:a[i-1]});
+      i--;
+    }
+  }
+  return result.reverse();
+}
+
+function computeDiff() {
+  var textA = document.getElementById('diff-input-a').value;
+  var textB = document.getElementById('diff-input-b').value;
+  var out = document.getElementById('diff-output');
+  var stats = document.getElementById('diff-stats');
+  var linesA = textA ? textA.split('\n') : [];
+  var linesB = textB ? textB.split('\n') : [];
+  if (linesA.length === 0 && linesB.length === 0) {
+    out.textContent = '⚠️ 请在两侧输入文本';
+    stats.textContent = '';
+    return;
+  }
+  var result = _lcs(linesA, linesB);
+  var html = '';
+  var addCount = 0, delCount = 0, sameCount = 0;
+  result.forEach(function(item) {
+    var escaped = item.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    if (item.type === 'same') {
+      html += '<span style="color:var(--text);opacity:0.7;"> ' + escaped + '</span>\n';
+      sameCount++;
+    } else if (item.type === 'add') {
+      html += '<span style="background:#dcfce7;color:#166534;display:block;padding:2px 8px;border-radius:4px;margin:1px 0;">+ ' + escaped + '</span>\n';
+      addCount++;
+    } else {
+      html += '<span style="background:#fee2e2;color:#991b1b;display:block;padding:2px 8px;border-radius:4px;margin:1px 0;">- ' + escaped + '</span>\n';
+      delCount++;
+    }
+  });
+  out.innerHTML = html;
+  stats.innerHTML = '<span>📃 总行数: ' + result.length + '</span><span style="color:#166534">🟢 +' + addCount + '</span><span style="color:#991b1b">🔴 -' + delCount + '</span><span>⚪ ' + sameCount + ' 行相同</span>';
+}
+
+function clearDiff() {
+  document.getElementById('diff-input-a').value = '';
+  document.getElementById('diff-input-b').value = '';
+  document.getElementById('diff-output').textContent = '';
+  document.getElementById('diff-stats').textContent = '';
+}
+
+function copyDiff() {
+  var out = document.getElementById('diff-output');
+  var text = out.textContent || out.innerText;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('diff-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>在左右两侧分别输入文本 A 和 B，点击「对比」查看差异。</p>
+  <p><strong>颜色标记：</strong><span style="color:#166534">🟢 绿色</span> 为新增行，<span style="color:#991b1b">🔴 红色</span> 为删除行，灰色为未变化行。</p>
+  <p><strong>适用场景：</strong>代码审查、版本对比、文本校对、配置变更检查。</p>
+</div>

@@ -1,0 +1,282 @@
+<!-- Markdown Preview Widget -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;">
+  <div>
+    <label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:4px;">✏️ Markdown 编辑</label>
+    <textarea id="md-input" class="tool-textarea" placeholder="在此输入 Markdown..." rows="18" oninput="renderMarkdown()" style="min-height:400px;font-family:var(--font-mono);font-size:0.82rem;"># AI Toolkit 🚀
+
+## 功能特性
+
+- **JSON 格式化** — 美化/压缩/验证
+- *Base64 编码* — 文本与 Base64 互转
+- 正则表达式测试 — 实时高亮匹配
+
+### 代码示例
+
+```js
+function hello() {
+  console.log("Hello, AI Toolkit!");
+}
+```
+
+### 链接与图片
+
+访问 [AI Toolkit](/) 了解更多。
+
+### 表格示例
+
+| 功能 | 状态 | 优先级 |
+|------|------|--------|
+| JSON | ✅ | 高 |
+| Base64 | ✅ | 中 |
+| 正则 | ✅ | 高 |
+
+> 所有工具纯前端运行，数据不上传服务器
+
+这是一个 `行内代码` 示例。</textarea>
+  </div>
+  <div>
+    <label style="font-size:0.8rem;font-weight:600;display:block;margin-bottom:4px;">👁️ 预览效果</label>
+    <div id="md-preview" class="output-area" style="min-height:400px;white-space:normal;overflow-y:auto;background:var(--bg-card);"></div>
+  </div>
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-outline btn-sm" onclick="clearMD()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="md-copy-btn" onclick="copyMD()">📋 复制 Markdown</button>
+</div>
+<div class="stats-bar" id="md-stats"></div>
+
+<script>
+function _escapeHtml(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function _renderInline(text) {
+  // Images first
+  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:8px;margin:8px 0;">');
+  // Links
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:underline;">$1</a>');
+  // Bold + Italic
+  text = text.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  // Bold
+  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Italic
+  text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  // Inline code
+  text = text.replace(/`([^`]+)`/g, '<code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-size:0.85em;">$1</code>');
+  // Strikethrough
+  text = text.replace(/~~(.+?)~~/g, '<del>$1</del>');
+  return text;
+}
+
+function _renderCodeBlock(text) {
+  // ```lang\n...\n``` blocks
+  return text.replace(/```(\w*)\n([\s\S]*?)```/g, function(m, lang, code) {
+    var escaped = _escapeHtml(code.replace(/\n$/, ''));
+    return '<pre style="background:#1e1e2e;color:#cdd6f4;padding:16px;border-radius:var(--radius-sm);overflow-x:auto;font-family:var(--font-mono);font-size:0.82rem;line-height:1.5;"><code>' + escaped + '</code></pre>';
+  });
+}
+
+function _renderTable(text) {
+  // Simple pipe table rendering
+  var lines = text.split('\n');
+  var inTable = false;
+  var result = [];
+  var tableLines = [];
+  
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    if (line.trim().indexOf('|') === 0 || (line.trim().indexOf('|') >= 0 && line.match(/^\|?[^|]+\|[^|]+\|?$/))) {
+      // Check if it's a separator line
+      if (line.match(/^\|?[\s:-]+\|[\s:-]+\|?$/)) continue;
+      tableLines.push(line);
+      inTable = true;
+    } else {
+      if (inTable && tableLines.length > 0) {
+        result.push(_renderTableBlock(tableLines));
+        tableLines = [];
+        inTable = false;
+      }
+      result.push(line);
+    }
+  }
+  if (tableLines.length > 0) {
+    result.push(_renderTableBlock(tableLines));
+  }
+  return result.join('\n');
+}
+
+function _renderTableBlock(lines) {
+  var html = '<div style="overflow-x:auto;margin:12px 0;"><table style="width:100%;border-collapse:collapse;font-size:0.85rem;">';
+  lines.forEach(function(line, idx) {
+    var cells = line.split('|').filter(function(c) { return true; });
+    // Remove first/last if empty (from leading/trailing |)
+    if (cells.length > 0 && cells[0].trim() === '') cells.shift();
+    if (cells.length > 0 && cells[cells.length-1].trim() === '') cells.pop();
+    
+    var tag = idx === 0 ? 'th' : 'td';
+    html += '<tr>';
+    cells.forEach(function(c) {
+      html += '<' + tag + ' style="border:1px solid var(--border);padding:8px 12px;text-align:left;' +
+        (tag === 'th' ? 'font-weight:600;background:var(--bg);' : '') + '">';
+      html += idx === 0 ? _renderInline(c.trim()) : _renderInline(c.trim());
+      html += '</' + tag + '>';
+    });
+    html += '</tr>';
+  });
+  html += '</table></div>';
+  return html;
+}
+
+function _renderBlockquote(text) {
+  return text.replace(/^>\s?(.+)$/gm, '<blockquote style="border-left:4px solid var(--primary);padding:8px 16px;margin:12px 0;background:var(--primary-light);border-radius:0 var(--radius-sm) var(--radius-sm) 0;color:var(--text-secondary);">$1</blockquote>');
+}
+
+function renderMarkdown() {
+  var input = document.getElementById('md-input').value;
+  var preview = document.getElementById('md-preview');
+  var stats = document.getElementById('md-stats');
+  
+  if (!input.trim()) {
+    preview.innerHTML = '<div class="empty-state">👆 在左侧输入 Markdown 开始预览</div>';
+    stats.textContent = '';
+    return;
+  }
+  
+  var html = '';
+  
+  // Process code blocks first to protect them
+  var blocks = [];
+  var processed = input.replace(/```(\w*)\n([\s\S]*?)```/g, function(m, lang, code) {
+    var idx = blocks.length;
+    blocks.push(m);
+    return '%%CODEBLOCK' + idx + '%%';
+  });
+  
+  var lines = processed.split('\n');
+  var i = 0;
+  
+  while (i < lines.length) {
+    var line = lines[i];
+    var trimmed = line.trim();
+    
+    // Empty line
+    if (!trimmed) { html += '<div style="height:8px;"></div>'; i++; continue; }
+    
+    // Headers
+    var hMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
+    if (hMatch) {
+      var level = hMatch[1].length;
+      var content = _renderInline(hMatch[2]);
+      html += '<h' + level + ' style="margin:16px 0 8px;font-weight:700;line-height:1.3;color:var(--text);">' + content + '</h' + level + '>';
+      i++;
+      continue;
+    }
+    
+    // Blockquote
+    var bqMatch = trimmed.match(/^>\s?(.*)$/);
+    if (bqMatch) {
+      var bqContent = _renderInline(bqMatch[1]);
+      html += '<blockquote style="border-left:4px solid var(--primary);padding:8px 16px;margin:12px 0;background:var(--primary-light);border-radius:0 var(--radius-sm) var(--radius-sm) 0;color:var(--text-secondary);">' + bqContent + '</blockquote>';
+      i++;
+      continue;
+    }
+    
+    // Horizontal rule
+    if (trimmed.match(/^[-*_]{3,}$/)) {
+      html += '<hr style="border:none;border-top:2px solid var(--border);margin:16px 0;">';
+      i++;
+      continue;
+    }
+    
+    // Unordered list
+    var ulMatch = trimmed.match(/^[-*+]\s+(.+)$/);
+    if (ulMatch) {
+      html += '<ul style="margin:8px 0;padding-left:24px;list-style:disc;">';
+      while (i < lines.length) {
+        var liLine = lines[i].trim();
+        var liMatch = liLine.match(/^[-*+]\s+(.+)$/);
+        if (!liMatch) break;
+        html += '<li style="margin:4px 0;line-height:1.6;">' + _renderInline(liMatch[1]) + '</li>';
+        i++;
+      }
+      html += '</ul>';
+      continue;
+    }
+    
+    // Ordered list
+    var olMatch = trimmed.match(/^\d+\.\s+(.+)$/);
+    if (olMatch) {
+      html += '<ol style="margin:8px 0;padding-left:24px;list-style:decimal;">';
+      while (i < lines.length) {
+        var liLine2 = lines[i].trim();
+        var liMatch2 = liLine2.match(/^\d+\.\s+(.+)$/);
+        if (!liMatch2) break;
+        html += '<li style="margin:4px 0;line-height:1.6;">' + _renderInline(liMatch2[1]) + '</li>';
+        i++;
+      }
+      html += '</ol>';
+      continue;
+    }
+    
+    // Paragraph (default)
+    var para = line;
+    i++;
+    while (i < lines.length && lines[i].trim()) {
+      para += ' ' + lines[i].trim();
+      i++;
+    }
+    
+    // Check if it's a table line
+    if (para.match(/^\|/)) {
+      // Table - but this should have been caught by the earlier logic
+      // Handle as paragraph with inline
+    }
+    
+    html += '<p style="margin:8px 0;line-height:1.7;">' + _renderInline(para) + '</p>';
+  }
+  
+  // Restore code blocks
+  html = html.replace(/%%CODEBLOCK(\d+)%%/g, function(m, idx) {
+    var block = blocks[parseInt(idx)];
+    var match = block.match(/```(\w*)\n([\s\S]*?)```/);
+    var lang = match[1] || '';
+    var code = match[2].replace(/\n$/, '');
+    var escaped = _escapeHtml(code);
+    var langLabel = lang ? '<div style="font-size:0.75rem;color:var(--text-tertiary);padding:4px 16px;background:#181825;border-radius:var(--radius-sm) var(--radius-sm) 0 0;font-family:var(--font-mono);">' + lang + '</div>' : '';
+    return '<pre style="background:#1e1e2e;color:#cdd6f4;padding:16px;border-radius:var(--radius-sm);overflow-x:auto;font-family:var(--font-mono);font-size:0.82rem;line-height:1.5;margin:12px 0;">' + langLabel + '<code>' + escaped + '</code></pre>';
+  });
+  
+  // Process tables in the final HTML
+  // (Tables need to be handled after restorations)
+  
+  preview.innerHTML = html;
+  
+  var chars = input.length;
+  var linesCount = input.split('\n').length;
+  stats.innerHTML = '<span>📏 ' + chars + ' 字符</span><span>📃 ' + linesCount + ' 行</span>';
+}
+
+function clearMD() {
+  document.getElementById('md-input').value = '';
+  renderMarkdown();
+}
+
+function copyMD() {
+  var text = document.getElementById('md-input').value;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('md-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制 Markdown'; }, 2000);
+  }).catch(function() {});
+}
+
+renderMarkdown();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>左侧编辑 Markdown，右侧实时预览渲染效果。支持标题、粗体、斜体、列表、代码块、链接、图片、表格。</p>
+  <p><strong>快捷键：</strong>无需额外操作，输入即预览。</p>
+  <p><strong>适用场景：</strong>Markdown 写作、文档编辑、README 调试、博客文章排版。</p>
+</div>

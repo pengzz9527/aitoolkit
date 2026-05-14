@@ -1,0 +1,98 @@
+<!-- UUID/GUID Generator Widget -->
+<div class="mode-toggle" id="uuid-mode-toggle">
+  <button class="btn btn-sm active" id="uuid-v4" onclick="setUUIDMode('v4')">UUID v4</button>
+  <button class="btn btn-sm btn-outline" id="uuid-v7" onclick="setUUIDMode('v7')">UUID v7</button>
+</div>
+
+<div style="display:flex;align-items:center;gap:12px;margin:12px 0;">
+  <label style="font-size:0.85rem;font-weight:600;">📊 生成数量：</label>
+  <input type="range" id="uuid-count-range" min="1" max="100" value="5" style="flex:1;max-width:200px;" oninput="updateUUIDCount()">
+  <input type="number" id="uuid-count-num" min="1" max="100" value="5" style="width:60px;padding:6px 8px;border:1px solid var(--border);border-radius:var(--radius-xs);font-size:0.85rem;text-align:center;" oninput="updateUUIDRange()">
+</div>
+
+<div class="btn-row">
+  <button class="btn" onclick="generateUUID()">🎲 生成</button>
+  <button class="btn btn-outline btn-sm" onclick="clearUUID()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="uuid-copy-btn" onclick="copyUUID()">📋 复制全部</button>
+</div>
+
+<pre class="output-area" id="uuid-output" style="max-height:400px;"></pre>
+<div class="stats-bar" id="uuid-stats"></div>
+
+<script>
+var _uuidMode = 'v4';
+
+function setUUIDMode(mode) {
+  _uuidMode = mode;
+  document.getElementById('uuid-v4').className = mode === 'v4' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('uuid-v7').className = mode === 'v7' ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  generateUUID();
+}
+
+function updateUUIDCount() {
+  var v = parseInt(document.getElementById('uuid-count-range').value);
+  document.getElementById('uuid-count-num').value = v;
+}
+
+function updateUUIDRange() {
+  var v = parseInt(document.getElementById('uuid-count-num').value) || 1;
+  if (v < 1) v = 1;
+  if (v > 100) v = 100;
+  document.getElementById('uuid-count-range').value = v;
+}
+
+function _uuidV4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+function _uuidV7() {
+  var now = Date.now();
+  var hex = now.toString(16).padStart(12, '0');
+  var rand1 = Math.random().toString(16).substr(2, 4).padEnd(4, '0');
+  var ver = '7';
+  var rand2 = (Math.random() * 0x3fff | 0x8000).toString(16);
+  var rand3 = Math.random().toString(16).substr(2, 12).padEnd(12, '0');
+  return hex.substr(0,8) + '-' + hex.substr(8,4) + '-' + ver + rand1[0] + rand1.substr(1,3) + '-' + rand2 + '-' + rand3;
+}
+
+function generateUUID() {
+  var count = parseInt(document.getElementById('uuid-count-num').value) || 1;
+  if (count < 1) count = 1;
+  if (count > 100) count = 100;
+  var out = document.getElementById('uuid-output');
+  var stats = document.getElementById('uuid-stats');
+  var lines = [];
+  for (var i = 0; i < count; i++) {
+    lines.push((_uuidMode === 'v4' ? _uuidV4() : _uuidV7()));
+  }
+  out.textContent = lines.join('\n');
+  stats.innerHTML = '<span>✅ 已生成 ' + count + ' 个</span><span>🔤 模式: UUID ' + _uuidMode.toUpperCase() + '</span>';
+}
+
+function clearUUID() {
+  document.getElementById('uuid-output').textContent = '';
+  document.getElementById('uuid-stats').textContent = '';
+}
+
+function copyUUID() {
+  var text = document.getElementById('uuid-output').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('uuid-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制全部'; }, 2000);
+  }).catch(function() {});
+}
+
+generateUUID();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>选择UUID版本(v4/v7)，设定生成数量(1-100)，点击生成即可。</p>
+  <p><strong>UUID v4：</strong>完全随机生成，第13位固定为4，第17位为8/9/a/b。</p>
+  <p><strong>UUID v7：</strong>基于时间戳排序的高性能版本，适合数据库主键。</p>
+  <p><strong>适用场景：</strong>数据库主键生成、分布式ID、测试数据准备。</p>
+</div>

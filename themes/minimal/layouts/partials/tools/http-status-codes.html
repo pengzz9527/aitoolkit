@@ -1,0 +1,124 @@
+<!-- HTTP 状态码速查表 Widget -->
+<div class="btn-row">
+  <input type="text" id="http-search" class="tool-textarea" style="font-family:var(--font);min-height:auto;padding:9px 14px;flex:1;" placeholder="🔍 搜索状态码或名称..." oninput="filterHTTPCodes()">
+</div>
+
+<div class="mode-toggle" id="http-tabs" style="margin-bottom:12px;">
+  <button class="btn btn-sm active" onclick="switchHTTPTab('all')">全部</button>
+  <button class="btn btn-sm btn-outline" onclick="switchHTTPTab('1xx')">1xx 信息</button>
+  <button class="btn btn-sm btn-outline" onclick="switchHTTPTab('2xx')">2xx 成功</button>
+  <button class="btn btn-sm btn-outline" onclick="switchHTTPTab('3xx')">3xx 重定向</button>
+  <button class="btn btn-sm btn-outline" onclick="switchHTTPTab('4xx')">4xx 客户端错误</button>
+  <button class="btn btn-sm btn-outline" onclick="switchHTTPTab('5xx')">5xx 服务端错误</button>
+</div>
+
+<div class="output-area" id="http-output" style="max-height:400px;padding:0;"></div>
+<div class="stats-bar" id="http-stats"></div>
+
+<script>
+var _httpTab = 'all';
+var _httpData = [
+  {code:100,name:'Continue',desc:'服务器已收到请求头，客户端应继续发送请求体',cat:'1xx'},
+  {code:101,name:'Switching Protocols',desc:'服务器同意切换协议（如 WebSocket 升级）',cat:'1xx'},
+  {code:102,name:'Processing',desc:'服务器已收到并正在处理请求，但无响应可用',cat:'1xx'},
+  {code:103,name:'Early Hints',desc:'服务器预发送一些响应头以帮助客户端预加载资源',cat:'1xx'},
+  {code:200,name:'OK',desc:'请求成功。GET/HEAD/POST/PUT/DELETE 等标准响应',cat:'2xx'},
+  {code:201,name:'Created',desc:'请求成功且资源已创建（通常用于 POST/PUT）',cat:'2xx'},
+  {code:202,name:'Accepted',desc:'请求已接受但尚未处理完成',cat:'2xx'},
+  {code:204,name:'No Content',desc:'请求成功但无返回内容（常用于 DELETE）',cat:'2xx'},
+  {code:206,name:'Partial Content',desc:'部分内容 — Range 请求的响应（断点续传）',cat:'2xx'},
+  {code:301,name:'Moved Permanently',desc:'资源已永久移动到新 URL，客户端应更新书签',cat:'3xx'},
+  {code:302,name:'Found',desc:'资源临时移动，客户端应继续使用原 URL',cat:'3xx'},
+  {code:303,name:'See Other',desc:'应使用 GET 请求另一个 URL 获取结果',cat:'3xx'},
+  {code:304,name:'Not Modified',desc:'资源未修改，可使用缓存版本（缓存校验）',cat:'3xx'},
+  {code:307,name:'Temporary Redirect',desc:'临时重定向，请求方法/体不变',cat:'3xx'},
+  {code:308,name:'Permanent Redirect',desc:'永久重定向，请求方法/体不变',cat:'3xx'},
+  {code:400,name:'Bad Request',desc:'请求语法错误或参数无效，服务器无法理解',cat:'4xx'},
+  {code:401,name:'Unauthorized',desc:'需要身份验证 — 未提供或无效的认证凭据',cat:'4xx'},
+  {code:403,name:'Forbidden',desc:'服务器理解请求但拒绝执行（权限不足）',cat:'4xx'},
+  {code:404,name:'Not Found',desc:'请求的资源不存在或无法访问',cat:'4xx'},
+  {code:405,name:'Method Not Allowed',desc:'请求方法不被该资源支持',cat:'4xx'},
+  {code:408,name:'Request Timeout',desc:'服务器等待请求超时',cat:'4xx'},
+  {code:409,name:'Conflict',desc:'请求与服务器当前状态冲突（如资源版本冲突）',cat:'4xx'},
+  {code:410,name:'Gone',desc:'请求的资源已永久删除，不再可用',cat:'4xx'},
+  {code:413,name:'Payload Too Large',desc:'请求体过大，超出服务器限制',cat:'4xx'},
+  {code:415,name:'Unsupported Media Type',desc:'不支持的媒体格式（Content-Type 错误）',cat:'4xx'},
+  {code:422,name:'Unprocessable Entity',desc:'请求格式正确但语义错误（如表单验证失败）',cat:'4xx'},
+  {code:429,name:'Too Many Requests',desc:'请求频率过高，触发速率限制（Rate Limiting）',cat:'4xx'},
+  {code:500,name:'Internal Server Error',desc:'服务器内部错误 — 通用错误响应',cat:'5xx'},
+  {code:501,name:'Not Implemented',desc:'服务器不支持请求的功能或方法',cat:'5xx'},
+  {code:502,name:'Bad Gateway',desc:'上游服务器返回无效响应（网关错误）',cat:'5xx'},
+  {code:503,name:'Service Unavailable',desc:'服务暂时不可用（过载或维护中）',cat:'5xx'},
+  {code:504,name:'Gateway Timeout',desc:'上游服务器响应超时',cat:'5xx'},
+  {code:505,name:'HTTP Version Not Supported',desc:'服务器不支持请求使用的 HTTP 协议版本',cat:'5xx'}
+];
+
+function renderHTTPCodes(filter) {
+  var output = document.getElementById('http-output');
+  var stats = document.getElementById('http-stats');
+  var search = (document.getElementById('http-search').value || '').toLowerCase();
+
+  var filtered = _httpData.filter(function(item) {
+    if (filter && item.cat !== filter) return false;
+    var codeStr = String(item.code);
+    var nameLower = item.name.toLowerCase();
+    var descLower = item.desc.toLowerCase();
+    return !search || codeStr.indexOf(search) > -1 || nameLower.indexOf(search) > -1 || descLower.indexOf(search) > -1;
+  });
+
+  if (filtered.length === 0) {
+    output.textContent = '🔍 未找到匹配的状态码';
+    stats.innerHTML = '<span>📋 共 0 条</span>';
+    return;
+  }
+
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:0.82rem;">';
+  html += '<thead><tr style="background:var(--primary-light);position:sticky;top:0;">';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:80px;">状态码</th>';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);width:150px;">名称</th>';
+  html += '<th style="padding:10px 12px;text-align:left;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);">说明</th></tr></thead><tbody>';
+
+  filtered.forEach(function(item, idx) {
+    var bg = idx % 2 === 0 ? 'background:var(--bg-card);' : 'background:var(--bg);';
+    var color = 'color:var(--text);';
+    if (item.code >= 500) color = 'color:#dc2626;font-weight:700;';
+    else if (item.code >= 400) color = 'color:#f59e0b;font-weight:700;';
+    else if (item.code >= 300) color = 'color:#6366f1;font-weight:600;';
+    else if (item.code >= 200) color = 'color:#16a34a;font-weight:600;';
+    html += '<tr style="' + bg + '">';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);' + color + '">' + item.code + '</td>';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);font-weight:600;">' + item.name + '</td>';
+    html += '<td style="padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-secondary);">' + item.desc + '</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  output.innerHTML = html;
+  stats.innerHTML = '<span>📋 共 ' + filtered.length + ' 条</span><span>🔍 分类: ' + (_httpTab === 'all' ? '全部' : _httpTab) + '</span>';
+}
+
+function switchHTTPTab(tab) {
+  _httpTab = tab;
+  var tabs = ['all','1xx','2xx','3xx','4xx','5xx'];
+  var labels = {all:'全部','1xx':'1xx 信息','2xx':'2xx 成功','3xx':'3xx 重定向','4xx':'4xx 客户端错误','5xx':'5xx 服务端错误'};
+  var btns = document.getElementById('http-tabs').querySelectorAll('button');
+  btns.forEach(function(btn, i) {
+    btn.className = tabs[i] === tab ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  });
+  if (tab === 'all') renderHTTPCodes(null);
+  else renderHTTPCodes(tab);
+}
+
+function filterHTTPCodes() {
+  if (_httpTab === 'all') renderHTTPCodes(null);
+  else renderHTTPCodes(_httpTab);
+}
+
+// Init
+renderHTTPCodes(null);
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>点击分类标签切换状态码分类，或在搜索框输入状态码数字 / 名称关键字快速定位。</p>
+  <p><strong>状态码分类：</strong>1xx（信息）、2xx（成功）、3xx（重定向）、4xx（客户端错误）、5xx（服务端错误）。</p>
+  <p><strong>彩色标识：</strong>绿色 = 成功, 紫色 = 重定向, 黄色 = 客户端错误, 红色 = 服务端错误。</p>
+</div>

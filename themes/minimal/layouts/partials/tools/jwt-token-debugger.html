@@ -1,0 +1,103 @@
+<!-- JWT 调试工具 Widget -->
+<textarea id="jwt-input" class="tool-textarea" placeholder="在此粘贴 JWT Token..." rows="5">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFJIFRvb2xraXQiLCJpYXQiOjE3MTU2Nzg5MDAsImV4cCI6MTc0NzIxNDkwMH0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</textarea>
+
+<div class="btn-row">
+  <button class="btn" onclick="parseJWT()">🔍 解析 Token</button>
+  <button class="btn btn-outline btn-sm" onclick="clearJWT()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="jwt-copy-btn" onclick="copyJWT()">📋 复制结果</button>
+</div>
+
+<div class="output-area" id="jwt-output" style="display:none;"></div>
+<div id="jwt-header-area" class="output-area" style="display:none;margin-bottom:8px;"></div>
+<div id="jwt-payload-area" class="output-area" style="display:none;margin-bottom:8px;"></div>
+<div id="jwt-signature-area" class="output-area" style="display:none;margin-bottom:8px;"></div>
+<div id="jwt-expiry-warning" style="display:none;padding:10px 16px;border-radius:var(--radius-sm);margin-bottom:10px;font-size:0.85rem;font-weight:600;"></div>
+<div class="stats-bar" id="jwt-stats"></div>
+
+<script>
+function parseJWT() {
+  var token = document.getElementById('jwt-input').value.trim();
+  var headerEl = document.getElementById('jwt-header-area');
+  var payloadEl = document.getElementById('jwt-payload-area');
+  var sigEl = document.getElementById('jwt-signature-area');
+  var warningEl = document.getElementById('jwt-expiry-warning');
+  var statsEl = document.getElementById('jwt-stats');
+
+  headerEl.style.display = 'none'; payloadEl.style.display = 'none'; sigEl.style.display = 'none'; warningEl.style.display = 'none';
+  if (!token) { statsEl.innerHTML = '<span style="color:#dc2626">⚠️ 请输入 JWT Token</span>'; return; }
+  var parts = token.split('.');
+  if (parts.length !== 3) { statsEl.innerHTML = '<span style="color:#dc2626">❌ 无效 JWT 格式 — 需要 3 段（Header.Payload.Signature）</span>'; return; }
+  try {
+    var header = JSON.parse(atob(parts[0]));
+    var payload = JSON.parse(atob(parts[1]));
+    var sig = parts[2];
+
+    headerEl.style.display = 'block';
+    headerEl.innerHTML = '<strong style="color:#6366f1;display:block;margin-bottom:4px;">📋 Header（头部）</strong>' + JSON.stringify(header, null, 2);
+
+    payloadEl.style.display = 'block';
+    var payloadStr = JSON.stringify(payload, null, 2);
+    // Highlight exp claim
+    if (payload.exp) {
+      var expDate = new Date(payload.exp * 1000);
+      var now = Date.now() / 1000;
+      var isExpired = now > payload.exp;
+      warningEl.style.display = 'block';
+      if (isExpired) {
+        warningEl.style.background = '#fef2f2';
+        warningEl.style.color = '#dc2626';
+        warningEl.style.border = '1px solid #fecaca';
+        warningEl.innerHTML = '⛔ 此 Token 已过期 — 过期时间: ' + expDate.toLocaleString();
+      } else {
+        var remaining = Math.round((payload.exp - now) / 60);
+        warningEl.style.background = '#f0fdf4';
+        warningEl.style.color = '#16a34a';
+        warningEl.style.border = '1px solid #bbf7d0';
+        warningEl.innerHTML = '✅ Token 有效 — 剩余 ' + remaining + ' 分钟（过期时间: ' + expDate.toLocaleString() + '）';
+      }
+    } else {
+      warningEl.style.display = 'none';
+    }
+    payloadEl.innerHTML = '<strong style="color:#6366f1;display:block;margin-bottom:4px;">📦 Payload（载荷）</strong>' + payloadStr;
+
+    sigEl.style.display = 'block';
+    sigEl.innerHTML = '<strong style="color:#6366f1;display:block;margin-bottom:4px;">🔏 Signature（签名）</strong>' + sig;
+
+    var alg = header.alg || '未知';
+    var typ = header.typ || '未知';
+    statsEl.innerHTML = '<span>🔐 算法: ' + alg + '</span><span>📄 类型: ' + typ + '</span><span>📏 原始长度: ' + token.length + ' 字符</span>';
+  } catch(e) {
+    statsEl.innerHTML = '<span style="color:#dc2626">❌ Base64 解码失败: ' + e.message + '</span>';
+  }
+}
+
+function clearJWT() {
+  document.getElementById('jwt-input').value = '';
+  var ids = ['jwt-header-area','jwt-payload-area','jwt-signature-area','jwt-expiry-warning','jwt-output'];
+  ids.forEach(function(id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; });
+  document.getElementById('jwt-stats').textContent = '';
+}
+
+function copyJWT() {
+  var parts = [];
+  var h = document.getElementById('jwt-header-area');
+  var p = document.getElementById('jwt-payload-area');
+  var s = document.getElementById('jwt-signature-area');
+  if (h.style.display !== 'none') parts.push(h.textContent);
+  if (p.style.display !== 'none') parts.push(p.textContent);
+  if (s.style.display !== 'none') parts.push(s.textContent);
+  var text = parts.join('\n\n');
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('jwt-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>粘贴完整 JWT Token（三段式）→ 点击「解析 Token」即可查看 Header、Payload、Signature。</p>
+  <p><strong>过期检测：</strong>自动解析 <code>exp</code> 字段，显示剩余时间或过期提示。</p>
+  <p><strong>隐私说明：</strong>所有数据仅在浏览器本地处理，不会上传到任何服务器。</p>
+</div>

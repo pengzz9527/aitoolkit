@@ -1,0 +1,159 @@
+<!-- Cron Expression Parser Widget -->
+<div class="mode-toggle" id="cron-mode-toggle">
+  <button class="btn btn-sm active" id="cron-5field" onclick="setCronFields(5)">5位标准</button>
+  <button class="btn btn-sm btn-outline" id="cron-6field" onclick="setCronFields(6)">6位(含秒)</button>
+</div>
+
+<input type="text" id="cron-input" class="tool-textarea" style="font-family:var(--font-mono);min-height:auto;padding:12px 14px;" value="30 2 * * *" placeholder="输入Cron表达式，如: 30 2 * * *">
+
+<div class="btn-row">
+  <button class="btn" onclick="parseCron()">🔍 解析</button>
+  <button class="btn btn-outline btn-sm" onclick="clearCron()">🗑️ 清空</button>
+  <button class="btn btn-outline btn-sm" id="cron-copy-btn" onclick="copyCron()">📋 复制结果</button>
+</div>
+
+<pre class="output-area" id="cron-output"></pre>
+<div class="stats-bar" id="cron-stats"></div>
+
+<script>
+var _cronFields = 5;
+
+function setCronFields(n) {
+  _cronFields = n;
+  document.getElementById('cron-5field').className = n === 5 ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  document.getElementById('cron-6field').className = n === 6 ? 'btn btn-sm active' : 'btn btn-sm btn-outline';
+  parseCron();
+}
+
+var _cronNames = ['秒','分','时','日','月','周'];
+var _cronMonthNames = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+var _cronWeekNames = ['周日','周一','周二','周三','周四','周五','周六'];
+
+function _cronParseField(field, idx, max) {
+  var result = [];
+  var parts = field.split(',');
+  parts.forEach(function(p) {
+    p = p.trim();
+    if (!p) return;
+    // Step
+    var step = 1;
+    var base = p;
+    if (p.indexOf('/') >= 0) {
+      var sp = p.split('/');
+      base = sp[0];
+      step = parseInt(sp[1]) || 1;
+    }
+    // Range
+    if (base.indexOf('-') >= 0) {
+      var r = base.split('-');
+      var lo = parseInt(r[0]), hi = parseInt(r[1]);
+      if (!isNaN(lo) && !isNaN(hi)) {
+        for (var i = lo; i <= hi; i += step) result.push(i);
+      }
+    } else if (base === '*') {
+      for (var i = 0; i <= max; i += step) result.push(i);
+    } else {
+      var v = parseInt(base);
+      if (!isNaN(v)) result.push(v);
+    }
+  });
+  return result.sort(function(a,b){return a-b;});
+}
+
+function _cronDesc(field, name, max, labels) {
+  if (field === '*') return '每' + name;
+  var vals = _cronParseField(field, 0, max);
+  if (!vals || vals.length === 0) return '无效';
+  if (vals.length === 1) return '第' + vals[0] + (labels ? labels[vals[0]] || '' : '');
+  if (vals.length === max + 1) return '每' + name;
+  if (field.indexOf('/') >= 0 && field.split('/')[0] === '*') {
+    var step = field.split('/')[1];
+    return '每' + step + name;
+  }
+  return '第' + vals.join('、') + (labels ? vals.map(function(v){return labels[v]||'';}).join('') : '');
+}
+
+function parseCron() {
+  var input = document.getElementById('cron-input').value.trim();
+  var out = document.getElementById('cron-output');
+  var stats = document.getElementById('cron-stats');
+  if (!input) { out.textContent = '⚠️ 请输入Cron表达式'; stats.textContent = ''; return; }
+  var parts = input.split(/\s+/);
+  var expected = _cronFields;
+  if (parts.length !== expected) {
+    out.textContent = '❌ 表达式格式错误：' + expected + '位字段，当前为' + parts.length + '位';
+    stats.textContent = '';
+    return;
+  }
+  var labels = ['秒','分','时','日','月','周'];
+  var maxes = [59,59,23,31,12,7];
+  var months = _cronMonthNames;
+  var weeks = _cronWeekNames;
+  try {
+    var descParts = [];
+    var offset = _cronFields === 6 ? 0 : 1;
+    if (_cronFields === 6) {
+      descParts.push(_cronDesc(parts[0], '秒', 59));
+    }
+    descParts.push(_cronDesc(parts[0+offset], '分', 59));
+    descParts.push(_cronDesc(parts[1+offset], '时', 23));
+    descParts.push(_cronDesc(parts[2+offset], '日', 31));
+    descParts.push(_cronDesc(parts[3+offset], '月', 12, months));
+    descParts.push(_cronDesc(parts[4+offset], '周', 7, weeks));
+    var desc = descParts.join('，');
+    // Next execution time estimation
+    var now = new Date();
+    var next = new Date(now);
+    var count = 0;
+    while (count < 5) {
+      next.setMinutes(next.getMinutes() + 1);
+      var min = next.getMinutes();
+      var hour = next.getHours();
+      var day = next.getDate();
+      var month = next.getMonth()+1;
+      var wday = next.getDay();
+      var mvals = _cronParseField(parts[0+offset], 0, 59);
+      var hvals = _cronParseField(parts[1+offset], 0, 23);
+      var dvals = _cronParseField(parts[2+offset], 0, 31);
+      var movals = _cronParseField(parts[3+offset], 0, 12);
+      var wvals = _cronParseField(parts[4+offset], 0, 7);
+      if (mvals.indexOf(min) >= 0 && hvals.indexOf(hour) >= 0 &&
+          dvals.indexOf(day) >= 0 && movals.indexOf(month) >= 0 && wvals.indexOf(wday) >= 0) {
+        count++;
+        if (count === 1) desc += '\n\n📅 下次执行：' + next.toLocaleString('zh-CN');
+      }
+      if (count > 100000) break; // safety
+    }
+    out.textContent = desc;
+    stats.innerHTML = '<span>📋 ' + input + '</span><span>⏱️ ' + _cronFields + '位格式</span>';
+  } catch(e) {
+    out.textContent = '❌ 解析失败: ' + e.message;
+    stats.textContent = '';
+  }
+}
+
+function clearCron() {
+  document.getElementById('cron-input').value = '';
+  document.getElementById('cron-output').textContent = '';
+  document.getElementById('cron-stats').textContent = '';
+}
+
+function copyCron() {
+  var text = document.getElementById('cron-output').textContent;
+  if (!text || text.indexOf('⚠️') === 0 || text.indexOf('❌') === 0) return;
+  navigator.clipboard.writeText(text).then(function() {
+    var btn = document.getElementById('cron-copy-btn');
+    btn.textContent = '✅ 已复制';
+    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
+  }).catch(function() {});
+}
+
+document.getElementById('cron-input').addEventListener('input', parseCron);
+parseCron();
+</script>
+
+<div class="tool-meta">
+  <p><strong>使用说明：</strong>输入标准 Cron 表达式，自动解析为可读中文描述并估算下次执行时间。</p>
+  <p><strong>5位格式：</strong>分 时 日 月 周（无秒）。<strong>6位格式：</strong>秒 分 时 日 月 周。</p>
+  <p><strong>适用场景：</strong>Linux crontab 任务配置、定时任务调试、运维计划排期。</p>
+</div>
