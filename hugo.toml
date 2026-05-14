@@ -1,5 +1,5 @@
 baseURL = 'https://aitoolkit.duckdblab.com'
-locale = 'zh-CN'
+languageCode = 'zh-CN'
 title = 'AI Toolkit - 在线工具集'
 theme = 'minimal'
 paginate = 20
