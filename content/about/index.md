@@ -4,7 +4,8 @@ description: "关于 AI Toolkit - 在线工具集 — 免费在线工具集合�
 keywords: ["关于我们", "AI Toolkit", "在线工具", "About"]
 type: "page"
 date: 2026-01-01T00:00:00+08:00
-lastmod: 2026-01-01T00:00:00+08:00---
+lastmod: 2026-01-01T00:00:00+08:00
+---
 
 ## 关于 AI Toolkit
 

@@ -4,7 +4,8 @@ description: "AI Toolkit - 在线工具集 服务条款 — 使用本网站即�
 keywords: ["服务条款", "使用条款", "Terms of Service", "免责声明"]
 type: "page"
 date: 2026-01-01T00:00:00+08:00
-lastmod: 2026-01-01T00:00:00+08:00---
+lastmod: 2026-01-01T00:00:00+08:00
+---
 
 ## 服务条款
 
