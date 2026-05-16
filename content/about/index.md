@@ -3,7 +3,8 @@ title: "关于我们"
 description: "关于 AI Toolkit - 在线工具集 — 免费在线工具集合，为开发者提供实用的浏览器端工具"
 keywords: ["关于我们", "AI Toolkit", "在线工具", "About"]
 type: "page"
----
+date: 2026-01-01T00:00:00+08:00
+lastmod: 2026-01-01T00:00:00+08:00---
 
 ## 关于 AI Toolkit
 
