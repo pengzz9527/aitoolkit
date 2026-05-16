@@ -1,47 +1,125 @@
 {{ define "main" }}
-<div class="container">
+<div class="home-layout">
 
-  {{/* ===== Hero ===== */}}
-  <section class="hero">
-    <h1>{{ .Title }}</h1>
-    <p>{{ .Site.Params.description }}</p>
-    <div class="hero-stats">
-      <span>🧰 {{ len (where .Site.Pages "Type" "tools") }} 个工具</span>
-      <span>📂 {{ len .Site.Taxonomies.categories }} 个分类</span>
-      <span>⚡ 纯浏览器端处理</span>
-    </div>
-  </section>
-
-  {{/* ===== Tools grouped by category ===== */}}
-  {{ $toolPages := where .Site.Pages "Type" "tools" }}
-
-  {{ range $name, $taxonomy := .Site.Taxonomies.categories }}
-    {{ $toolsInCat := sort (where $taxonomy.Pages "Type" "tools") "Weight" }}
-    {{ if gt (len $toolsInCat) 0 }}
-    <section class="category-section">
-      <div class="category-header">
-        <span class="cat-icon">{{ if eq $name "开发工具" }}🛠️{{ else if eq $name "文本处理" }}📄{{ else if eq $name "编码解码" }}🔐{{ else }}📦{{ end }}</span>
-        <h2>{{ $name }}</h2>
-        <span class="cat-count">{{ len $toolsInCat }} 个</span>
-      </div>
-      <div class="tool-grid">
-        {{ range $toolsInCat }}
-        <a href="{{ .RelPermalink }}" class="tool-card">
-          <span class="tool-icon">{{ with .Params.icon }}{{ . }}{{ else }}🔧{{ end }}</span>
-          <div class="tool-info">
-            <h3>{{ .Title }}</h3>
-            <p>{{ .Description }}</p>
-            <span class="tool-tag">免费在线使用</span>
-          </div>
+  {{/* ===== Sidebar ===== */}}
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+      <div class="sidebar-title">工具分类</div>
+      <a href="#" class="sidebar-item active" data-cat="all" onclick="filterCategory('all'); return false;">
+        <span class="sidebar-item-icon">📋</span>
+        <span class="sidebar-item-label">全部工具</span>
+        <span class="sidebar-count">{{ len (where .Site.Pages "Type" "tools") }}</span>
+      </a>
+      {{ $allCategories := slice "开发工具" "文本处理" "编码解码" "网络工具" "安全工具" "格式转换" "数学工具" "设计工具" "时间工具" "趣味工具" }}
+      {{ $iconMap := dict "开发工具" "🛠️" "文本处理" "📄" "编码解码" "🔐" "网络工具" "🌐" "安全工具" "🔒" "格式转换" "📦" "数学工具" "📐" "设计工具" "🎨" "时间工具" "⏰" "趣味工具" "🎮" }}
+      {{ range $allCategories }}
+        {{ $cat := . }}
+        {{ $count := 0 }}
+        {{ range where $.Site.Pages "Type" "tools" }}
+          {{ if in .Params.categories $cat }}{{ $count = add $count 1 }}{{ end }}
+        {{ end }}
+        {{ if gt $count 0 }}
+        <a href="#" class="sidebar-item" data-cat="{{ $cat }}" onclick="filterCategory('{{ $cat }}'); return false;">
+          <span class="sidebar-item-icon">{{ index $iconMap $cat }}</span>
+          <span class="sidebar-item-label">{{ $cat }}</span>
+          <span class="sidebar-count">{{ $count }}</span>
         </a>
         {{ end }}
-      </div>
-    </section>
-    {{ end }}
-  {{ end }}
+      {{ end }}
+    </div>
+  </aside>
 
-  {{/* ===== Ad ===== */}}
-  {{ partial "ad-incontent.html" . }}
+  {{/* ===== Main Content ===== */}}
+  <div class="home-main">
+    <div class="container">
+      <section class="hero">
+        <h1>{{ .Title }}</h1>
+        <p>{{ .Site.Params.description }}</p>
+        <div class="hero-stats">
+          <span>🧰 {{ len (where .Site.Pages "Type" "tools") }} 个工具</span>
+          <span>📂 {{ len (where .Site.Pages "Type" "tools" | first 1) }}{{ range $name, $_ := .Site.Taxonomies.categories }}{{ end }}{{ len .Site.Taxonomies.categories }} 个分类</span>
+          <span>⚡ 纯浏览器端处理</span>
+        </div>
+      </section>
 
+      {{/* ===== Tools grouped by category ===== */}}
+      {{ $toolPages := where .Site.Pages "Type" "tools" }}
+      {{ range $name, $taxonomy := .Site.Taxonomies.categories }}
+        {{ $toolsInCat := sort (where $taxonomy.Pages "Type" "tools") "Weight" }}
+        {{ if gt (len $toolsInCat) 0 }}
+        <section class="category-section" data-cat="{{ $name }}">
+          <div class="category-header">
+            <span class="cat-icon">
+              {{- if eq $name "开发工具" }}🛠️
+              {{- else if eq $name "文本处理" }}📄
+              {{- else if eq $name "编码解码" }}🔐
+              {{- else if eq $name "网络工具" }}🌐
+              {{- else if eq $name "安全工具" }}🔒
+              {{- else if eq $name "格式转换" }}📦
+              {{- else if eq $name "数学工具" }}📐
+              {{- else if eq $name "设计工具" }}🎨
+              {{- else if eq $name "时间工具" }}⏰
+              {{- else if eq $name "趣味工具" }}🎮
+              {{- else }}📦{{ end -}}
+            </span>
+            <h2>{{ $name }}</h2>
+            <span class="cat-count">{{ len $toolsInCat }} 个</span>
+          </div>
+          <div class="tool-grid">
+            {{ range $toolsInCat }}
+            <a href="{{ .RelPermalink }}" class="tool-card" data-cat="{{ $name }}">
+              <span class="tool-icon">{{ with .Params.icon }}{{ . }}{{ else }}🔧{{ end }}</span>
+              <div class="tool-info">
+                <h3>{{ .Title }}</h3>
+                <p>{{ .Description }}</p>
+                <span class="tool-tag">免费在线使用</span>
+              </div>
+            </a>
+            {{ end }}
+          </div>
+        </section>
+        {{ end }}
+      {{ end }}
+
+      {{/* ===== Ad ===== */}}
+      {{ partial "ad-incontent.html" . }}
+    </div>
+  </div>
 </div>
+
+{{/* ===== Filter Script ===== */}}
+<script>
+function filterCategory(cat) {
+  // Scroll to top of main content
+  document.querySelector('.home-main').scrollTop = 0;
+
+  // Update sidebar active state
+  document.querySelectorAll('.sidebar-item').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-cat') === cat);
+  });
+
+  // Show/hide category sections
+  document.querySelectorAll('.category-section').forEach(function(section) {
+    var sectionCat = section.getAttribute('data-cat');
+    if (cat === 'all') {
+      section.style.display = '';
+    } else {
+      section.style.display = sectionCat === cat ? '' : 'none';
+    }
+  });
+
+  // Update hero text
+  var heroDesc = document.querySelector('.hero p');
+  var heroStats = document.querySelector('.hero-stats');
+  if (cat === 'all') {
+    heroDesc.textContent = '{{ .Site.Params.description }}';
+    if (heroStats) heroStats.style.display = '';
+  } else {
+    var countEl = document.querySelector('.sidebar-item[data-cat="' + cat + '"] .sidebar-count');
+    var count = countEl ? countEl.textContent : '0';
+    heroDesc.textContent = cat + ' — 共 ' + count + ' 个工具，筛选展示';
+    if (heroStats) heroStats.style.display = 'none';
+  }
+}
+</script>
 {{ end }}

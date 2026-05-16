@@ -1,0 +1,47 @@
+{{ define "main" }}
+<div class="container">
+
+  {{/* ===== Hero ===== */}}
+  <section class="hero">
+    <h1>{{ .Title }}</h1>
+    <p>{{ .Site.Params.description }}</p>
+    <div class="hero-stats">
+      <span>🧰 {{ len (where .Site.Pages "Type" "tools") }} 个工具</span>
+      <span>📂 {{ len .Site.Taxonomies.categories }} 个分类</span>
+      <span>⚡ 纯浏览器端处理</span>
+    </div>
+  </section>
+
+  {{/* ===== Tools grouped by category ===== */}}
+  {{ $toolPages := where .Site.Pages "Type" "tools" }}
+
+  {{ range $name, $taxonomy := .Site.Taxonomies.categories }}
+    {{ $toolsInCat := sort (where $taxonomy.Pages "Type" "tools") "Weight" }}
+    {{ if gt (len $toolsInCat) 0 }}
+    <section class="category-section">
+      <div class="category-header">
+        <span class="cat-icon">{{ if eq $name "开发工具" }}🛠️{{ else if eq $name "文本处理" }}📄{{ else if eq $name "编码解码" }}🔐{{ else }}📦{{ end }}</span>
+        <h2>{{ $name }}</h2>
+        <span class="cat-count">{{ len $toolsInCat }} 个</span>
+      </div>
+      <div class="tool-grid">
+        {{ range $toolsInCat }}
+        <a href="{{ .RelPermalink }}" class="tool-card">
+          <span class="tool-icon">{{ with .Params.icon }}{{ . }}{{ else }}🔧{{ end }}</span>
+          <div class="tool-info">
+            <h3>{{ .Title }}</h3>
+            <p>{{ .Description }}</p>
+            <span class="tool-tag">免费在线使用</span>
+          </div>
+        </a>
+        {{ end }}
+      </div>
+    </section>
+    {{ end }}
+  {{ end }}
+
+  {{/* ===== Ad ===== */}}
+  {{ partial "ad-incontent.html" . }}
+
+</div>
+{{ end }}
