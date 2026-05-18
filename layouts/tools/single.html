@@ -1,0 +1,81 @@
+{{ define "main" }}
+<div class="container">
+  <article class="tool-page">
+
+    <header class="tool-page-header">
+      <div class="breadcrumb">
+        <a href="/">🏠 首页</a><span>›</span>{{ .Title }}
+      </div>
+      <div class="tool-icon-title">
+        <span class="icon-badge">{{ with .Params.icon }}{{ . }}{{ else }}🔧{{ end }}</span>
+        <h1>{{ .Title }}</h1>
+      </div>
+      {{ with .Description }}<p class="tool-desc">{{ . }}</p>{{ end }}
+    </header>
+
+    <div class="tool-widget">
+      {{ partial (printf "tools/%s" .File.ContentBaseName) . }}
+    </div>
+
+    <div class="tool-meta">
+      {{ with .Description }}
+      <p><strong>📖 描述：</strong>{{ . }}</p>
+      {{ end }}
+      {{ with .Params.categories }}
+      <p><strong>📂 分类：</strong>{{ delimit . "、" }}</p>
+      {{ end }}
+      <p><strong>🔒 隐私：</strong>所有数据仅在浏览器本地处理，不上传到任何服务器。</p>
+    </div>
+
+    <!-- 相关工具交叉链接 -->
+    {{ $tools := where .Site.Pages "Type" "tools" }}
+    {{ $tools = where $tools "Permalink" "ne" .Permalink }}
+    {{ $sameCat := where $tools "Params.categories" "intersect" (default (slice) .Params.categories) }}
+    {{ $related := $sameCat | first 6 }}
+    {{ if lt (len $related) 6 }}
+      {{ $others := $tools | complement $sameCat | first (sub 6 (len $related)) }}
+      {{ $related = $related | append $others }}
+    {{ end }}
+    {{ if gt (len $related) 0 }}
+    <div class="related-tools">
+      <h3>🔗 相关工具</h3>
+      <div class="related-grid">
+        {{ range $related }}
+        <a href="{{ .RelPermalink }}" class="related-item" title="{{ .Description }}">
+          <span class="icon">{{ with .Params.icon }}{{ . }}{{ else }}🔧{{ end }}</span>
+          <span class="name">{{ .Title }}</span>
+        </a>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+
+    {{ partial "ad-incontent.html" . }}
+
+    <style>
+      .related-tools { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border, #333); }
+      .related-tools h3 { margin-bottom: 16px; font-size: 18px; color: var(--text-muted, #aaa); }
+      .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+      .related-item {
+        display: flex; align-items: center; gap: 8px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: var(--surface, #1a1a22);
+        border: 1px solid var(--border, #333);
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+      .related-item:hover {
+        background: var(--accent, #6c5ce7);
+        border-color: var(--accent, #6c5ce7);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(108,92,231,0.3);
+      }
+      .related-item .icon { font-size: 20px; line-height: 1; }
+      .related-item .name { font-size: 13px; color: var(--text, #ddd); line-height: 1.3; }
+      .related-item:hover .name { color: #fff; }
+    </style>
+
+  </article>
+</div>
+{{ end }}
