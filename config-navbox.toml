@@ -1,0 +1,25 @@
+baseURL = 'https://navbox.com.cn'
+languageCode = 'zh-CN'
+title = 'AI Toolkit - 在线工具集'
+theme = 'minimal'
+enableRobotsTXT = true
+
+[params]
+  description = "免费在线工具集合 — JSON格式化、文本处理、编码解码等实用在线工具，无需下载打开即用"
+  keywords = "在线工具, JSON格式化, 文本计数器, Base64编码, URL编码, 免费工具"
+  author = "AI Toolkit"
+  enable_ads = false
+  umami_website_id = "7cb7d10f-9991-44a5-b36b-2aa8d96b2a38"
+
+[taxonomies]
+  category = "categories"
+
+[sitemap]
+  changefreq = "weekly"
+  filename = "sitemap.xml"
+  priority = 0.5
+
+[outputs]
+  home = ["HTML", "RSS", "SITEMAP"]
+  section = ["HTML", "RSS", "SITEMAP"]
+  page = ["HTML"]

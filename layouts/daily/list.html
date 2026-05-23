@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode | default "zh-CN" }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  {{ partial "header.html" . }}
+  <main>
+
+  <!-- Hero Section -->
+  <section class="daily-hero">
+    <div class="daily-hero-bg"></div>
+    <div class="daily-hero-content">
+      <div class="daily-hero-badge">🚀 每天 7:00 自动更新</div>
+      <h1>AI 行业日报</h1>
+      <p class="daily-hero-desc">你不需要刷 10 个网站。<br>每天一篇，AI 帮你读完今日 AI 圈。</p>
+      <div class="daily-hero-stats">
+        <div class="daily-stat">
+          <span class="daily-stat-num">10+</span>
+          <span class="daily-stat-label">信息源聚合</span>
+        </div>
+        <div class="daily-stat">
+          <span class="daily-stat-num">AI</span>
+          <span class="daily-stat-label">智能筛选摘要</span>
+        </div>
+        <div class="daily-stat">
+          <span class="daily-stat-num">7:00</span>
+          <span class="daily-stat-label">准时送达</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="daily-how">
+    <div class="daily-container">
+      <h2>信息过载时代，你需要一个 AI 信息助理</h2>
+      <div class="daily-how-grid">
+        <div class="daily-how-card">
+          <div class="how-icon">🔍</div>
+          <h3>扫描全网</h3>
+          <p>36氪、量子位、GitHub Trending、Hacker News、机器之心、虎嗅、钛媒体、ArXiv… 每日自动扫描</p>
+        </div>
+        <div class="daily-how-card">
+          <div class="how-icon">🧠</div>
+          <h3>AI 筛选</h3>
+          <p>去重、排序、提炼核心要点。过滤标题党，只留下真正值得读的 5-8 条</p>
+        </div>
+        <div class="daily-how-card">
+          <div class="how-icon">✍️</div>
+          <h3>自然播报</h3>
+          <p>不是机器堆砌关键词。每一条用自然语言写清楚：发生了什么、为什么重要</p>
+        </div>
+        <div class="daily-how-card">
+          <div class="how-icon">📱</div>
+          <h3>推送到手</h3>
+          <p>自动推送到微信公众号「每日科技简报引擎」草稿箱，打开确认即可发布</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Issues -->
+  <section class="daily-issues">
+    <div class="daily-container">
+      <h2>📰 往期日报</h2>
+      <div class="daily-grid">
+        {{ range .Pages.ByDate.Reverse }}
+        <a href="{{ .RelPermalink }}" class="daily-card">
+          <div class="daily-card-date">
+            <span class="daily-card-day">{{ .Date.Format "02" }}</span>
+            <span class="daily-card-month">{{ .Date.Format "Jan" }}</span>
+          </div>
+          <div class="daily-card-body">
+            <h3>{{ .Title }}</h3>
+            <p>{{ .Description | truncate 120 }}</p>
+            <div class="daily-card-meta">
+              <span>{{ .ReadingTime }} 分钟阅读</span>
+              <span class="daily-card-arrow">→</span>
+            </div>
+          </div>
+        </a>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  <!-- Subscribe CTA -->
+  <section class="daily-cta">
+    <div class="daily-container">
+      <h2>每天早上 7:00，不错过 AI 世界</h2>
+      <p>关注「每日科技简报引擎」微信公众号，日报自动推送到你手机</p>
+      <div class="daily-cta-buttons">
+        <span class="daily-btn daily-btn-primary">📱 关注公众号</span>
+        <a href="/daily/" class="daily-btn daily-btn-outline">🌐 浏览网页版</a>
+      </div>
+    </div>
+  </section>
+
+  </main>
+  {{ partial "footer.html" . }}
+  {{ partial "adsense.html" . }}
+</body>
+</html>

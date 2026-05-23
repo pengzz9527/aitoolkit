@@ -612,3 +612,375 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   .home-layout .hero h1 { font-size: 1.3rem; }
   .home-main .container { padding: 0; }
 }
+
+/* ===== AI 行业日报 ===== */
+.daily-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Hero */
+.daily-hero {
+  position: relative;
+  padding: 80px 20px 60px;
+  text-align: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f0c29 0%, #1a1a4e 40%, #24243e 100%);
+}
+.daily-hero-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.15) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 50%, rgba(139,92,246,0.12) 0%, transparent 50%);
+}
+.daily-hero-content {
+  position: relative;
+  z-index: 1;
+}
+.daily-hero-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: rgba(99,102,241,0.2);
+  border: 1px solid rgba(99,102,241,0.3);
+  color: #a5b4fc;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+.daily-hero h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+}
+.daily-hero-desc {
+  font-size: 1.2rem;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.7;
+  margin: 0 0 32px;
+}
+.daily-hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.daily-stat {
+  text-align: center;
+}
+.daily-stat-num {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #a5b4fc;
+}
+.daily-stat-label {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.55);
+}
+
+/* How it works */
+.daily-how {
+  padding: 60px 0;
+  background: var(--bg-card);
+}
+.daily-how h2 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 0 0 40px;
+  color: var(--text);
+}
+.daily-how-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+.daily-how-card {
+  text-align: center;
+  padding: 30px 20px;
+  border-radius: 12px;
+  background: var(--bg);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.daily-how-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+.how-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+.daily-how-card h3 {
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+.daily-how-card p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Issue list grid */
+.daily-issues {
+  padding: 60px 0;
+  background: var(--bg);
+}
+.daily-issues h2 {
+  font-size: 1.5rem;
+  margin: 0 0 30px;
+  color: var(--text);
+}
+.daily-grid {
+  display: grid;
+  gap: 16px;
+}
+.daily-card {
+  display: flex;
+  gap: 20px;
+  padding: 20px 24px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--border);
+}
+.daily-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+.daily-card-date {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+}
+.daily-card-day {
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.daily-card-month {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+.daily-card-body {
+  flex: 1;
+  min-width: 0;
+}
+.daily-card-body h3 {
+  font-size: 1.05rem;
+  margin: 0 0 6px;
+  color: var(--text);
+  line-height: 1.4;
+}
+.daily-card-body p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0 0 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.daily-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.daily-card-arrow {
+  font-size: 1.1rem;
+  transition: transform 0.2s;
+}
+.daily-card:hover .daily-card-arrow {
+  transform: translateX(4px);
+}
+
+/* Single issue page */
+.daily-issue {
+  padding: 40px 0 60px;
+  background: var(--bg);
+}
+.daily-issue-header {
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.daily-back {
+  display: inline-block;
+  font-size: 0.88rem;
+  color: var(--primary);
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+.daily-back:hover {
+  text-decoration: underline;
+}
+.daily-issue-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.daily-issue-badge {
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: rgba(99,102,241,0.1);
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.daily-issue-time {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.daily-issue h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 12px;
+  line-height: 1.3;
+}
+.daily-issue-desc {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+.daily-issue-content {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+.daily-issue-content h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 32px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+  color: var(--text);
+}
+.daily-issue-content h3 {
+  font-size: 1.08rem;
+  margin: 20px 0 8px;
+  color: var(--text);
+}
+.daily-issue-content p {
+  margin: 0 0 12px;
+}
+.daily-issue-content a {
+  color: var(--primary);
+  text-decoration: none;
+}
+.daily-issue-content a:hover {
+  text-decoration: underline;
+}
+.daily-issue-content blockquote {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--primary);
+  background: rgba(99,102,241,0.05);
+  border-radius: 0 8px 8px 0;
+  color: var(--text-secondary);
+}
+.daily-issue-content ul, .daily-issue-content ol {
+  padding-left: 20px;
+  margin: 8px 0 16px;
+}
+.daily-issue-content li {
+  margin-bottom: 6px;
+}
+.daily-issue-content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 24px 0;
+}
+.daily-issue-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.daily-issue-footer p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0 0 8px;
+}
+
+/* CTA */
+.daily-cta {
+  padding: 60px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #1a1a4e, #24243e);
+  color: white;
+}
+.daily-cta h2 {
+  font-size: 1.5rem;
+  margin: 0 0 12px;
+}
+.daily-cta p {
+  color: rgba(255,255,255,0.7);
+  margin: 0 0 24px;
+}
+.daily-cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.daily-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.daily-btn-primary {
+  background: #6366f1;
+  color: white;
+  border: none;
+}
+.daily-btn-primary:hover {
+  background: #4f46e5;
+}
+.daily-btn-outline {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+}
+.daily-btn-outline:hover {
+  border-color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .daily-hero { padding: 50px 16px 40px; }
+  .daily-hero h1 { font-size: 1.8rem; }
+  .daily-hero-desc { font-size: 1rem; }
+  .daily-hero-stats { gap: 20px; }
+  .daily-issues { padding: 40px 0; }
+  .daily-card { padding: 16px; gap: 14px; }
+  .daily-card-date { width: 50px; height: 50px; }
+  .daily-card-day { font-size: 1.1rem; }
+  .daily-issue h1 { font-size: 1.4rem; }
+  .daily-how-grid { grid-template-columns: 1fr; }
+  .daily-cta { padding: 40px 16px; }
+}

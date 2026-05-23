@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode | default "zh-CN" }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body>
+  {{ partial "header.html" . }}
+  <main>
+  <article class="daily-issue">
+    <div class="daily-container">
+
+      <!-- Header -->
+      <div class="daily-issue-header">
+        <a href="/daily/" class="daily-back">← 返回日报首页</a>
+        <div class="daily-issue-meta">
+          <span class="daily-issue-badge">📰 AI 行业日报</span>
+          <time class="daily-issue-time">{{ .Date.Format "2006 年 1 月 2 日" }}</time>
+        </div>
+        <h1>{{ .Title }}</h1>
+        <p class="daily-issue-desc">{{ .Description }}</p>
+      </div>
+
+      <!-- Content -->
+      <div class="daily-issue-content">
+        {{ .Content }}
+      </div>
+
+      <!-- Footer -->
+      <div class="daily-issue-footer">
+        <p>🤖 本文由 AI 自动生成，扫描 10+ 信息源后筛选摘要。</p>
+        <p>📱 关注公众号「每日科技简报引擎」，每天早上 7:00 推送。</p>
+        <a href="/daily/" class="daily-btn daily-btn-outline">← 查看往期日报</a>
+      </div>
+
+    </div>
+  </article>
+  </main>
+  {{ partial "footer.html" . }}
+  {{ partial "adsense.html" . }}
+</body>
+</html>
