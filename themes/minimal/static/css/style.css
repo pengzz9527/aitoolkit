@@ -952,7 +952,21 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  text-align: center;
+}
+.daily-issue-footer-inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.daily-footer-qr {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-xs);
+  flex-shrink: 0;
+}
+.daily-footer-text {
+  flex: 1;
+  text-align: left;
 }
 
 .daily-issue-footer p {
@@ -984,16 +998,57 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   margin: 0 0 10px;
   font-weight: 800;
 }
-.daily-cta p {
+.daily-cta > .daily-container > p {
   color: rgba(255,255,255,0.65);
-  margin: 0 0 28px;
+  margin: 0 0 32px;
   font-size: 1rem;
+}
+.daily-cta-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.daily-qr {
+  width: 180px;
+  height: 180px;
+  border-radius: var(--radius-sm);
+  border: 2px solid rgba(255,255,255,0.15);
+  flex-shrink: 0;
+}
+.daily-cta-right {
+  text-align: left;
+}
+.daily-cta-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.daily-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.8);
+}
+.daily-step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(99,102,241,0.3);
+  color: #a5b4fc;
+  font-size: 0.82rem;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 .daily-cta-buttons {
   display: flex;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
+  gap: 12px;
 }
 .daily-btn {
   display: inline-flex;
@@ -1044,4 +1099,11 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   .daily-cta { padding: 40px 16px; }
   .daily-issue-header { padding: 24px 20px 20px; }
   .daily-issue-content { padding: 24px 20px; }
+  .daily-cta-content { flex-direction: column; gap: 24px; }
+  .daily-qr { width: 140px; height: 140px; }
+  .daily-cta-right { text-align: center; }
+  .daily-cta-steps { align-items: center; }
+  .daily-cta-buttons { justify-content: center; }
+  .daily-issue-footer-inner { flex-direction: column; text-align: center; }
+  .daily-footer-text { text-align: center; }
 }
