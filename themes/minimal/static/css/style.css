@@ -1011,8 +1011,8 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   flex-wrap: wrap;
 }
 .daily-qr {
-  width: 180px;
-  height: 180px;
+  width: 120px;
+  height: 120px;
   border-radius: var(--radius-sm);
   border: 2px solid rgba(255,255,255,0.15);
   flex-shrink: 0;
