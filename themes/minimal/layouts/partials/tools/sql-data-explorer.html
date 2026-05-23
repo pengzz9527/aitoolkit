@@ -1,0 +1,299 @@
+<!-- DuckDB SQL Data Explorer - MVP -->
+<div id="sql-explorer-root">
+  <div class="tool-section">
+    <p style="color:var(--text-secondary);margin-bottom:15px;">
+      使用 DuckDB-Wasm 在浏览器内直接查询 CSV/Parquet/JSON 文件，无需上传到服务器。
+    </p>
+  </div>
+
+  <!-- Drop Zone -->
+  <div id="sql-dropzone" class="dropzone" style="border:2px dashed var(--border);border-radius:12px;padding:30px 20px;text-align:center;margin-bottom:16px;transition:all .3s;cursor:pointer;background:var(--card-bg);">
+    <div style="font-size:3rem;margin-bottom:8px;">📂</div>
+    <div style="font-weight:600;font-size:1.1rem;color:var(--text);">拖拽文件到这里</div>
+    <div style="font-size:.85rem;color:var(--text-secondary);margin-top:4px;">支持 CSV、Parquet、JSON — 或点击选择文件</div>
+    <input type="file" id="sql-file-input" accept=".csv,.parquet,.json,.tsv" multiple style="display:none;">
+  </div>
+
+  <!-- File list -->
+  <div id="sql-files" style="display:none;margin-bottom:12px;"></div>
+
+  <!-- Schema + Query area -->
+  <div id="sql-query-area" style="display:none;">
+    <div class="tool-section" style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div style="font-weight:600;color:var(--text);">📋 已加载表</div>
+        <div id="sql-table-tags" style="font-size:.85rem;"></div>
+      </div>
+      <pre id="sql-schema" style="background:var(--code-bg);padding:10px;border-radius:8px;font-size:.82rem;margin-top:8px;max-height:180px;overflow:auto;color:var(--text-secondary);"></pre>
+    </div>
+
+    <!-- SQL Editor -->
+    <div class="tool-section" style="margin-bottom:10px;">
+      <label style="display:block;font-weight:600;margin-bottom:6px;color:var(--text);">SQL 查询</label>
+      <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+        <span style="font-size:.82rem;color:var(--text-secondary);padding:4px 0;">示例查询:</span>
+        <select id="sql-samples" style="font-size:.82rem;padding:3px 8px;border:1px solid var(--border);border-radius:6px;background:var(--card-bg);color:var(--text);" onchange="sqlApplySample(this.value)">
+          <option value="">— 选择 —</option>
+          <option value="preview">预览前 100 行</option>
+          <option value="count">统计行数</option>
+          <option value="cols">查看列信息</option>
+          <option value="distinct">查看唯一值</option>
+          <option value="group">分组统计</option>
+        </select>
+      </div>
+      <textarea id="sql-editor" class="tool-textarea" style="resize:vertical;height:90px;padding:10px;font-family:monospace;font-size:.88rem;background:var(--code-bg);border:1px solid var(--border);border-radius:8px;width:100%;box-sizing:border-box;" placeholder="SELECT * FROM data LIMIT 100" spellcheck="false"></textarea>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn" onclick="sqlRunQuery()">▶ 执行查询</button>
+        <button class="btn btn-outline btn-sm" onclick="sqlClear()">🗑️ 清空</button>
+        <span id="sql-query-status" style="margin-left:12px;font-size:.85rem;color:var(--text-secondary);"></span>
+      </div>
+    </div>
+
+    <!-- Output -->
+    <div class="output-area" id="sql-output" style="max-height:500px;overflow:auto;"></div>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="sql-stats"></div>
+  </div>
+
+  <div class="tool-meta">
+    <p><strong>使用说明：</strong>拖入数据文件 → 自动加载 → 输入 SQL 查询 → 点执行</p>
+    <p><strong>示例查询：</strong><code>SELECT count(*) FROM data</code>、<code>SELECT * FROM data LIMIT 10</code></p>
+    <p><strong>支持格式：</strong>CSV（含 TSV）、Parquet、JSON</p>
+    <p><strong>隐私说明：</strong>所有数据在浏览器本地处理，不上传任何服务器</p>
+  </div>
+</div>
+
+<script type="module">
+// ── DuckDB-Wasm 初始化 ──
+const CDN = 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.0/dist/duckdb-browser-blocking.mjs';
+let duckdb, db, conn;
+
+const dropzone = document.getElementById('sql-dropzone');
+const fileInput = document.getElementById('sql-file-input');
+const filesDiv = document.getElementById('sql-files');
+const queryArea = document.getElementById('sql-query-area');
+const schemaEl = document.getElementById('sql-schema');
+const tableTags = document.getElementById('sql-table-tags');
+const editor = document.getElementById('sql-editor');
+const outputEl = document.getElementById('sql-output');
+const statsEl = document.getElementById('sql-stats');
+const statusEl = document.getElementById('sql-query-status');
+
+let loadedTables = {}; // { name: { columns, count } }
+
+// ── Init DB ──
+async function initDB() {
+  try {
+    duckdb = await import(CDN);
+    const bundles = duckdb.getJsDelivrBundles();
+    const bundle = await duckdb.selectBundle(bundles);
+    const logger = new duckdb.ConsoleLogger();
+    db = await duckdb.createDuckDB(bundle, logger);
+    conn = await db.connect();
+    dropzone.querySelector('div:first-child').textContent = '✅ DuckDB 引擎已就绪，拖入文件';
+    return true;
+  } catch (e) {
+    dropzone.querySelector('div:first-child').textContent = '❌ DuckDB 初始化失败: ' + e.message;
+    console.error(e);
+    return false;
+  }
+}
+
+// ── Load file into DuckDB ──
+async function loadFile(file) {
+  const name = file.name.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_]/g, '_');
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  // Register file in DuckDB virtual filesystem
+  const buffer = await file.arrayBuffer();
+  const uint8 = new Uint8Array(buffer);
+  const fileName = `/data/${file.name}`;
+  await db.registerFileBuffer(fileName, uint8);
+
+  // Create table with appropriate reader
+  try {
+    let createSQL;
+    if (ext === 'csv' || ext === 'tsv') {
+      const delim = ext === 'tsv' ? '\\t' : ',';
+      createSQL = `CREATE OR REPLACE VIEW "${name}" AS SELECT * FROM read_csv_auto('${fileName}', delim='${delim}')`;
+    } else if (ext === 'parquet') {
+      createSQL = `CREATE OR REPLACE VIEW "${name}" AS SELECT * FROM read_parquet('${fileName}')`;
+    } else if (ext === 'json') {
+      createSQL = `CREATE OR REPLACE VIEW "${name}" AS SELECT * FROM read_json_auto('${fileName}')`;
+    } else {
+      return { error: '不支持的文件格式: ' + ext };
+    }
+
+    await conn.query(createSQL);
+
+    // Get info
+    const desc = await conn.query(`DESCRIBE "${name}"`);
+    const cols = desc.toArray().map(r => r[0]);
+    const countRes = await conn.query(`SELECT count(*)::INTEGER AS cnt FROM "${name}"`);
+    const count = countRes.toArray()[0].cnt;
+
+    loadedTables[name] = { columns: cols, count, fileName: file.name };
+    return { name, columns: cols, count, fileName: file.name };
+  } catch (e) {
+    return { error: e.message };
+  }
+}
+
+// ── Render tables ──
+function renderTables() {
+  const names = Object.keys(loadedTables);
+  if (names.length === 0) { queryArea.style.display = 'none'; return; }
+
+  queryArea.style.display = 'block';
+  tableTags.innerHTML = names.map(n =>
+    `<span style="display:inline-block;background:var(--accent);color:#fff;padding:2px 10px;border-radius:12px;font-size:.8rem;margin:2px 4px 2px 0;">${n}</span>`
+  ).join('');
+
+  let schemaText = '';
+  for (const [name, info] of Object.entries(loadedTables)) {
+    schemaText += `📄 ${name} (${info.fileName}) — ${info.count.toLocaleString()} 行, ${info.columns.length} 列\n`;
+    schemaText += `   ${info.columns.join(', ')}\n\n`;
+  }
+  schemaEl.textContent = schemaText.trim();
+}
+
+// ── Render results ──
+function renderResults(rows, columns, queryTime) {
+  if (!rows || rows.length === 0) {
+    outputEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-secondary);">✅ 查询完成，无结果</div>';
+    statsEl.innerHTML = `<span>⏱ ${queryTime}ms</span><span>📊 0 行</span>`;
+    return;
+  }
+
+  let html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;">';
+  // Header
+  html += '<thead><tr>';
+  for (const col of columns) {
+    html += `<th style="text-align:left;padding:8px 10px;background:var(--accent);color:#fff;position:sticky;top:0;white-space:nowrap;">${escHtml(col)}</th>`;
+  }
+  html += '</tr></thead><tbody>';
+
+  for (const row of rows) {
+    html += '<tr>';
+    for (const col of columns) {
+      const val = row[col];
+      const display = val === null || val === undefined ? '<span style="color:#999;font-style:italic;">NULL</span>' : escHtml(String(val));
+      html += `<td style="padding:6px 10px;border-bottom:1px solid var(--border);white-space:nowrap;">${display}</td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+
+  outputEl.innerHTML = html;
+  statsEl.innerHTML = `<span>⏱ ${queryTime}ms</span><span>📊 ${rows.length.toLocaleString()} 行</span><span>📋 ${columns.length} 列</span>`;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Run query (exposed to global scope) ──
+window.sqlRunQuery = async function() {
+  const sql = editor.value.trim();
+  if (!sql) { statusEl.textContent = '⚠️ 请输入 SQL'; return; }
+
+  statusEl.textContent = '⏳ 执行中...';
+  const start = performance.now();
+
+  try {
+    const result = await conn.query(sql);
+    const elapsed = Math.round(performance.now() - start);
+    const cols = result.schema.fields.map(f => f.name);
+    const rows = result.toArray().map(r => {
+      const obj = {};
+      for (const c of cols) obj[c] = r[c];
+      return obj;
+    });
+    renderResults(rows, cols, elapsed);
+    statusEl.textContent = `✅ ${elapsed}ms`;
+  } catch (e) {
+    const elapsed = Math.round(performance.now() - start);
+    outputEl.innerHTML = `<div style="padding:15px;color:#dc2626;background:#fef2f2;border-radius:8px;">❌ ${escHtml(e.message)}</div>`;
+    statsEl.innerHTML = `<span>⏱ ${elapsed}ms</span><span style="color:#dc2626;">❌ 错误</span>`;
+    statusEl.textContent = '❌ 查询失败';
+  }
+};
+
+editor.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); window.sqlRunQuery(); }
+});
+
+window.sqlApplySample = function(val) {
+  const names = Object.keys(loadedTables);
+  if (!names.length) return;
+  const t = names[0];
+  const samples = {
+    preview: `SELECT * FROM "${t}" LIMIT 100`,
+    count: `SELECT count(*)::INTEGER AS row_count FROM "${t}"`,
+    cols: `DESCRIBE "${t}"`,
+    distinct: `SELECT * FROM "${t}" LIMIT 20`,
+    group: `SELECT count(*)::INTEGER AS cnt, column_name FROM "${t}" GROUP BY column_name ORDER BY cnt DESC LIMIT 20`,
+  };
+  if (samples[val]) {
+    editor.value = samples[val];
+    window.sqlRunQuery();
+  }
+};
+window.sqlClear = function() {
+  editor.value = '';
+  outputEl.innerHTML = '';
+  statsEl.innerHTML = '';
+  statusEl.textContent = '';
+};
+
+// ── Handle files ──
+async function handleFiles(files) {
+  for (const file of files) {
+    const result = await loadFile(file);
+    if (result.error) {
+      filesDiv.innerHTML += `<div style="padding:8px 12px;background:#fef2f2;color:#dc2626;border-radius:8px;margin-bottom:6px;">❌ ${escHtml(file.name)}: ${escHtml(result.error)}</div>`;
+    } else {
+      filesDiv.innerHTML += `<div style="padding:8px 12px;background:#f0fdf4;color:#16a34a;border-radius:8px;margin-bottom:6px;">✅ ${escHtml(result.fileName)} → <strong>${result.name}</strong> (${result.count.toLocaleString()} 行, ${result.columns.length} 列)</div>`;
+    }
+  }
+  filesDiv.style.display = 'block';
+  renderTables();
+
+  // Auto-set a sample query
+  const first = Object.keys(loadedTables)[0];
+  if (first && !editor.value) {
+    editor.value = `SELECT * FROM "${first}" LIMIT 100`;
+  }
+}
+
+// ── Drag & Drop ──
+dropzone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropzone.style.borderColor = 'var(--accent)';
+  dropzone.style.background = 'var(--hover-bg)';
+});
+dropzone.addEventListener('dragleave', () => {
+  dropzone.style.borderColor = 'var(--border)';
+  dropzone.style.background = 'var(--card-bg)';
+});
+dropzone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropzone.style.borderColor = 'var(--border)';
+  dropzone.style.background = 'var(--card-bg)';
+  handleFiles(e.dataTransfer.files);
+});
+dropzone.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => {
+  if (fileInput.files.length) handleFiles(fileInput.files);
+});
+
+// ── Init ──
+await initDB();
+
+// Expose DuckDB to console for debugging
+window.__duckdb = { db, conn };
+window.__duckdbLoadedTables = loadedTables;
+
+console.log('✅ SQL Data Explorer ready');
+</script>
