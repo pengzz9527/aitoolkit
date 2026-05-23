@@ -613,17 +613,17 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   .home-main .container { padding: 0; }
 }
 
-/* ===== AI 行业日报 ===== */
+/* ===== AI 行业日报 — Card-Style Redesign ===== */
 .daily-container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
 }
 
 /* Hero */
 .daily-hero {
   position: relative;
-  padding: 80px 20px 60px;
+  padding: 80px 24px 64px;
   text-align: center;
   overflow: hidden;
   background: linear-gradient(135deg, #0f0c29 0%, #1a1a4e 40%, #24243e 100%);
@@ -631,40 +631,48 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
 .daily-hero-bg {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.15) 0%, transparent 50%),
-              radial-gradient(ellipse at 80% 50%, rgba(139,92,246,0.12) 0%, transparent 50%);
+  background:
+    radial-gradient(ellipse at 20% 40%, rgba(99,102,241,0.2) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 60%, rgba(139,92,246,0.15) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(236,72,153,0.08) 0%, transparent 40%);
 }
 .daily-hero-content {
   position: relative;
   z-index: 1;
 }
 .daily-hero-badge {
-  display: inline-block;
-  padding: 6px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 18px;
   border-radius: 20px;
   background: rgba(99,102,241,0.2);
-  border: 1px solid rgba(99,102,241,0.3);
+  border: 1px solid rgba(99,102,241,0.35);
   color: #a5b4fc;
   font-size: 0.85rem;
-  margin-bottom: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  backdrop-filter: blur(4px);
 }
 .daily-hero h1 {
-  font-size: 2.8rem;
+  font-size: 3rem;
   font-weight: 800;
   color: #fff;
-  margin: 0 0 12px;
-  letter-spacing: -0.02em;
+  margin: 0 0 14px;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
 }
 .daily-hero-desc {
-  font-size: 1.2rem;
-  color: rgba(255,255,255,0.75);
+  font-size: 1.15rem;
+  color: rgba(255,255,255,0.7);
   line-height: 1.7;
-  margin: 0 0 32px;
+  margin: 0 auto 36px;
+  max-width: 520px;
 }
 .daily-hero-stats {
   display: flex;
   justify-content: center;
-  gap: 40px;
+  gap: 48px;
   flex-wrap: wrap;
 }
 .daily-stat {
@@ -672,85 +680,94 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
 }
 .daily-stat-num {
   display: block;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #a5b4fc;
+  letter-spacing: -0.02em;
 }
 .daily-stat-label {
-  font-size: 0.85rem;
-  color: rgba(255,255,255,0.55);
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+  margin-top: 2px;
 }
 
-/* How it works */
+/* How it works — Card section */
 .daily-how {
-  padding: 60px 0;
+  padding: 64px 0;
   background: var(--bg-card);
 }
 .daily-how h2 {
   text-align: center;
   font-size: 1.5rem;
-  margin: 0 0 40px;
+  margin: 0 0 44px;
   color: var(--text);
+  font-weight: 700;
 }
 .daily-how-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 20px;
 }
 .daily-how-card {
   text-align: center;
-  padding: 30px 20px;
-  border-radius: 12px;
+  padding: 32px 24px 36px;
+  border-radius: var(--radius);
   background: var(--bg);
-  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--border);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .daily-how-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-light);
 }
 .how-icon {
-  font-size: 2.5rem;
-  margin-bottom: 12px;
+  font-size: 2.8rem;
+  margin-bottom: 14px;
+  display: block;
 }
 .daily-how-card h3 {
   font-size: 1.1rem;
   margin: 0 0 8px;
   color: var(--text);
+  font-weight: 700;
 }
 .daily-how-card p {
   font-size: 0.88rem;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.65;
   margin: 0;
 }
 
-/* Issue list grid */
+/* Issue list — Card style */
 .daily-issues {
-  padding: 60px 0;
+  padding: 64px 0;
   background: var(--bg);
 }
 .daily-issues h2 {
   font-size: 1.5rem;
-  margin: 0 0 30px;
+  margin: 0 0 28px;
   color: var(--text);
+  font-weight: 700;
 }
 .daily-grid {
   display: grid;
-  gap: 16px;
+  gap: 14px;
 }
 .daily-card {
   display: flex;
   gap: 20px;
-  padding: 20px 24px;
-  border-radius: 12px;
+  padding: 22px 26px;
+  border-radius: var(--radius);
   background: var(--bg-card);
   text-decoration: none;
-  transition: transform 0.2s, box-shadow 0.2s;
   border: 1px solid var(--border);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 .daily-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(99,102,241,0.25);
 }
 .daily-card-date {
   flex-shrink: 0;
@@ -758,15 +775,15 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   color: white;
 }
 .daily-card-day {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: 800;
   line-height: 1;
 }
 .daily-card-month {
@@ -774,16 +791,21 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   text-transform: uppercase;
   opacity: 0.85;
   margin-top: 2px;
+  letter-spacing: 0.03em;
 }
 .daily-card-body {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .daily-card-body h3 {
-  font-size: 1.05rem;
+  font-size: 1.08rem;
   margin: 0 0 6px;
   color: var(--text);
   line-height: 1.4;
+  font-weight: 700;
 }
 .daily-card-body p {
   font-size: 0.85rem;
@@ -800,32 +822,43 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   align-items: center;
   justify-content: space-between;
   font-size: 0.78rem;
-  color: var(--text-muted);
+  color: var(--text-tertiary);
 }
 .daily-card-arrow {
   font-size: 1.1rem;
-  transition: transform 0.2s;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  opacity: 0.5;
 }
 .daily-card:hover .daily-card-arrow {
-  transform: translateX(4px);
+  transform: translateX(5px);
+  opacity: 1;
+  color: var(--primary);
 }
 
-/* Single issue page */
+/* Single issue page — Card style */
 .daily-issue {
-  padding: 40px 0 60px;
+  padding: 40px 0 64px;
   background: var(--bg);
 }
+.daily-issue .daily-container {
+  max-width: 800px;
+}
 .daily-issue-header {
-  margin-bottom: 40px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 36px 28px;
+  margin-bottom: 28px;
 }
 .daily-back {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 0.88rem;
   color: var(--primary);
   text-decoration: none;
   margin-bottom: 16px;
+  font-weight: 500;
 }
 .daily-back:hover {
   text-decoration: underline;
@@ -838,7 +871,7 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
 }
 .daily-issue-badge {
   padding: 3px 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   background: rgba(99,102,241,0.1);
   color: var(--primary);
   font-size: 0.78rem;
@@ -850,7 +883,7 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
 }
 .daily-issue h1 {
   font-size: 1.8rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text);
   margin: 0 0 12px;
   line-height: 1.3;
@@ -865,6 +898,10 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   font-size: 0.95rem;
   line-height: 1.7;
   color: var(--text);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 36px;
 }
 .daily-issue-content h2 {
   font-size: 1.3rem;
@@ -910,64 +947,86 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   margin: 24px 0;
 }
 .daily-issue-footer {
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
+  margin-top: 28px;
+  padding: 24px 28px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   text-align: center;
 }
+
 .daily-issue-footer p {
-  font-size: 0.85rem;
   color: var(--text-muted);
   margin: 0 0 8px;
 }
 
 /* CTA */
 .daily-cta {
-  padding: 60px 20px;
+  padding: 64px 0;
   text-align: center;
-  background: linear-gradient(135deg, #1a1a4e, #24243e);
+  background: linear-gradient(135deg, #0f0c29 0%, #1a1a4e 50%, #24243e 100%);
   color: white;
+  position: relative;
+  overflow: hidden;
+}
+.daily-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 60%);
+}
+.daily-cta .daily-container {
+  position: relative;
+  z-index: 1;
 }
 .daily-cta h2 {
-  font-size: 1.5rem;
-  margin: 0 0 12px;
+  font-size: 1.6rem;
+  margin: 0 0 10px;
+  font-weight: 800;
 }
 .daily-cta p {
-  color: rgba(255,255,255,0.7);
-  margin: 0 0 24px;
+  color: rgba(255,255,255,0.65);
+  margin: 0 0 28px;
+  font-size: 1rem;
 }
 .daily-cta-buttons {
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 .daily-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 12px 28px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 0.95rem;
-  text-decoration: none;
   font-weight: 600;
-  transition: all 0.2s;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
 }
+.daily-btn:hover {
+  transform: translateY(-2px);
+}
 .daily-btn-primary {
-  background: #6366f1;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   color: white;
   border: none;
+  box-shadow: 0 2px 12px rgba(99,102,241,0.35);
 }
 .daily-btn-primary:hover {
-  background: #4f46e5;
+  box-shadow: 0 4px 20px rgba(99,102,241,0.45);
 }
 .daily-btn-outline {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.3);
-  color: white;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.85);
 }
 .daily-btn-outline:hover {
-  border-color: rgba(255,255,255,0.6);
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.35);
 }
 
 /* Responsive */
@@ -975,12 +1034,14 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   .daily-hero { padding: 50px 16px 40px; }
   .daily-hero h1 { font-size: 1.8rem; }
   .daily-hero-desc { font-size: 1rem; }
-  .daily-hero-stats { gap: 20px; }
+  .daily-hero-stats { gap: 24px; }
   .daily-issues { padding: 40px 0; }
-  .daily-card { padding: 16px; gap: 14px; }
+  .daily-card { padding: 16px 18px; gap: 14px; }
   .daily-card-date { width: 50px; height: 50px; }
   .daily-card-day { font-size: 1.1rem; }
   .daily-issue h1 { font-size: 1.4rem; }
   .daily-how-grid { grid-template-columns: 1fr; }
   .daily-cta { padding: 40px 16px; }
+  .daily-issue-header { padding: 24px 20px 20px; }
+  .daily-issue-content { padding: 24px 20px; }
 }
