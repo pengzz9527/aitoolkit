@@ -14,6 +14,7 @@ enableRobotsTXT = true
   adsense_publisher_id = "ca-pub-XXXXXXXXXXXXXXXX"
   adsense_slot_inarticle = "1234567890"
   adsense_slot_sticky = "1234567891"
+  umami_website_id = "26428fb6-e9d2-4a11-87cf-ce3fa0076548"
 
 [taxonomies]
   category = "categories"

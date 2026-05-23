@@ -63,4 +63,7 @@
 <link rel="stylesheet" href="/css/style.css">
 
 <!-- Umami Analytics -->
-<script defer src="https://umami.duckdblab.org/script.js" data-website-id="26428fb6-e9d2-4a11-87cf-ce3fa0076548"></script>
+{{- $umamiId := .Site.Params.umami_website_id | default "26428fb6-e9d2-4a11-87cf-ce3fa0076548" -}}
+{{- if $umamiId -}}
+<script defer src="https://umami.duckdblab.org/script.js" data-website-id="{{ $umamiId }}"></script>
+{{- end -}}
