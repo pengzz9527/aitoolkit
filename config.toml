@@ -16,6 +16,9 @@ enableRobotsTXT = true
   adsense_slot_sticky = "1234567891"
   umami_website_id = "26428fb6-e9d2-4a11-87cf-ce3fa0076548"
 
+  # Social
+  youtube_url = "https://www.youtube.com/@aitoolkit"
+
 [taxonomies]
   category = "categories"
 
