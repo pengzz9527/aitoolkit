@@ -24,63 +24,7 @@
   <div class="stats-bar" id="pr-stats"></div>
 </div>
 
-<script>
-function processPunctuation() {
-  var input = document.getElementById('pr-input').value;
-  var output = document.getElementById('pr-output');
-  var stats = document.getElementById('pr-stats');
-  if (!input.trim()) { output.textContent = '⚠️ 请输入文本'; stats.textContent = ''; return; }
-
-  var removeMode = document.getElementById('pr-remove').checked;
-  var keepSpace = document.getElementById('pr-whitespace').checked;
-
-  // Define punctuation characters (Chinese + English)
-  var punctChars = '，。、！？：；""''（）【】《》—…·～　,。!?;:\'\"()[]{}<>@#$%^&*_+=|\\/`~-';
-
-  var result = '';
-  var punctCount = 0;
-  var otherCount = 0;
-
-  for (var i = 0; i < input.length; i++) {
-    var ch = input[i];
-    if (punctChars.indexOf(ch) >= 0) {
-      punctCount++;
-      if (!removeMode) {
-        result += ch;
-      } else if (keepSpace) {
-        result += ' ';
-      }
-    } else {
-      otherCount++;
-      result += ch;
-    }
-  }
-
-  // Clean up multiple spaces if needed
-  if (removeMode && keepSpace) {
-    result = result.replace(/ +/g, ' ').trim();
-  }
-
-  output.textContent = result;
-  stats.innerHTML = '<span>🔣 标点符号: ' + punctCount + ' 个</span><span>📏 原始字符: ' + input.length + ' → 处理后: ' + result.length + '</span><span>' + (removeMode ? '🗑️ 移除模式' : '🔍 保留模式') + '</span>';
-}
-
-function clearPunctuation() {
-  document.getElementById('pr-input').value = '';
-  document.getElementById('pr-output').textContent = '';
-  document.getElementById('pr-stats').textContent = '';
-}
-
-function copyPunctuation() {
-  var text = document.getElementById('pr-output').textContent;
-  if (!text || text.indexOf('⚠️') === 0) return;
-  navigator.clipboard.writeText(text).then(function() {
-    var btn = document.getElementById('pr-copy-btn');
-    btn.textContent = '✅ 已复制';
-    setTimeout(function() { btn.textContent = '📋 复制结果'; }, 2000);
-  }).catch(function() {});
-}
-</script>
+<script src="/js/punctuation-remover.js" defer></script>
 
 <div class="tool-meta">
   <p><strong>使用说明：</strong>输入文本，选择「移除标点」或「保留标点」模式，点击「执行」即可处理。</p>
