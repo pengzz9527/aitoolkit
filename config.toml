@@ -17,7 +17,7 @@ enableRobotsTXT = true
   umami_website_id = "26428fb6-e9d2-4a11-87cf-ce3fa0076548"
 
   # Social
-  youtube_url = "https://www.youtube.com/@aitoolkit"
+  youtube_url = "https://www.youtube.com/@duckdblab"
 
 [taxonomies]
   category = "categories"
