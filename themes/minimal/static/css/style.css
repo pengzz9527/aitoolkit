@@ -559,6 +559,27 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   color: #fff;
 }
 
+/* Popular tools in sidebar */
+.sidebar-section {
+  padding: 0 12px;
+  margin-top: 8px;
+}
+.sidebar-tool-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.sidebar-tool-item:hover {
+  background: var(--bg-card);
+  color: var(--text);
+}
+
 /* ===== Home Main ===== */
 .home-main {
   flex: 1;

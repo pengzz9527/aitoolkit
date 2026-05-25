@@ -17,6 +17,15 @@
       {{ partial (printf "tools/%s" .File.ContentBaseName) . }}
     </div>
 
+    <!-- Share Buttons -->
+    <div class="tool-share">
+      <span class="tool-share-label">分享这个工具：</span>
+      <a href="https://twitter.com/intent/tweet?text={{ .Title }}&url={{ .Permalink }}" target="_blank" rel="noopener noreferrer" class="share-btn">🐦 Twitter</a>
+      <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ .Permalink }}&title={{ .Title }}" target="_blank" rel="noopener noreferrer" class="share-btn">💼 LinkedIn</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{ .Permalink }}" target="_blank" rel="noopener noreferrer" class="share-btn">📘 Facebook</a>
+      <button class="share-btn share-copy" onclick="copyToolLink()">🔗 复制链接</button>
+    </div>
+
     <div class="tool-meta">
       {{ with .Description }}
       <p><strong>📖 描述：</strong>{{ . }}</p>
@@ -51,6 +60,24 @@
     {{ end }}
 
     {{ partial "ad-incontent.html" . }}
+
+    <!-- Share Buttons Styles -->
+    <style>
+      .tool-share { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 24px; padding: 16px 0; border-top: 1px solid var(--border, #333); }
+      .tool-share-label { font-size: 13px; color: var(--text-secondary, #888); margin-right: 4px; }
+      .share-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; border-radius: 8px; font-size: 13px; background: var(--surface, #1a1a22); border: 1px solid var(--border, #333); color: var(--text, #ddd); text-decoration: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+      .share-btn:hover { background: var(--accent, #6c5ce7); border-color: var(--accent, #6c5ce7); color: #fff; }
+      .share-copy:active { opacity: 0.7; }
+    </style>
+    <script>
+    function copyToolLink() {
+      var btn = document.querySelector('.share-copy');
+      navigator.clipboard.writeText(window.location.href).then(function() {
+        btn.textContent = '✅ 已复制';
+        setTimeout(function() { btn.textContent = '🔗 复制链接'; }, 2000);
+      }).catch(function() {});
+    }
+    </script>
 
     <!-- Structured Data: BreadcrumbList -->
     <script type="application/ld+json">
