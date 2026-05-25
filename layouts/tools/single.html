@@ -52,6 +52,71 @@
 
     {{ partial "ad-incontent.html" . }}
 
+    <!-- Structured Data: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "首页",
+        "item": "{{ .Site.BaseURL }}"
+      },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "{{ .Title }}",
+        "item": "{{ .Permalink }}"
+      }]
+    }
+    </script>
+
+    <!-- Structured Data: HowTo -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "如何使用{{ .Title }}",
+      "description": "{{ .Description }}",
+      "step": [
+        {"@type": "HowToStep", "text": "打开 {{ .Title }} 在线工具页面"},
+        {"@type": "HowToStep", "text": "根据需求调整参数选项"},
+        {"@type": "HowToStep", "text": "点击按钮生成或处理数据"},
+        {"@type": "HowToStep", "text": "复制或下载处理结果"}
+      ]
+    }
+    </script>
+
+    <!-- Structured Data: FAQ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "什么是{{ .Title }}？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "{{ .Description }}"
+        }
+      },{
+        "@type": "Question",
+        "name": "{{ .Title }}安全吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "所有数据仅在浏览器本地处理，不会上传到任何服务器，请放心使用。"
+        }
+      },{
+        "@type": "Question",
+        "name": "{{ .Title }}需要付费吗？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "完全免费，无需注册或下载，打开即用。"
+        }
+      }]
+    }
+    </script>
+
     <style>
       .related-tools { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border, #333); }
       .related-tools h3 { margin-bottom: 16px; font-size: 18px; color: var(--text-muted, #aaa); }
