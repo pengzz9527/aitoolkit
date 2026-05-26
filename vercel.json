@@ -1,5 +1,5 @@
 {
-  "buildCommand": "mkdir -p /tmp/hugobin && curl -sL https://github.com/gohugoio/hugo/releases/download/v0.161.1/hugo_extended_0.161.1_linux-amd64.tar.gz | tar xz -C /tmp/hugobin && /tmp/hugobin/hugo --gc --minify --buildFuture",
+  "buildCommand": "rm -rf public && mkdir -p /tmp/hugobin && curl -sL https://github.com/gohugoio/hugo/releases/download/v0.161.1/hugo_extended_0.161.1_linux-amd64.tar.gz | tar xz -C /tmp/hugobin && /tmp/hugobin/hugo --gc --minify --buildFuture --ignoreCache",
   "outputDirectory": "public",
   "framework": "hugo",
   "trailingSlash": true,
@@ -18,15 +18,6 @@
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
-        }
-      ]
-    },
-    {
-      "source": "/css/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
         }
       ]
     }
