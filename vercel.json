@@ -1,5 +1,5 @@
 {
-  "buildCommand": "mkdir -p /tmp/aitoolkit-build && rm -rf /tmp/aitoolkit-build && hugo --gc --minify --buildFuture --ignoreCache -d /tmp/aitoolkit-output && mv /tmp/aitoolkit-output/* public/ && rm -rf /tmp/aitoolkit-output",
+  "buildCommand": "hugo --gc --minify --buildFuture --ignoreCache",
   "outputDirectory": "public",
   "framework": "hugo",
   "trailingSlash": true,
