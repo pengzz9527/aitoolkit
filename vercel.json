@@ -1,7 +1,6 @@
 {
   "buildCommand": "hugo --gc --minify --buildFuture --ignoreCache",
   "outputDirectory": "public",
-  "framework": "hugo",
   "trailingSlash": true,
   "headers": [
     {
