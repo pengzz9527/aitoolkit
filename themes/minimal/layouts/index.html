@@ -26,21 +26,6 @@
         </a>
         {{ end }}
       {{ end }}
-
-      <!-- Popular Tools -->
-      <div class="sidebar-section">
-        <div class="sidebar-title">🔥 热门工具</div>
-        {{ $popular := slice "/tools/ip-lookup/" "/tools/bcrypt-hash/" "/tools/aes-encrypt/" "/tools/pin-generator/" "/tools/password-generator/" "/tools/uuid-generator/" "/tools/url-encode-decode/" "/tools/qr-code-generator/" }}
-        {{ range $popular }}
-          {{ $tool := $.Site.GetPage . }}
-          {{ with $tool }}
-          <a href="{{ .RelPermalink }}" class="sidebar-item sidebar-tool-item" title="{{ .Description }}">
-            <span class="sidebar-item-icon">{{ with .Params.icon }}{{ . }}{{ else }}🔧{{ end }}</span>
-            <span class="sidebar-item-label">{{ .Title }}</span>
-          </a>
-          {{ end }}
-        {{ end }}
-      </div>
     </div>
   </aside>
 
