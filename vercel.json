@@ -1,7 +1,7 @@
 {
-  "buildCommand": "curl -sL https://github.com/gohugoio/hugo/releases/download/v0.161.1/hugo_extended_0.161.1_linux-amd64.tar.gz | tar xz -C /tmp && /tmp/hugo --gc --minify --buildFuture --ignoreCache",
+  "buildCommand": "hugo --gc --minify --buildFuture --ignoreCache",
   "outputDirectory": "public",
-  "framework": null,
+  "framework": "hugo",
   "trailingSlash": true,
   "headers": [
     {
