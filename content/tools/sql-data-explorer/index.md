@@ -1,10 +1,12 @@
 ---
-title: "SQL 数据查询器"
-description: "基于 DuckDB-Wasm 的浏览器端 SQL 查询工具 — 在线分析 CSV/Parquet/JSON 大数据文件，无需上传到服务器"
-keywords: ["DuckDB", "SQL查询", "在线数据分析", "CSV查看器", "Parquet查看器", "数据浏览器", "大数据分析"]
+title: "SQL 数据探查器（DuckDB WASM）"
+description: "上传 CSV/Excel 文件，DuckDB WASM 在浏览器内执行 SQL 查询，实时输出图表、表格和统计摘要。所有数据不离开浏览器。"
+keywords: ["SQL查询", "数据探查", "DuckDB", "CSV分析", "Excel分析", "在线SQL", "数据分析"]
 icon: "🔍"
 type: "tools"
-categories: ["开发工具"]
-weight: 10
+categories: ["数据分析"]
+weight: 5
+date: 2026-05-27
+lastmod: 2026-05-27
 ---
 
