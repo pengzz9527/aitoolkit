@@ -1,7 +1,5 @@
 <!-- SQL Data Explorer Widget -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.1-dev64.6/dist/duckdb.css">
-<script src="https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.1-dev64.6/dist/duckdb-browser-blocking.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.1-dev64.6/dist/duckdb-browser-eh.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm/dist/duckdb-browser-blocking.cjs"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
 <style>
@@ -462,7 +460,7 @@ async function initDuckDB() {
 
   try {
     msg.textContent = '加载 DuckDB WASM 引擎...';
-    var JSDELIVR_CDN = 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.1-dev64.6/dist/';
+    var JSDELIVR_CDN = 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm/dist/';
     var bundle = await duckdb.selectBundle({ mainModule: JSDELIVR_CDN + 'duckdb-browser-blocking.wasm', mainWorker: JSDELIVR_CDN + 'duckdb-browser-blocking.worker.js' });
     var worker = new Worker(bundle.mainWorker);
     var logger = new duckdb.ConsoleLogger();
