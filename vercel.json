@@ -1,5 +1,5 @@
 {
-  "buildCommand": "hugo --gc --minify --buildFuture --ignoreCache",
+  "buildCommand": "hugo --gc --minify --buildFuture --ignoreCache && echo \"build_$(date +%s)\" > public/_vercel_build_id.txt",
   "outputDirectory": "public",
   "framework": "hugo",
   "trailingSlash": true,
