@@ -1,0 +1,970 @@
+<!-- SQL Data Explorer Widget -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.1-dev64.6/dist/duckdb.css">
+<script src="https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.1-dev64.6/dist/duckdb-browser-blocking.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.1-dev64.6/dist/duckdb-browser-eh.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+<style>
+.sql-x-root {
+  --bg: #0f1117;
+  --bg2: #1a1d2e;
+  --bg3: #242740;
+  --border: #2a2d44;
+  --text: #e4e6f0;
+  --text2: #8b8fa8;
+  --accent: #6c5ce7;
+  --accent2: #a29bfe;
+  --green: #00cec9;
+  --orange: #fdcb6e;
+  --red: #ff6b6b;
+  --radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  color: var(--text);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.sql-x-root * { box-sizing: border-box; }
+
+/* Upload Zone */
+.sql-x-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 60px 20px;
+  text-align: center;
+  background: var(--bg2);
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+}
+.sql-x-upload-zone.dragover {
+  border-color: var(--accent);
+  background: rgba(108,92,231,0.08);
+  transform: scale(1.01);
+}
+.sql-x-upload-zone .icon { font-size: 48px; display: block; margin-bottom: 12px; }
+.sql-x-upload-zone h3 { margin: 0 0 8px; font-size: 20px; }
+.sql-x-upload-zone p { margin: 0; color: var(--text2); font-size: 14px; }
+.sql-x-upload-zone input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer;
+}
+.sql-x-upload-zone .formats {
+  margin-top: 16px;
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+}
+.sql-x-upload-zone .formats span {
+  padding: 4px 12px; border-radius: 6px; background: var(--bg3);
+  font-size: 12px; color: var(--text2); border: 1px solid var(--border);
+}
+
+/* File Loaded Banner */
+.sql-x-file-info {
+  display: none;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+}
+.sql-x-file-info.show { display: flex; }
+.sql-x-file-info .name { font-weight: 600; flex: 1; }
+.sql-x-file-info .stats { color: var(--text2); font-size: 13px; }
+.sql-x-file-info .badge {
+  padding: 4px 12px; border-radius: 20px; font-size: 12px;
+  background: rgba(0,206,201,0.12); color: var(--green); font-weight: 600;
+}
+
+/* Layout */
+.sql-x-layout { display: none; gap: 20px; margin-top: 20px; }
+.sql-x-layout.show { display: grid; }
+.sql-x-layout.cols-2 { grid-template-columns: 1fr 1fr; }
+.sql-x-layout.cols-1 { grid-template-columns: 1fr; }
+
+/* Panel */
+.sql-x-panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.sql-x-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px; font-weight: 600; color: var(--text2);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.sql-x-panel-header .count {
+  background: var(--bg); padding: 2px 10px; border-radius: 10px;
+  font-size: 11px; color: var(--text2);
+}
+
+/* SQL Input */
+.sql-x-sql-input {
+  width: 100%; min-height: 120px;
+  background: var(--bg); color: var(--text);
+  border: none; padding: 16px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 14px; line-height: 1.6; resize: vertical;
+  tab-size: 2;
+}
+.sql-x-sql-input:focus { outline: none; }
+
+/* Button Row */
+.sql-x-btn-row {
+  display: flex; gap: 8px; padding: 12px 16px;
+  border-top: 1px solid var(--border); flex-wrap: wrap;
+}
+.sql-x-btn {
+  padding: 8px 20px; border: none; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+  background: var(--bg3); color: var(--text);
+}
+.sql-x-btn:hover {
+  background: var(--border);
+  transform: translateY(-1px);
+}
+.sql-x-btn.primary {
+  background: var(--accent); color: #fff;
+}
+.sql-x-btn.primary:hover {
+  background: var(--accent2);
+  box-shadow: 0 4px 15px rgba(108,92,231,0.3);
+}
+.sql-x-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* Results */
+.sql-x-result-area {
+  padding: 0;
+  overflow: auto;
+  max-height: 500px;
+}
+.sql-x-result-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px; white-space: nowrap;
+}
+.sql-x-result-table th {
+  background: var(--bg3);
+  color: var(--accent2);
+  font-weight: 600;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 2px solid var(--accent);
+  position: sticky; top: 0; z-index: 1;
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.sql-x-result-table td {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  max-width: 300px; overflow: hidden; text-overflow: ellipsis;
+}
+.sql-x-result-table tr:hover td {
+  background: rgba(108,92,231,0.04);
+}
+.sql-x-result-table tr:nth-child(even) td {
+  background: rgba(255,255,255,0.02);
+}
+
+/* Stats Cards */
+.sql-x-stats {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  padding: 16px;
+}
+.sql-x-stat-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.sql-x-stat-card .label {
+  font-size: 11px; color: var(--text2);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.sql-x-stat-card .value {
+  font-size: 24px; font-weight: 700;
+  color: var(--accent2);
+}
+.sql-x-stat-card .sub {
+  font-size: 12px; color: var(--text2); margin-top: 2px;
+}
+
+/* Chart Container */
+.sql-x-chart-area {
+  padding: 16px;
+  height: 350px;
+  position: relative;
+}
+.sql-x-chart-area canvas { max-width: 100%; max-height: 100%; }
+
+/* Schema display */
+.sql-x-schema {
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.sql-x-schema .col {
+  display: inline-flex; align-items: center;
+  gap: 6px; padding: 3px 10px; margin: 3px 4px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.sql-x-schema .col .type {
+  font-size: 10px; color: var(--green);
+  font-family: monospace; font-weight: 600;
+}
+
+/* Samples */
+.sql-x-samples {
+  padding: 12px 16px;
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.sql-x-sample {
+  padding: 6px 14px; border-radius: 6px;
+  background: var(--bg); border: 1px solid var(--border);
+  font-size: 12px; cursor: pointer; color: var(--text2);
+  transition: all 0.2s;
+}
+.sql-x-sample:hover {
+  background: rgba(108,92,231,0.1);
+  border-color: var(--accent);
+  color: var(--accent2);
+}
+
+/* Loading overlay */
+.sql-x-loading {
+  display: none;
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(15,17,23,0.8);
+  backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+}
+.sql-x-loading.show { display: flex; }
+.sql-x-loading .spinner {
+  width: 48px; height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.sql-x-loading .msg { color: var(--text2); font-size: 14px; }
+
+/* Error/Success */
+.sql-x-msg {
+  padding: 12px 16px; margin: 0;
+  font-size: 13px; line-height: 1.5;
+}
+.sql-x-msg.error { background: rgba(255,107,107,0.08); color: var(--red); }
+.sql-x-msg.success { background: rgba(0,206,201,0.08); color: var(--green); }
+
+/* Smart Summary */
+.sql-x-smart-summary {
+  padding: 16px;
+  font-size: 14px; line-height: 1.8;
+}
+.sql-x-smart-summary .highlight {
+  color: var(--accent2); font-weight: 600;
+}
+.sql-x-smart-summary .insight {
+  padding: 10px 14px; margin: 8px 0;
+  background: var(--bg); border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+}
+
+/* Tabs */
+.sql-x-tabs {
+  display: flex; gap: 0; border-bottom: 1px solid var(--border);
+}
+.sql-x-tab {
+  padding: 10px 20px; font-size: 13px; font-weight: 500;
+  cursor: pointer; color: var(--text2); border-bottom: 2px solid transparent;
+  transition: all 0.2s; background: transparent;
+}
+.sql-x-tab:hover { color: var(--text); }
+.sql-x-tab.active {
+  color: var(--accent2); border-bottom-color: var(--accent);
+  background: rgba(108,92,231,0.05);
+}
+.sql-x-tab-content { display: none; }
+.sql-x-tab-content.active { display: block; }
+
+/* Auto-chart selector */
+.sql-x-chart-type {
+  display: flex; gap: 6px; padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.sql-x-chart-type button {
+  padding: 5px 12px; border: 1px solid var(--border);
+  border-radius: 6px; background: var(--bg);
+  color: var(--text2); font-size: 12px; cursor: pointer;
+  transition: all 0.2s;
+}
+.sql-x-chart-type button:hover {
+  border-color: var(--accent); color: var(--accent2);
+}
+.sql-x-chart-type button.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sql-x-layout.cols-2 { grid-template-columns: 1fr; }
+  .sql-x-upload-zone { padding: 40px 16px; }
+  .sql-x-stats { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+
+<div class="sql-x-root">
+  <!-- Loading Overlay -->
+  <div class="sql-x-loading" id="sqlxLoading">
+    <div class="spinner"></div>
+    <div class="msg" id="sqlxLoadingMsg">正在初始化 DuckDB 引擎...</div>
+  </div>
+
+  <!-- Upload Zone -->
+  <div class="sql-x-upload-zone" id="sqlxUpload">
+    <span class="icon">📂</span>
+    <h3>上传 CSV 或 Excel 文件</h3>
+    <p>拖拽文件到此处，或点击选择文件</p>
+    <input type="file" id="sqlxFileInput" accept=".csv,.xlsx,.xls,.tsv">
+    <div class="formats">
+      <span>📄 CSV</span>
+      <span>📊 Excel (.xlsx/.xls)</span>
+      <span>📋 TSV</span>
+    </div>
+    <div style="margin-top:20px;font-size:12px;color:var(--text2)">
+      🔒 所有数据在浏览器本地处理，不会上传到任何服务器
+    </div>
+  </div>
+
+  <!-- File Info -->
+  <div class="sql-x-file-info" id="sqlxFileInfo">
+    <span id="sqlxFileIcon" style="font-size:28px">📄</span>
+    <span class="name" id="sqlxFileName"></span>
+    <span class="stats" id="sqlxFileStats"></span>
+    <span class="badge" id="sqlxFileBadge">DuckDB 已加载</span>
+    <button class="sql-x-btn" onclick="resetApp()" style="margin-left:auto;padding:6px 14px;font-size:12px">🔄 换文件</button>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="sql-x-layout show" id="sqlxLayout">
+    <!-- Left: SQL + Schema -->
+    <div class="sql-x-panel">
+      <div class="sql-x-panel-header">
+        <span>🔍 数据预览 & SQL 查询</span>
+        <span id="sqlxSchemaCount" class="count">0 列</span>
+      </div>
+      <div id="sqlxSchema" class="sql-x-schema">
+        <span style="color:var(--text2)">上传文件后自动检测列信息...</span>
+      </div>
+      <div class="sql-x-samples" id="sqlxSamples">
+        <span class="sql-x-sample" onclick="runQuery('SELECT * FROM data LIMIT 100')">📋 SELECT * LIMIT 100</span>
+        <span class="sql-x-sample" onclick="runQuery('SELECT COUNT(*) AS total_rows FROM data')">🔢 总行数</span>
+        <span class="sql-x-sample" id="sqlxSampleGroupBy" style="display:none" onclick="">📊 分组统计</span>
+        <span class="sql-x-sample" onclick="runQuery('DESCRIBE data')">📋 表结构</span>
+        <span class="sql-x-sample" onclick="runQuery('SELECT * FROM data')">📋 全部数据</span>
+      </div>
+      <textarea class="sql-x-sql-input" id="sqlxSqlInput" spellcheck="false" placeholder="输入 SQL 查询语句...&#10;&#10;示例:&#10;  SELECT * FROM data LIMIT 100&#10;  SELECT COUNT(*) FROM data&#10;  SELECT column, AVG(value) FROM data GROUP BY column">SELECT * FROM data LIMIT 100</textarea>
+      <div class="sql-x-btn-row">
+        <button class="sql-x-btn primary" id="sqlxRunBtn" onclick="runQuery(document.getElementById('sqlxSqlInput').value)">▶ 执行查询</button>
+        <button class="sql-x-btn" onclick="runQuery('SELECT * FROM data')">📋 全部数据</button>
+        <button class="sql-x-btn" onclick="showSchema()">📐 查看结构</button>
+      </div>
+    </div>
+
+    <!-- Right: Results -->
+    <div class="sql-x-panel">
+      <div class="sql-x-panel-header">
+        <span>📊 查询结果</span>
+        <span id="sqlxResultCount" class="count">0 行</span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="sql-x-tabs">
+        <div class="sql-x-tab active" data-tab="table" onclick="switchTab('table')">📋 表格</div>
+        <div class="sql-x-tab" data-tab="chart" onclick="switchTab('chart')">📈 图表</div>
+        <div class="sql-x-tab" data-tab="stats" onclick="switchTab('stats')">📊 统计摘要</div>
+        <div class="sql-x-tab" data-tab="summary" onclick="switchTab('summary')">🤖 智能分析</div>
+      </div>
+
+      <!-- Tab: Table -->
+      <div class="sql-x-tab-content active" id="sqlxTabTable">
+        <div class="sql-x-result-area" id="sqlxResultTable">
+          <div style="padding:40px;text-align:center;color:var(--text2)">
+            点击「执行查询」查看结果
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Chart -->
+      <div class="sql-x-tab-content" id="sqlxTabChart">
+        <div class="sql-x-chart-type" id="sqlxChartTypes">
+          <button class="active" onclick="switchChartType('bar')">📊 柱状图</button>
+          <button onclick="switchChartType('line')">📈 折线图</button>
+          <button onclick="switchChartType('pie')">🥧 饼图</button>
+          <button onclick="switchChartType('doughnut')">🍩 环形图</button>
+          <button onclick="switchChartType('radar')">🕸️ 雷达图</button>
+        </div>
+        <div class="sql-x-chart-area">
+          <canvas id="sqlxChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Tab: Stats -->
+      <div class="sql-x-tab-content" id="sqlxTabStats">
+        <div class="sql-x-stats" id="sqlxStatsGrid">
+          <div style="padding:40px;text-align:center;color:var(--text2);grid-column:1/-1">
+            点击「执行查询」查看统计数据
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Smart Summary (AI) -->
+      <div class="sql-x-tab-content" id="sqlxTabSummary">
+        <div class="sql-x-smart-summary" id="sqlxSmartSummary">
+          <div style="text-align:center;color:var(--text2);padding:40px">
+            🤖 运行查询后自动生成数据洞察摘要
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== STATE =====================
+var sqlx = {
+  db: null,
+  conn: null,
+  tableName: 'data',
+  hasData: false,
+  columns: [],
+  rowCount: 0,
+  lastResult: null,
+  chart: null,
+  currentChartType: 'bar',
+  fileName: ''
+};
+
+// ===================== DUCKDB INIT =====================
+async function initDuckDB() {
+  var loading = document.getElementById('sqlxLoading');
+  var msg = document.getElementById('sqlxLoadingMsg');
+  loading.classList.add('show');
+
+  try {
+    msg.textContent = '加载 DuckDB WASM 引擎...';
+    var JSDELIVR_CDN = 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.1-dev64.6/dist/';
+    var bundle = await duckdb.selectBundle({ mainModule: JSDELIVR_CDN + 'duckdb-browser-blocking.wasm', mainWorker: JSDELIVR_CDN + 'duckdb-browser-blocking.worker.js' });
+    var worker = new Worker(bundle.mainWorker);
+    var logger = new duckdb.ConsoleLogger();
+    sqlx.db = new duckdb.AsyncDuckDB(logger, worker);
+    await sqlx.db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+    sqlx.conn = await sqlx.db.connect();
+    msg.textContent = 'DuckDB 引擎就绪 ✓';
+    setTimeout(function() { loading.classList.remove('show'); }, 500);
+    return true;
+  } catch(e) {
+    msg.textContent = '❌ DuckDB 初始化失败: ' + e.message;
+    console.error(e);
+    return false;
+  }
+}
+
+// ===================== FILE UPLOAD =====================
+var uploadZone = document.getElementById('sqlxUpload');
+var fileInput = document.getElementById('sqlxFileInput');
+
+// Drag & drop
+uploadZone.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  uploadZone.classList.add('dragover');
+});
+uploadZone.addEventListener('dragleave', function() {
+  uploadZone.classList.remove('dragover');
+});
+uploadZone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  if (e.dataTransfer.files.length > 0) {
+    handleFile(e.dataTransfer.files[0]);
+  }
+});
+
+fileInput.addEventListener('change', function() {
+  if (this.files.length > 0) {
+    handleFile(this.files[0]);
+  }
+});
+
+async function handleFile(file) {
+  var loading = document.getElementById('sqlxLoading');
+  var msg = document.getElementById('sqlxLoadingMsg');
+  loading.classList.add('show');
+
+  try {
+    var ext = file.name.split('.').pop().toLowerCase();
+    sqlx.fileName = file.name;
+
+    msg.textContent = '读取文件: ' + file.name;
+    var buf = await file.arrayBuffer();
+
+    if (ext === 'csv' || ext === 'tsv') {
+      msg.textContent = '加载 CSV 到 DuckDB...';
+      var delimiter = ext === 'tsv' ? '\\t' : ',';
+      await sqlx.conn.query('DROP TABLE IF EXISTS ' + sqlx.tableName);
+
+      // Register file buffer with DuckDB
+      await sqlx.db.registerFileBuffer('uploaded.' + ext, new Uint8Array(buf));
+      await sqlx.conn.query("CREATE TABLE " + sqlx.tableName + " AS SELECT * FROM read_csv('uploaded." + ext + "', auto_detect=true, header=true, delim='" + delimiter + "')");
+
+    } else if (ext === 'xlsx' || ext === 'xls') {
+      msg.textContent = '解析 Excel 文件...';
+      // Use SheetJS to convert Excel to CSV
+      if (typeof XLSX === 'undefined') {
+        var script = document.createElement('script');
+        script.src = 'https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js';
+        document.head.appendChild(script);
+        await new Promise(function(r) { script.onload = r; });
+      }
+      var workbook = XLSX.read(buf, { type: 'array' });
+      var sheetName = workbook.SheetNames[0];
+      var csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName]);
+
+      // Write CSV to DuckDB
+      var encoder = new TextEncoder();
+      var csvBuf = encoder.encode(csv);
+      await sqlx.db.registerFileBuffer('uploaded.csv', csvBuf);
+      await sqlx.conn.query('DROP TABLE IF EXISTS ' + sqlx.tableName);
+      await sqlx.conn.query("CREATE TABLE " + sqlx.tableName + " AS SELECT * FROM read_csv('uploaded.csv', auto_detect=true, header=true)");
+    } else {
+      msg.textContent = '❌ 不支持的文件格式';
+      loading.classList.remove('show');
+      return;
+    }
+
+    // Get schema and row count
+    msg.textContent = '分析数据结构...';
+    var schemaResult = await sqlx.conn.query('DESCRIBE ' + sqlx.tableName);
+    sqlx.columns = [];
+    for (var i = 0; i < schemaResult.numRows; i++) {
+      var row = {};
+      for (var c = 0; c < schemaResult.numCols; c++) {
+        row[schemaResult.columnNames[c]] = schemaResult.getChildAt(c).get(i);
+      }
+      sqlx.columns.push(row);
+    }
+
+    var countResult = await sqlx.conn.query('SELECT COUNT(*) AS cnt FROM ' + sqlx.tableName);
+    sqlx.rowCount = countResult.getChildAt(0).get(0);
+
+    // Show file info
+    document.getElementById('sqlxFileIcon').textContent = ext === 'xlsx' || ext === 'xls' ? '📊' : '📄';
+    document.getElementById('sqlxFileName').textContent = file.name;
+    document.getElementById('sqlxFileStats').textContent = (file.size / 1024).toFixed(1) + ' KB';
+    document.getElementById('sqlxFileBadge').textContent = sqlx.rowCount.toLocaleString() + ' 行 × ' + sqlx.columns.length + ' 列';
+    document.getElementById('sqlxFileInfo').classList.add('show');
+
+    // Show schema
+    showSchema();
+
+    // Run default query
+    sqlx.hasData = true;
+    loading.classList.remove('show');
+    runQuery('SELECT * FROM ' + sqlx.tableName + ' LIMIT 100');
+
+  } catch(e) {
+    msg.textContent = '❌ 错误: ' + e.message;
+    console.error(e);
+    loading.classList.remove('show');
+    alert('处理文件时出错: ' + e.message);
+  }
+}
+
+// ===================== SCHEMA =====================
+function showSchema() {
+  var schemaDiv = document.getElementById('sqlxSchema');
+  document.getElementById('sqlxSchemaCount').textContent = sqlx.columns.length + ' 列';
+  if (sqlx.columns.length === 0) {
+    schemaDiv.innerHTML = '<span style="color:var(--text2)">暂无数据，请先上传文件</span>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < sqlx.columns.length; i++) {
+    var col = sqlx.columns[i];
+    html += '<span class="col"><span>' + col.column_name + '</span> <span class="type">' + col.column_type + '</span></span>';
+  }
+  schemaDiv.innerHTML = html;
+
+  // Update sample buttons
+  // Find first text column and first numeric column for group by sample
+  var textCol = null;
+  var numCol = null;
+  for (var i = 0; i < sqlx.columns.length; i++) {
+    var col = sqlx.columns[i];
+    var type = col.column_type.toLowerCase();
+    if (!textCol && (type.includes('varchar') || type.includes('text'))) textCol = col.column_name;
+    if (!numCol && (type.includes('int') || type.includes('float') || type.includes('double') || type.includes('decimal') || type.includes('numeric'))) numCol = col.column_name;
+  }
+  var sampleGB = document.getElementById('sqlxSampleGroupBy');
+  if (textCol && numCol) {
+    sampleGB.style.display = '';
+    sampleGB.onclick = function() {
+      runQuery('SELECT ' + textCol + ', COUNT(*) AS count, AVG(' + numCol + ') AS avg_' + numCol + ', SUM(' + numCol + ') AS sum_' + numCol + ' FROM ' + sqlx.tableName + ' GROUP BY ' + textCol + ' ORDER BY count DESC LIMIT 20');
+    };
+    sampleGB.textContent = '📊 按 ' + textCol + ' 分组统计';
+  } else if (textCol) {
+    sampleGB.style.display = '';
+    sampleGB.onclick = function() {
+      runQuery('SELECT ' + textCol + ', COUNT(*) AS count FROM ' + sqlx.tableName + ' GROUP BY ' + textCol + ' ORDER BY count DESC LIMIT 20');
+    };
+    sampleGB.textContent = '📊 按 ' + textCol + ' 统计分布';
+  }
+}
+
+// ===================== RUN QUERY =====================
+async function runQuery(sql) {
+  if (!sqlx.hasData) {
+    document.getElementById('sqlxResultTable').innerHTML = '<div style="padding:40px;text-align:center;color:var(--text2)">⚠️ 请先上传 CSV/Excel 文件</div>';
+    return;
+  }
+  if (!sql || !sql.trim()) return;
+
+  var resultDiv = document.getElementById('sqlxResultTable');
+  var countSpan = document.getElementById('sqlxResultCount');
+  var btn = document.getElementById('sqlxRunBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ 执行中...';
+
+  try {
+    var result = await sqlx.conn.query(sql);
+    sqlx.lastResult = result;
+    var rows = result.numRows;
+    var cols = result.numCols;
+    countSpan.textContent = rows.toLocaleString() + ' 行';
+
+    // Build table
+    var html = '<table class="sql-x-result-table"><thead><tr>';
+    var names = result.columnNames;
+    for (var i = 0; i < cols; i++) {
+      html += '<th>' + names[i] + '</th>';
+    }
+    html += '</tr></thead><tbody>';
+
+    var maxRows = Math.min(rows, 500);
+    for (var r = 0; r < maxRows; r++) {
+      html += '<tr>';
+      for (var c = 0; c < cols; c++) {
+        var val = result.getChildAt(c).get(r);
+        if (val === null || val === undefined) {
+          html += '<td style="color:var(--text2);font-style:italic">NULL</td>';
+        } else {
+          var display = String(val);
+          if (display.length > 100) display = display.substring(0, 100) + '...';
+          html += '<td title="' + String(val).replace(/"/g, '&quot;') + '">' + display + '</td>';
+        }
+      }
+      html += '</tr>';
+    }
+    if (rows > 500) {
+      html += '<tr><td colspan="' + cols + '" style="text-align:center;padding:16px;color:var(--text2)">显示前 500 行，共 ' + rows.toLocaleString() + ' 行</td></tr>';
+    }
+    html += '</tbody></table>';
+    resultDiv.innerHTML = html;
+
+    // Stats
+    buildStats(result, rows, cols);
+    buildChart(result, sqlx.currentChartType);
+    buildSmartSummary(result, sql);
+
+  } catch(e) {
+    resultDiv.innerHTML = '<div class="sql-x-msg error">❌ SQL 执行错误:<br>' + e.message + '</div>';
+    countSpan.textContent = '错误';
+    document.getElementById('sqlxStatsGrid').innerHTML = '<div style="padding:40px;text-align:center;color:var(--text2)">运行查询后查看统计</div>';
+    document.getElementById('sqlxSmartSummary').innerHTML = '<div class="sql-x-msg error">查询出错，无法分析</div>';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '▶ 执行查询';
+}
+
+// ===================== STATS =====================
+function buildStats(result, rows, cols) {
+  var grid = document.getElementById('sqlxStatsGrid');
+  if (rows === 0) {
+    grid.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text2)">0 行，无数据可统计</div>';
+    return;
+  }
+
+  var html = '';
+  // Basic stats
+  html += '<div class="sql-x-stat-card"><div class="label">行数</div><div class="value">' + rows.toLocaleString() + '</div></div>';
+  html += '<div class="sql-x-stat-card"><div class="label">列数</div><div class="value">' + cols + '</div></div>';
+
+  // Column-level stats (first 8 columns)
+  for (var c = 0; c < Math.min(cols, 8); c++) {
+    var name = result.columnNames[c];
+    var values = [];
+    var maxSample = Math.min(rows, 1000);
+    for (var r = 0; r < maxSample; r++) {
+      values.push(result.getChildAt(c).get(r));
+    }
+    var numValues = values.filter(function(v) { return !isNaN(parseFloat(v)) && isFinite(v); });
+    var strValues = values.filter(function(v) { return v !== null && v !== undefined; });
+
+    var typeLabel = '';
+    var detailLabel = '';
+    if (numValues.length > maxSample * 0.5) {
+      // Numeric column
+      var nums = numValues.map(Number);
+      nums.sort(function(a,b) { return a - b; });
+      var sum = nums.reduce(function(a,b) { return a + b; }, 0);
+      var avg = (sum / nums.length).toFixed(2);
+      var min = nums[0];
+      var max = nums[nums.length - 1];
+      typeLabel = '📐 ' + name;
+      detailLabel = '平均 ' + avg + ' | 范围 ' + min.toFixed(2) + ' ~ ' + max.toFixed(2);
+    } else if (strValues.length > 0) {
+      // Text column
+      var uniq = new Set(strValues.filter(function(v) { return v !== null; }));
+      typeLabel = '📝 ' + name;
+      detailLabel = uniq.size + ' 个唯一值' + (uniq.size <= 5 ? ' (' + Array.from(uniq).join(', ') + ')' : '');
+    } else {
+      continue;
+    }
+    html += '<div class="sql-x-stat-card"><div class="label">' + typeLabel + '</div><div class="sub">' + detailLabel + '</div></div>';
+  }
+
+  grid.innerHTML = html;
+}
+
+// ===================== CHART =====================
+function buildChart(result, chartType) {
+  if (result.numRows === 0 || result.numCols < 2) {
+    return;
+  }
+
+  // Auto-detect: use column 0 as labels, column 1 as values (prefer numeric)
+  var labelCol = 0;
+  var valueCol = 1;
+
+  // Try to find a numeric column
+  var sampleSize = Math.min(result.numRows, 200);
+  for (var c = 0; c < result.numCols; c++) {
+    var isNumeric = false;
+    var numCount = 0;
+    for (var r = 0; r < sampleSize; r++) {
+      var v = result.getChildAt(c).get(r);
+      if (v !== null && v !== undefined && !isNaN(parseFloat(v)) && isFinite(v)) {
+        numCount++;
+      }
+    }
+    if (numCount > sampleSize * 0.5) {
+      valueCol = c;
+      break;
+    }
+  }
+
+  // First non-numeric column as labels
+  if (valueCol === 0) {
+    labelCol = 1;
+  } else {
+    labelCol = 0;
+  }
+
+  var maxPoints = Math.min(result.numRows, 50);
+  var labels = [];
+  var values = [];
+  for (var r = 0; r < maxPoints; r++) {
+    var l = result.getChildAt(labelCol).get(r);
+    var v = result.getChildAt(valueCol).get(r);
+    if (l === null || l === undefined) l = '(空)';
+    if (v === null || v === undefined) v = 0;
+    if (isNaN(parseFloat(v))) v = 0;
+    labels.push(String(l));
+    values.push(parseFloat(v));
+  }
+
+  var ctx = document.getElementById('sqlxChart').getContext('2d');
+  if (sqlx.chart) {
+    sqlx.chart.destroy();
+  }
+
+  var isPieType = chartType === 'pie' || chartType === 'doughnut';
+  var config = {
+    type: chartType,
+    data: {
+      labels: labels,
+      datasets: [{
+        label: result.columnNames[valueCol],
+        data: values,
+        backgroundColor: isPieType ? [
+          '#6c5ce7', '#00cec9', '#fdcb6e', '#ff6b6b', '#a29bfe',
+          '#55efc4', '#81ecec', '#fab1a0', '#e17055', '#00b894',
+          '#0984e3', '#d63031', '#e17055', '#2d3436', '#636e72'
+        ] : 'rgba(108,92,231,0.7)',
+        borderColor: isPieType ? 'var(--bg)' : '#6c5ce7',
+        borderWidth: isPieType ? 2 : 2,
+        tension: 0.3,
+        fill: true,
+        backgroundColor: chartType === 'line' ? 'rgba(108,92,231,0.1)' : undefined
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      color: '#8b8fa8',
+      plugins: {
+        legend: {
+          labels: { color: '#8b8fa8', font: { size: 11 } }
+        }
+      },
+      scales: isPieType ? {} : {
+        x: {
+          ticks: { color: '#8b8fa8', maxRotation: 45, font: { size: 10 } },
+          grid: { color: 'rgba(42,45,68,0.5)' }
+        },
+        y: {
+          ticks: { color: '#8b8fa8', font: { size: 10 } },
+          grid: { color: 'rgba(42,45,68,0.5)' },
+          beginAtZero: true
+        }
+      }
+    }
+  };
+
+  sqlx.chart = new Chart(ctx, config);
+}
+
+// ===================== SMART SUMMARY =====================
+function buildSmartSummary(result, sql) {
+  var div = document.getElementById('sqlxSmartSummary');
+  if (result.numRows === 0) {
+    div.innerHTML = '<div style="text-align:center;color:var(--text2)">无数据可分析</div>';
+    return;
+  }
+
+  var rows = result.numRows;
+  var cols = result.numCols;
+  var sampleSize = Math.min(rows, 5000);
+
+  var html = '';
+
+  // Row overview
+  html += '<div class="insight"><span class="highlight">📊 概览</span> — 查询返回 <strong>' + rows.toLocaleString() + '</strong> 行 × <strong>' + cols + '</strong> 列';
+  if (rows <= 500) html += '，数据量小，可直接查看全部';
+  else if (rows <= 10000) html += '，可用 SUM/AVG 等聚合函数分析';
+  else html += '，建议用 GROUP BY + 聚合函数压缩数据';
+  html += '</div>';
+
+  // Column insights
+  var numericCols = [];
+  var textCols = [];
+  var dateCols = [];
+
+  for (var c = 0; c < cols; c++) {
+    var name = result.columnNames[c];
+    var numCount = 0;
+    var nullCount = 0;
+    for (var r = 0; r < sampleSize; r++) {
+      var v = result.getChildAt(c).get(r);
+      if (v === null || v === undefined) nullCount++;
+      else if (!isNaN(parseFloat(v)) && isFinite(v)) numCount++;
+    }
+    var pctNum = numCount / Math.min(sampleSize, rows);
+    var pctNull = nullCount / Math.min(sampleSize, rows);
+
+    if (pctNull > 0.5) {
+      // Skip high-null columns
+    } else if (pctNum > 0.5) {
+      numericCols.push({ name: name, pctNull: pctNull });
+    } else {
+      textCols.push({ name: name, pctNull: pctNull });
+    }
+  }
+
+  if (numericCols.length > 0) {
+    html += '<div class="insight"><span class="highlight">📐 数值列</span> — 找到 <strong>' + numericCols.length + '</strong> 个数值列：';
+    html += numericCols.map(function(c) { return '<code>' + c.name + '</code>'; }).join(', ');
+    var names = numericCols.map(function(c) { return c.name; });
+    html += '<br>👉 试试：<code>' + 'SUM(' + names[0] + ')</code>、<code>AVG(' + names[0] + ')</code>、<code>MAX(' + names[0] + ') - MIN(' + names[0] + ')</code>';
+    html += '</div>';
+  }
+
+  if (textCols.length > 0) {
+    html += '<div class="insight"><span class="highlight">📝 文本列</span> — 找到 <strong>' + textCols.length + '</strong> 个文本列：';
+    html += textCols.map(function(c) { return '<code>' + c.name + '</code>'; }).join(', ');
+    html += '<br>👉 试试：<code>GROUP BY ' + textCols[0].name + '</code> 查看分布';
+    if (numericCols.length > 0 && textCols.length > 0) {
+      html += ' 或 <code>' + textCols[0].name + ', AVG(' + numericCols[0].name + ')</code>';
+    }
+    html += '</div>';
+  }
+
+  // SQL tips
+  html += '<div class="insight"><span class="highlight">💡 SQL 技巧</span><br>';
+  html += '• <code>WHERE ' + result.columnNames[0] + ' IS NOT NULL</code> — 过滤空值<br>';
+  if (numericCols.length > 0) {
+    html += '• <code>ORDER BY ' + numericCols[0].name + ' DESC</code> — 按数值降序排列<br>';
+    html += '• <code>WHERE ' + numericCols[0].name + ' > (SELECT AVG(' + numericCols[0].name + ') FROM data)</code> — 高于平均值';
+  }
+  html += '</div>';
+
+  div.innerHTML = html;
+}
+
+// ===================== TABS =====================
+function switchTab(tab) {
+  document.querySelectorAll('.sql-x-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  document.querySelectorAll('.sql-x-tab-content').forEach(function(t) {
+    t.classList.toggle('active', t.id === 'sqlxTab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+  });
+  if (tab === 'chart' && sqlx.lastResult) {
+    buildChart(sqlx.lastResult, sqlx.currentChartType);
+  }
+}
+
+function switchChartType(type) {
+  sqlx.currentChartType = type;
+  document.querySelectorAll('#sqlxChartTypes button').forEach(function(b) {
+    b.classList.toggle('active', b.textContent.includes(type === 'doughnut' ? '环形' : type.charAt(0).toUpperCase() + type.slice(1)));
+  });
+  // Re-detect text trigger
+  var btns = document.querySelectorAll('#sqlxChartTypes button');
+  var types = ['bar', 'line', 'pie', 'doughnut', 'radar'];
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.toggle('active', types[i] === type);
+  }
+  if (sqlx.lastResult) {
+    buildChart(sqlx.lastResult, type);
+  }
+}
+
+// ===================== RESET =====================
+function resetApp() {
+  document.getElementById('sqlxFileInfo').classList.remove('show');
+  sqlx.hasData = false;
+  sqlx.columns = [];
+  sqlx.lastResult = null;
+  document.getElementById('sqlxSchema').innerHTML = '<span style="color:var(--text2)">上传文件后自动检测列信息...</span>';
+  document.getElementById('sqlxSchemaCount').textContent = '0 列';
+  document.getElementById('sqlxResultTable').innerHTML = '<div style="padding:40px;text-align:center;color:var(--text2)">点击「执行查询」查看结果</div>';
+  document.getElementById('sqlxResultCount').textContent = '0 行';
+  document.getElementById('sqlxStatsGrid').innerHTML = '<div style="padding:40px;text-align:center;color:var(--text2);grid-column:1/-1">点击「执行查询」查看统计数据</div>';
+  document.getElementById('sqlxSmartSummary').innerHTML = '<div style="text-align:center;color:var(--text2);padding:40px">🤖 运行查询后自动生成数据洞察摘要</div>';
+  fileInput.value = '';
+}
+
+// ===================== INIT =====================
+initDuckDB();
+</script>
