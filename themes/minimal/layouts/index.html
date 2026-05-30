@@ -38,8 +38,14 @@
         <p>{{ .Site.Params.description }}</p>
         <div class="hero-stats">
           <span>🧰 {{ len (where .Site.Pages "Type" "tools") }} 个工具</span>
-          <span>📂 {{ len (where .Site.Pages "Type" "tools" | first 1) }}{{ range $name, $_ := .Site.Taxonomies.categories }}{{ end }}{{ len .Site.Taxonomies.categories }} 个分类</span>
+          <span>📂 {{ len .Site.Taxonomies.categories }} 个分类</span>
           <span>⚡ 纯浏览器端处理</span>
+        </div>
+        <div class="hero-nav">
+          <a href="/reviews/" class="hero-nav-btn">📊 AI 工具评测</a>
+          <a href="/guides/" class="hero-nav-btn">📚 AI 应用指南</a>
+          <a href="/tools/" class="hero-nav-btn">🧰 全部工具</a>
+          <a href="/blog/" class="hero-nav-btn">📝 博客</a>
         </div>
       </section>
 

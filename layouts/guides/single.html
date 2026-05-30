@@ -1,0 +1,58 @@
+{{ define "main" }}
+<div class="container">
+  <article class="guide-post">
+    <header class="guide-header">
+      <div class="breadcrumb">
+        <a href="/">🏠 首页</a><span>›</span>
+        <a href="/guides/">📖 AI 应用指南</a><span>›</span>
+        {{ .Title }}
+      </div>
+      <div class="guide-meta">
+        <span class="guide-date">{{ .Date.Format "2006-01-02" }}</span>
+        <span class="guide-reading">{{ .ReadingTime }} 分钟阅读</span>
+      </div>
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<p class="guide-desc">{{ . }}</p>{{ end }}
+    </header>
+
+    <div class="guide-content">
+      {{ .Content }}
+    </div>
+
+    <footer class="guide-footer">
+      <div class="guide-tags">
+        {{ range .Params.tags }}
+        <span class="guide-tag">{{ . }}</span>
+        {{ end }}
+      </div>
+      <div class="guide-nav">
+        <a href="/guides/" class="guide-back-btn">← 返回指南列表</a>
+      </div>
+    </footer>
+  </article>
+</div>
+<style>
+  .guide-post { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+  .guide-header { margin-bottom: 32px; }
+  .guide-meta { color: var(--text-secondary, #888); font-size: 14px; margin: 8px 0; display: flex; gap: 16px; }
+  .guide-desc { color: var(--text-secondary, #aaa); font-size: 16px; line-height: 1.6; }
+  .guide-content { font-size: 16px; line-height: 1.8; color: var(--text, #ddd); }
+  .guide-content h2 { margin-top: 32px; font-size: 22px; color: var(--text, #eee); }
+  .guide-content h3 { margin-top: 24px; font-size: 18px; }
+  .guide-content p { margin: 16px 0; }
+  .guide-content a { color: var(--accent, #6c5ce7); text-decoration: underline; }
+  .guide-content ul, .guide-content ol { padding-left: 24px; margin: 12px 0; }
+  .guide-content li { margin: 6px 0; }
+  .guide-content code { background: var(--surface, #1a1a22); padding: 2px 8px; border-radius: 4px; font-size: 14px; }
+  .guide-content blockquote { border-left: 3px solid var(--accent, #6c5ce7); padding-left: 16px; margin: 16px 0; color: var(--text-secondary, #aaa); }
+  .guide-content table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  .guide-content th, .guide-content td { border: 1px solid var(--border, #333); padding: 8px 12px; text-align: left; }
+  .guide-content th { background: var(--surface, #1a1a22); font-weight: 600; }
+  .guide-footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border, #333); }
+  .guide-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .guide-tag { background: var(--surface, #1a1a22); padding: 4px 12px; border-radius: 12px; font-size: 13px; color: var(--text-secondary, #888); }
+  .guide-nav { display: flex; justify-content: space-between; align-items: center; }
+  .guide-back-btn { color: var(--text-secondary, #888); text-decoration: none; font-size: 14px; }
+  .guide-back-btn:hover { color: var(--accent, #6c5ce7); }
+</style>
+{{ end }}

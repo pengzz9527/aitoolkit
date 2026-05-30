@@ -1,0 +1,59 @@
+{{ define "main" }}
+<div class="container">
+  <section class="guide-list">
+    <header class="guide-list-header">
+      <h1>📖 AI 应用指南</h1>
+      <p>普通人也能上手的 AI 教程，ChatGPT 写作、Claude 编程、Midjourney 绘图、AI 副业赚钱等实战指南</p>
+    </header>
+
+    <div class="guide-grid">
+      {{ range .Pages.ByDate.Reverse }}
+      <a href="{{ .RelPermalink }}" class="guide-card">
+        <div class="guide-card-body">
+          <div class="guide-card-meta">
+            <span>{{ .Date.Format "2006-01-02" }}</span>
+            <span>{{ .ReadingTime }} 分钟</span>
+          </div>
+          <h2>{{ .Title }}</h2>
+          <p>{{ .Description | truncate 150 }}</p>
+          <div class="guide-card-footer">
+            <span class="guide-read-more">阅读全文 →</span>
+          </div>
+        </div>
+      </a>
+      {{ else }}
+      <div class="guide-empty">
+        <p>📝 暂无文章，敬请期待</p>
+      </div>
+      {{ end }}
+    </div>
+  </section>
+</div>
+<style>
+  .guide-list { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+  .guide-list-header { margin-bottom: 32px; text-align: center; }
+  .guide-list-header h1 { font-size: 28px; margin-bottom: 8px; }
+  .guide-list-header p { color: var(--text-secondary, #888); font-size: 15px; }
+  .guide-grid { display: flex; flex-direction: column; gap: 16px; }
+  .guide-card {
+    display: block;
+    padding: 24px;
+    border-radius: 12px;
+    background: var(--surface, #1a1a22);
+    border: 1px solid var(--border, #333);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .guide-card:hover {
+    border-color: var(--accent, #6c5ce7);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108,92,231,0.2);
+  }
+  .guide-card-meta { display: flex; gap: 16px; font-size: 13px; color: var(--text-secondary, #888); margin-bottom: 8px; }
+  .guide-card h2 { font-size: 18px; color: var(--text, #eee); margin-bottom: 8px; }
+  .guide-card p { font-size: 14px; color: var(--text-secondary, #aaa); line-height: 1.5; }
+  .guide-card-footer { margin-top: 12px; }
+  .guide-read-more { font-size: 13px; color: var(--accent, #6c5ce7); }
+  .guide-empty { text-align: center; padding: 60px; color: var(--text-secondary, #888); }
+</style>
+{{ end }}
