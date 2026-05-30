@@ -15,6 +15,7 @@ enableRobotsTXT = true
   adsense_slot_inarticle = "1234567890"
   adsense_slot_sticky = "1234567891"
   umami_website_id = "26428fb6-e9d2-4a11-87cf-ce3fa0076548"
+  site_verification = "MoHzaGDDRtgYF2cNRFWwD-88q4Mrc42ySvDRagbGfG8"
 
   # Social
   youtube_url = "https://www.youtube.com/@duckdblab"
