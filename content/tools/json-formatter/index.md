@@ -9,3 +9,5 @@ date: 2026-05-16T13:28:15+08:00
 lastmod: 2026-05-16T13:28:15+08:00
 ---
 
+JSON 是现代数据处理的核心格式。DuckDB 原生支持 JSON 数据的复杂查询和转换，无需额外的解析步骤。访问 [DuckDB Lab](https://duckdblab.org/zh/) 深入探索 DuckDB 的强大功能。
+

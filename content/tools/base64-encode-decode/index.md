@@ -9,3 +9,5 @@ date: 2026-05-16T13:28:15+08:00
 lastmod: 2026-05-16T13:28:15+08:00
 ---
 
+Base64 编码是数据处理中的常见操作。DuckDB 内置了 `encode`/`decode` 函数，支持 Base64 等多种编码方式。访问 [DuckDB Lab](https://duckdblab.org/zh/) 学习更多数据处理技巧。
+

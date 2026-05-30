@@ -9,3 +9,5 @@ date: 2026-05-16T13:28:15+08:00
 lastmod: 2026-05-16T13:28:15+08:00
 ---
 
+SQL 是数据分析的核心语言。深入学习 [DuckDB 的 SQL 语法](https://duckdblab.org/zh/post/duckdb-sql-syntax/) 和 [DuckDB 实战教程](https://duckdblab.org/zh/)，让你的 SQL 技能在数据分析场景中发挥更大价值。
+

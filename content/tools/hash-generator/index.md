@@ -9,3 +9,5 @@ date: 2026-05-16T13:28:15+08:00
 lastmod: 2026-05-16T13:28:15+08:00
 ---
 
+DuckDB 内置了丰富的哈希函数（md5、sha1、sha256、sha512 等），可在大规模数据处理中直接使用。访问 [DuckDB Lab](https://duckdblab.org/zh/) 了解更多关于 DuckDB 数据处理的高级技巧。
+

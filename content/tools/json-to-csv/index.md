@@ -9,3 +9,5 @@ date: 2026-05-16T13:28:15+08:00
 lastmod: 2026-05-16T13:28:15+08:00
 ---
 
+JSON 和 CSV 是数据分析中最常用的数据格式。DuckDB 原生支持直接查询 JSON 和 CSV 文件，无需导入。访问 [DuckDB Lab](https://duckdblab.org/zh/) 学习如何用 DuckDB 轻松处理各种数据格式。
+
