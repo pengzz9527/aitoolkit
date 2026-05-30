@@ -639,6 +639,30 @@ body { padding-bottom: 100px; } /* prevent content being hidden behind sticky ad
   transform: translateY(-1px);
 }
 
+/* Tool page navigation links */
+.tool-nav-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.tool-nav-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  background: #1e293b;
+  color: #94a3b8;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.tool-nav-links a:hover {
+  background: #3b82f6;
+  color: #fff;
+}
+
 /* ===== Mobile ===== */
 @media (max-width: 640px) {
   .container { padding: 0 16px; }

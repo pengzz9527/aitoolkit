@@ -6,6 +6,11 @@
       <div class="breadcrumb">
         <a href="/">🏠 首页</a><span>›</span>{{ .Title }}
       </div>
+      <div class="tool-nav-links">
+        <a href="/reviews/">📊 AI 工具评测</a>
+        <a href="/guides/">📚 AI 应用指南</a>
+        <a href="/blog/">📝 博客</a>
+      </div>
       <div class="tool-icon-title">
         <span class="icon-badge">{{ with .Params.icon }}{{ . }}{{ else }}🔧{{ end }}</span>
         <h1>{{ .Title }}</h1>
