@@ -95,7 +95,7 @@ ChatGPT 会给你公式（如 `=SUMIFS(B:B,A:A,"<>",B:B,">100")`），还附上�
 
 ### CSV 文件分析
 
-ChatGPT Plus/Pro 用户可以直接上传 CSV 文件，然后问它"这个月哪个产品的退货率最高"或"帮我算出去年第四季度的利润率"，比 Excel 透视表快 10 倍。
+ChatGPT Plus/Pro 用户可以直接上传 CSV 文件，然后问它"这个月哪个产品的退货率最高"或"帮我算出去年第四季度的利润率"，比 Excel 透视表快 10 倍。你也可以直接用 [198007.xyz 的 CSV 在线分析工具](/tools/csv-sql-analyzer/)，无需上传文件到 ChatGPT，在浏览器里直接完成数据探索和 SQL 查询。
 
 ---
 

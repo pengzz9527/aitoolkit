@@ -43,6 +43,7 @@ AI 写作是门槛最低的 AI 副业。你只需要会用 ChatGPT、Claude 或 
 - 写作：ChatGPT、Claude、DeepSeek
 - 润色：Grammarly、写作猫
 - 排版：135编辑器、秀米
+- 在线工具：需要批量处理文本、格式化内容时，可以用 [198007.xyz 的文本处理工具](/tools/text-replacer/) 免费完成，辅助写作工作流。
 
 ---
 
