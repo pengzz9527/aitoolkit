@@ -33,7 +33,7 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "destination": "https://198007.xyz/:splat",
+      "destination": "/:splat",
       "permanent": true,
       "has": [
         {
