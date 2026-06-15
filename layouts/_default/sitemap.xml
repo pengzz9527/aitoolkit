@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   {{- /* Homepage */ -}}
   <url>
-    <loc>{{ .Site.BaseURL }}/</loc>
+    <loc>{{ .Site.BaseURL }}</loc>
     <lastmod>{{ now.Format "2006-01-02" }}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
