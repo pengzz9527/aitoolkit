@@ -1,0 +1,66 @@
+{{ define "main" }}
+<div class="container">
+  <article class="blog-post">
+    <header class="blog-header">
+      <div class="breadcrumb">
+        <a href="/">🏠 首页</a><span>›</span>
+        <a href="/blog/">📝 博客</a><span>›</span>
+        {{ .Title }}
+      </div>
+      <div class="tool-nav-links">
+        <a href="/reviews/">📊 AI 工具评测</a>
+        <a href="/guides/">📚 AI 应用指南</a>
+        <a href="/tools/">🧰 全部工具</a>
+      </div>
+      <div class="blog-meta">
+        <span class="blog-date">{{ .Date.Format "2006-01-02" }}</span>
+        <span class="blog-reading">{{ .ReadingTime }} 分钟阅读</span>
+      </div>
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<p class="blog-desc">{{ . }}</p>{{ end }}
+    </header>
+
+    <div class="blog-content">
+      {{ .Content }}
+    </div>
+
+    <footer class="blog-footer">
+      <div class="blog-tags">
+        {{ range .Params.tags }}
+        <span class="blog-tag">{{ . }}</span>
+        {{ end }}
+      </div>
+      <div class="blog-nav">
+        <a href="/blog/" class="blog-back-btn">← 返回博客列表</a>
+        <div class="blog-share">
+          <a href="https://twitter.com/intent/tweet?text={{ .Title }}&url={{ .Permalink }}" target="_blank" rel="noopener">🐦 Twitter</a>
+          <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ .Permalink }}&title={{ .Title }}" target="_blank" rel="noopener">💼 LinkedIn</a>
+        </div>
+      </div>
+    </footer>
+  </article>
+</div>
+<style>
+  .blog-post { max-width: 780px; margin: 0 auto; padding: 32px 20px; }
+  .blog-header { margin-bottom: 32px; }
+  .blog-meta { color: var(--text-secondary, #888); font-size: 14px; margin: 8px 0; display: flex; gap: 16px; }
+  .blog-desc { color: var(--text-secondary, #aaa); font-size: 16px; line-height: 1.6; }
+  .blog-content { font-size: 16px; line-height: 1.8; color: var(--text, #ddd); }
+  .blog-content h2 { margin-top: 32px; font-size: 22px; color: var(--text, #eee); }
+  .blog-content h3 { margin-top: 24px; font-size: 18px; }
+  .blog-content p { margin: 16px 0; }
+  .blog-content a { color: var(--accent, #6c5ce7); text-decoration: underline; }
+  .blog-content ul, .blog-content ol { padding-left: 24px; margin: 12px 0; }
+  .blog-content li { margin: 6px 0; }
+  .blog-content code { background: var(--surface, #1a1a22); padding: 2px 8px; border-radius: 4px; font-size: 14px; }
+  .blog-footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border, #333); }
+  .blog-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .blog-tag { background: var(--surface, #1a1a22); padding: 4px 12px; border-radius: 12px; font-size: 13px; color: var(--text-secondary, #888); }
+  .blog-nav { display: flex; justify-content: space-between; align-items: center; }
+  .blog-back-btn { color: var(--text-secondary, #888); text-decoration: none; font-size: 14px; }
+  .blog-back-btn:hover { color: var(--accent, #6c5ce7); }
+  .blog-share { display: flex; gap: 12px; }
+  .blog-share a { color: var(--text-secondary, #888); text-decoration: none; font-size: 14px; }
+  .blog-share a:hover { color: var(--accent, #6c5ce7); }
+</style>
+{{ end }}
