@@ -66,3 +66,7 @@ FROM json_table;
 
 DuckDB 的 JSON 处理能力让复杂数据查询变得简单高效，性能远超传统 Python 方案。
 
+---
+
+想了解更多 AI 工具？浏览 [198007.xyz/tools](/tools/) 获取精选 AI 工具合集，查看 DuckDB 相关工具或使用教程。
+

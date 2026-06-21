@@ -174,3 +174,7 @@ Codebase-Memory-MCP 是目前市面上**最快、最轻量、功能最全面的�
 ---
 
 *工具链接：[GitHub](https://github.com/DeusData/codebase-memory-mcp) | [官网](https://deusdata.github.io/codebase-memory-mcp/) | [论文](https://arxiv.org/abs/2603.27277)*
+
+---
+
+想了解更多 AI 工具？浏览 [198007.xyz/tools](/tools/) 获取精选 AI 工具合集，或查看其他 [AI 编程辅助工具评测](/reviews/)。

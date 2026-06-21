@@ -70,3 +70,7 @@ df = con.execute("SELECT * FROM 'large_file.csv'").fetchdf()
 
 DuckDB Python 客户端让数据分析速度提升 10 倍以上，同时保持与 Pandas 生态的无缝兼容。
 
+---
+
+想了解更多 AI 工具？浏览 [198007.xyz/tools](/tools/) 获取精选 AI 工具合集，查看 DuckDB 相关工具或使用教程。
+

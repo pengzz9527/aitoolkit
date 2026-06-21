@@ -5,8 +5,8 @@ theme = 'minimal'
 enableRobotsTXT = true
 
 [params]
-  description = "免费在线工具集合 - JSON格式化、文本处理、编码解码等实用在线工具，无需下载打开即用"
-  keywords = "在线工具, JSON格式化, 文本计数器, Base64编码, URL编码, 免费工具"
+  description = "AI 工具导航站 - 精选 86+ 款 AI 工具评测、分类导航与使用指南，覆盖编程、写作、设计、语音合成等全场景"
+  keywords = "AI工具, 人工智能, 工具评测, 编程助手, 语音合成, 工具导航, 在线工具"
   author = "AI Toolkit"
 
   # Google AdSense
