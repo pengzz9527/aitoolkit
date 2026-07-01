@@ -1,6 +1,6 @@
 {{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  xmlns:xhtml="http://www.w3.org/xhtml">
   {{- /* Homepage */ -}}
   <url>
     <loc>{{ .Site.BaseURL }}</loc>
@@ -8,19 +8,44 @@
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-  {{- range .Data.Pages -}}
-  {{- if not (or (eq .Kind "taxonomy") (eq .Kind "term")) -}}
+  {{- /* Section pages - exclude drafts */ -}}
+  {{- range .Site.Sections -}}
+  {{- if and (ne .RelPermalink "/") (not (hasPrefix .RelPermalink "/wechat_drafts")) -}}
+  <url>
+    <loc>{{ .Permalink }}</loc>
+    {{- if not .Lastmod.IsZero }}
+    <lastmod>{{ .Lastmod.Format "2006-01-02" }}</lastmod>{{- end -}}
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  {{- end -}}
+  {{- end -}}
+  {{- /* Regular pages - exclude wechat drafts and daily wechat copies */ -}}
+  {{- range .Site.RegularPages -}}
+  {{- if not (or (eq .Kind "taxonomy") (eq .Kind "term") (eq .Kind "section")) -}}
+  {{- $skip := false -}}
+  {{- if hasPrefix .RelPermalink "/daily/wechat-" -}}
+    {{- $skip = true -}}
+  {{- end -}}
+  {{- if hasPrefix .File.Dir "wechat_drafts" -}}
+    {{- $skip = true -}}
+  {{- end -}}
+  {{- if not $skip -}}
   <url>
     <loc>{{ .Permalink }}</loc>{{- if not .Lastmod.IsZero }}
     <lastmod>{{ .Lastmod.Format "2006-01-02" }}</lastmod>{{- end -}}
     {{- if eq .Type "tools" -}}
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
+    {{- else if eq .Type "daily" -}}
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
     {{- else -}}
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
     {{- end -}}
   </url>
+  {{- end -}}
   {{- end -}}
   {{- end -}}
 </urlset>
