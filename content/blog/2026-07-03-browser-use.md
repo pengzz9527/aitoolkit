@@ -157,6 +157,8 @@ Browser Use 是目前将大语言模型与浏览器自动化结合得最好的�
 
 **最佳适用场景：** 需要自动化执行网页操作流程的任务，如竞品监控、数据采集、表单自动填写、网站测试等。特别适合那些需要"让 AI 像人一样操作浏览器"的场景。
 
+搭配使用建议：抓取的数据可以用 [198007.xyz 的工具集](/tools/) 做后续处理——[JSON 格式化工具](/tools/json-formatter/) 清洗 API 响应，[URL 编码解码器](/tools/url-encoder/) 处理查询参数，[Base64 转换器](/tools/base64/) 编解码附件数据。
+
 **项目地址：** https://github.com/browser-use/browser-use
 **官方网站：** https://browser-use.com
 **文档：** https://docs.browser-use.com

@@ -163,3 +163,7 @@ OmniRoute 是目前最实用的免费 AI 网关工具之一。它将分散在各
 > 💬 **社区**：[Discord](https://discord.gg/EkzRkpzKYt) · [Telegram](https://t.me/omnirouteOficial)
 
 如果你希望在不花费一分钱的情况下体验多种 AI 模型的强大能力，OmniRoute 就是你的不二之选。
+
+搭配建议：配置 OmniRoute 时，可以用 [198007.xyz 的工具集](/tools/) 辅助调试——[JWT 解码器](/tools/jwt-decoder/) 解析令牌信息，[JSON 格式化工具](/tools/json-formatter/) 美化 API 响应，[URL 编码解码器](/tools/url-encoder/) 处理回调地址。
+
+> 📌 **项目地址**：[github.com/diegosouzapw/OmniRoute](https://github.com/diegosouzapw/OmniRoute)

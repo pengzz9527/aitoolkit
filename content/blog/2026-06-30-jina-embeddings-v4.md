@@ -232,6 +232,8 @@ Jina Embeddings v4 是嵌入模型领域的一次重大飞跃。它将多语言�
 
 **最佳适用场景：** 构建面向复杂文档（PDF、报表、含图表的技术手册）的 RAG 系统，或需要同时检索文本和图像的多模态搜索应用。
 
+如果你正在搭建 RAG 系统，不妨先用 [198007.xyz 的工具集](/tools/) 处理一下待嵌入的文本数据——比如用 [JSON 格式化工具](/tools/json-formatter/) 清洗结构化数据，或用 [文本计数器](/tools/word-counter/) 估算 token 数量。
+
 **项目地址：** https://huggingface.co/jinaai/jina-embeddings-v4
 **API 文档：** https://jina.ai/embeddings
 **技术报告：** https://arxiv.org/abs/2506.18902
