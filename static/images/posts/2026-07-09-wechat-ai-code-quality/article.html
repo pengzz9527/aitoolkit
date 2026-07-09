@@ -1,0 +1,75 @@
+每周花1万美元"喂狗"，这家公司到底经历了什么
+
+<p style="text-align:center;color:#888;font-size:12px;margin-bottom:24px;">本文为AI观察 · 2026年7月9日</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">上个月，硅谷一家创业公司的CTO在Hacker News上发了条帖子，没人想到会炸出这么大的水花。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">他说自己每周要花1万美元，专门雇人去清理AI写的代码。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">1万美元。一周。就为了把AI写出来的东西拆开、重写、再拆开。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">我看了这条帖子，第一反应是：这得多烂的代码啊。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">后来我仔细想了想，发现这事儿没那么好笑。因为那个CTO说的不是bug，不是性能问题，是整整一堆"看起来完全没问题"的代码。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">能编译。能跑。甚至测试都能过。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">但你仔细看逻辑，就会发现AI写出来的东西，就像一个人蒙着眼睛画的地图——方向全对，路名全错。</p>
+
+<div style="border-left:4px solid #07C160;background:#f7f9f8;padding:16px 20px;margin:24px 0;border-radius:4px;"><p style="margin:0;font-size:15px;line-height:1.8;color:#333;">最离谱的一个例子，是一个支付接口。AI写出来的代码能成功处理付款，但它把用户的信用卡号存到了一个公开能访问的日志文件里。不是加密存储。不是脱敏。就是明文。一行一行，整整齐齐。</p></div>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">那个CTO说，他们团队花了三个月时间才意识到这个问题。因为代码看着太干净了，干净得像教科书。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">这就是我现在最担心的事儿。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">AI写代码越来越快了。快到我们来不及检查。快到我们开始相信那些看起来完美的东西。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">我认识一个做独立开发的朋友，他用AI写了一个小程序，上线后第一个月就收到了500个注册用户。他高兴坏了，觉得自己终于找到了变现的路子。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">三个月后，他才发现AI写的那个"用户数据同步"功能，每次同步都会把上一个用户的数据覆盖掉。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">500个用户的数据，全乱了。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">他跟我说："我当时以为我在用AI提高效率，其实我是在用AI制造混乱。"</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">这不是个案。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">越来越多的公司开始意识到这个问题。有人算了一笔账：用AI写代码，前期确实省了时间。但后期修bug、重构、解释那些AI写的天书一样的注释，花的时间是原来的三倍。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">三倍的返工时间。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">更可怕的是，这些返工的人，很多时候并不知道自己在收拾什么烂摊子。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">我有个做后端的朋友，接了一个项目，接手后发现代码库里有超过40%的行是AI生成的。他说他每天的工作不是写新功能，是给AI写的代码"擦屁股"。</p>
+
+<div style="border-left:4px solid #07C160;background:#f7f9f8;padding:16px 20px;margin:24px 0;border-radius:4px;"><p style="margin:0;font-size:15px;line-height:1.8;color:#333;">"最折磨人的是，"他说，"这些代码不是错的，是'对的但没用'。就像你让一个学霸帮你做数学题，他全做对了，但用的全是你不需要的步骤，最后答案虽然对，但你根本没法拿去交差。"</p></div>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">我开始理解那个CTO为什么愿意每周花1万美元了。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">因为他发现了一个更贵的真相：不改，代价更大。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">你想啊，如果你的APP里有一段AI写的代码，它处理用户数据的方式有问题，但这个漏洞半年后才被发现。那时候用户数据早就泄露了。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">一个数据泄露的赔偿，可不止每周1万美元。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">所以我现在写东西有个习惯。不管用什么工具生成的，我都会自己读一遍。不是怕它出错，是怕它"看起来没错"。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">因为看起来没错的东西，才是最危险的。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">AI写代码这件事，就像你雇了一个很热情的实习生。他什么活都抢着干，干得还挺快。但他不懂你的业务逻辑，不懂你的用户是谁，不懂你为什么要把某个按钮放在左边而不是右边。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">你让他干了三个月的活，然后发现他连你的用户名都拼错了。</p>
+
+<div style="border-left:4px solid #07C160;background:#f7f9f8;padding:16px 20px;margin:24px 0;border-radius:4px;"><p style="margin:0;font-size:15px;line-height:1.8;color:#333;">"我不是在花钱清理AI的代码。我是在花钱买安心。"</p></div>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">安心。这个词用得真好。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">因为我们终于明白了：AI不是不会犯错。AI是会犯错，而且犯得非常漂亮。漂亮到你第一眼看不出来。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">这件事让我想到一个更深层的问题。</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">当AI变得越来越擅长"看起来正确"的时候，我们该怎么判断什么是对的？</p>
+
+<p style="margin:0 0 24px 0;font-size:15px;line-height:1.8;color:#333;">我还没有答案。但我每天都在想这个问题。</p>
+
+<p style="margin-top:30px;padding-top:20px;border-top:1px solid #eee;font-size:13px;color:#999;">你觉得AI写代码这件事，对你有什么影响？你平时会检查AI生成的内容吗？来评论区聊聊。</p>
