@@ -15,7 +15,7 @@ categories:
 
 ## 工具简介
 
-**Superpowers** 是一款为 AI 编程助手设计的技能框架（Skills Framework）和软件开发方法论，由 OpenBuilder（obra）团队开发。该项目在 GitHub 上已获得 **251,952 ⭐**，是目前最热门的 AI 编程增强工具之一。最新版本支持 Claude Code、Cursor、Codex CLI、GitHub Copilot CLI、Antigravity、Factory Droid、Kimi Code、OpenCode、Pi 等主流 AI 编程工具。
+**Superpowers** 是一款为 AI 编程助手设计的技能框架（Skills Framework）和软件开发方法论，由 OpenBuilder（obra）团队开发。该项目在 GitHub 上已获得 **251,952 ⭐**，是目前最热门的 AI 编程增强工具之一。最新版本支持 Claude Code、Cursor、Codex CLI、GitHub Copilot CLI、Antigravity、Factory Droid、Kimi Code、OpenCode、Pi 等主流 AI 编程工具。使用 Superpowers 生成的结构化需求文档，可以通过本站的 [Markdown 预览工具](/tools/markdown-preview/) 快速确认格式是否正确。
 
 一句话总结：**Superpowers 是给 AI 编程助手的"职业培训"——让它不再盲目写代码，而是像专业工程师一样思考、规划、执行。**
 

@@ -16,7 +16,7 @@ description: 'OfficeCLI 是全球首款专为 AI 代理设计的 Office 套件�
 
 ### 1. 三大 Office 格式全覆盖
 
-OfficeCLI 支持 `.docx`、`.xlsx`、`.pptx` 三种格式的完整生命周期管理——创建、读取和修改。无论是学术论文、财务报表还是商业演示文稿，都能通过简单的命令行操作完成。
+OfficeCLI 支持 `.docx`、`.xlsx`、`.pptx` 三种格式的完整生命周期管理——创建、读取和修改。无论是学术论文、财务报表还是商业演示文稿，都能通过简单的命令行操作完成。对于需要批量处理 Office 文件中的结构化数据的场景，本站的 [CSV-SQL 分析器](/tools/csv-sql-analyzer/) 可以配合 Excel 导出功能，用 SQL 快速查询和处理数据。
 
 ### 2. 内置 HTML 渲染引擎
 

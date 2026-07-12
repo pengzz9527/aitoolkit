@@ -12,7 +12,7 @@ description: 'Page Agent 是阿里巴巴开源的纯前端 GUI 智能体，无�
 
 在 AI Agent 蓬勃发展的当下，大多数网页自动化工具（如 Playwright、Selenium、browser-use）都依赖后端服务、无头浏览器或浏览器插件，部署复杂且资源开销大。**Page Agent** 另辟蹊径——它将整个 Agent 运行在浏览器页面内部，纯 JavaScript 实现，无需任何额外基础设施。
 
-Page Agent 由阿里巴巴团队开源，于 2025 年 9 月发布，短短时间内就在 GitHub 上获得了 **23,284+ Star** 和 2,015+ Fork，成为目前最轻量的前端 GUI Agent 方案之一。
+Page Agent 由阿里巴巴团队开源，于 2025 年 9 月发布，短短时间内就在 GitHub 上获得了 **23,284+ Star** 和 2,015+ Fork，成为目前最轻量的前端 GUI Agent 方案之一。如果你需要处理 Page Agent 输出的结构化数据（如 JSON 格式的 DOM 信息），本站的 [JSON 格式化工具](/tools/json-formatter/) 可以帮你快速查看和调试。
 
 ## 核心功能
 
