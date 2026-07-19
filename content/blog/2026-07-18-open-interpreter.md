@@ -15,7 +15,7 @@ categories:
 
 ## 工具简介
 
-**Open Interpreter** 是一款由 OpenInterpreter Inc. 开发的开源编码智能体（Coding Agent），目前已在 GitHub 上斩获 **66,480 ⭐**（约 8,500 Forks），稳居 Trending 榜单前列。它基于 Rust 重写，采用 Apache-2.0 许可证，核心定位是：**让任何人都能用自然语言在终端中完成编程任务，且支持低成本甚至免费的 AI 模型。**
+**Open Interpreter** 是一款由 OpenInterpreter Inc. 开发的开源编码智能体（Coding Agent），目前已在 GitHub 上斩获 **66,480 ⭐**（约 8,500 Forks），稳居 Trending 榜单前列。它基于 Rust 重写，采用 Apache-2.0 许可证，核心定位是：**让任何人都能用自然语言在终端中完成编程任务，且支持低成本甚至免费的 AI 模型。** 如果你的项目涉及大量结构化数据处理，配合本站的 [CSV/SQL 在线分析器](/tools/csv-sql-analyzer/) 可以在浏览器中直接验证数据逻辑，与 Open Interpreter 的代码生成形成互补。
 
 一句话总结：**Open Interpreter 是一个终端中的 AI 编程助手——你只需告诉它"帮我写一个 Python 脚本抓取网页数据"，它就会自动编写代码、执行并返回结果，全程无需手动切换编辑器。**
 

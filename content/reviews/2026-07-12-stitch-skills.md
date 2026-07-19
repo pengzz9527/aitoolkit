@@ -16,7 +16,7 @@ categories:
 
 ## 工具简介
 
-**Google Stitch Skills**（仓库名 `google-labs-code/stitch-skills`）是由 Google Labs 团队开发的开源 Agent Skills 框架，专为 AI 编程助手设计。它将 Google 自家的 [Stitch](https://stitch.withgoogle.com) 设计平台的核心工作流封装为标准化的可组合技能（Skills），使 Claude Code、Cursor、Codex CLI、Antigravity、Gemini CLI 等 AI 编程助手能够直接调用专业级的 UI/UX 设计能力。该项目遵循 [Agent Skills 开放标准](https://agentskills.io)，已于 2026 年 1 月开源，截至目前获得 **7,100+ ⭐**，950+ Fork。
+**Google Stitch Skills**（仓库名 `google-labs-code/stitch-skills`）是由 Google Labs 团队开发的开源 Agent Skills 框架，专为 AI 编程助手设计。它将 Google 自家的 [Stitch](https://stitch.withgoogle.com) 设计平台的核心工作流封装为标准化的可组合技能（Skills），使 Claude Code、Cursor、Codex CLI、Antigravity、Gemini CLI 等 AI 编程助手能够直接调用专业级的 UI/UX 设计能力。该项目遵循 [Agent Skills 开放标准](https://agentskills.io)，已于 2026 年 1 月开源，截至目前获得 **7,100+ ⭐**，950+ Fork。在调试和导出设计数据时，本站的 [JSON 格式化工具](/tools/json-formatter/) 可以帮助你快速查看和格式化 Stitch 生成的结构化数据。
 
 一句话总结：**Stitch Skills 是给 AI 编程助手的"设计学院"——让它不仅能写代码，还能理解设计规范、生成界面原型、管理设计系统。**
 
