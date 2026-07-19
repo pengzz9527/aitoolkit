@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>字体里藏了秘密信息，AI看了全被骗</title>
+</head>
+<body style="margin:0;padding:0;background:#fff;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue','PingFang SC','Microsoft YaHei',sans-serif;">
+
+<div style="max-width:677px;margin:0 auto;padding:20px 16px;color:#333;font-size:16px;line-height:1.9;">
+
+<p style="margin:0 0 24px 0;font-size:18px;font-weight:600;color:#1a1a1a;line-height:1.6;">
+有人做了一种字体，人看着是一句话，AI看着是另一句。
+</p>
+
+<p style="margin:0 0 20px 0;">
+这个叫 Decoy Font 的东西，在 Hacker News 上拿了五百多个赞。不是因为它多实用——很多人觉得它没啥实际用途——而是因为它够酷，而且让人忍不住想：这玩意儿能不能用来对付 AI？
+</p>
+
+<p style="margin:0 0 20px 0;">
+原理很简单。想象一下你看到一段文字，读起来像是"SORRY ROBOT"。但你眯起眼睛、把屏幕拉近一点，会发现里面还藏着另一行字："HAPPY HUMAN"。
+</p>
+
+<p style="margin:0 0 20px 0;">
+对，你没看错。同一份文字，人类看到的是两句话，AI只看到一句。
+</p>
+
+<p style="margin:0 0 20px 0;">
+这是怎么做到的？设计者用了一种叫做"分层叠加"的技巧。外层文字用细线勾勒出来，内层文字填充在笔画之间。人眼能同时处理这两层信息，但目前的 AI 图像识别模型，一次只能抓住最清晰的那一层。
+</p>
+
+<p style="margin:0 0 20px 0;">
+测试结果显示，当你让 GPT、Claude 或 Gemini 描述图片里的文字时，它们几乎都只读出外层那层。只有你在提示词里加一句"注意看看有没有隐藏文字"，部分模型才会勉强发现内层的存在——而且经常读错。
+</p>
+
+<p style="margin:0 0 20px 0;">
+评论区有人说，这根本不是什么新技术。一位做过 PhD 的开发者提到，几年前他用 Mathematica 写过类似的程序，把两张图叠在一起，一张做高通滤波保留细节，一张做低通滤波保留轮廓，叠加之后就能同时呈现两幅画面。用在文字上效果一样。
+</p>
+
+<p style="margin:0 0 20px 0;">
+但问题是，这玩意儿到底有什么用？
+</p>
+
+<p style="margin:0 0 20px 0;">
+有人觉得它可以当作一种"防 AI 阅读"的原始手段。你在社交媒体发个帖子，配上一张 Decoy Font 的图片，AI 爬虫抓不到你真正的意思。相当于给内容上了一道很薄的锁。
+</p>
+
+<p style="margin:0 0 20px 0;">
+也有人泼冷水。一位安全研究者指出，这更像是一个针对视力不好的人的防火墙——因为模糊掉之后，AI 读到的反而是更简单、更粗糙的那层文字。反过来想，如果你想让 AI 读到的是表面那层，而人类看到更深层的意思，那确实有效。但如果你反过来用，想让 AI 被误导，效果就有限了。
+</p>
+
+<p style="margin:0 0 20px 0;">
+毕竟，现在的多模态模型越来越强。GPT 5.6 Sol 在高精度模式下已经能部分还原隐藏文字。这个猫鼠游戏不会停。
+</p>
+
+<p style="margin:0 0 20px 0;">
+不过话说回来，就算它不能真正"骗过" AI，这件事本身还是值得聊聊。因为它揭示了一个我们可能还没完全意识到的问题：当 AI 看世界的方式和人类不一样时，会出现什么样的盲区？
+</p>
+
+<p style="margin:0 0 20px 0;">
+我们习惯认为，AI 看到的和我们看到的是一个东西。只是 AI 看得更快、更准。但这个字体告诉我们，AI 看到的甚至可能是完全不同的东西。
+</p>
+
+<p style="margin:0 0 20px 0;">
+这不是科幻。这是正在发生的事。
+</p>
+
+<p style="margin:0 0 20px 0;color:#999;font-size:13px;text-align:center;padding-top:30px;border-top:1px solid #eee;">
+— 本文基于 Hacker News 社区讨论及 Decoy Font 项目页面整理 —
+</p>
+
+</div>
+
+</body>
+</html>
