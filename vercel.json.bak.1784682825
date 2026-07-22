@@ -1,0 +1,47 @@
+{
+  "buildCommand": "hugo --gc --minify --buildFuture --ignoreCache && echo \"build_$(date +%s)\" > public/_vercel_build_id.txt",
+  "outputDirectory": "public",
+  "framework": "hugo",
+  "trailingSlash": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Pragma",
+          "value": "no-cache"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "destination": "/:splat",
+      "permanent": true,
+      "has": [
+        {
+          "type": "host",
+          "value": "www.198007.xyz"
+        }
+      ]
+    }
+  ],
+  "_buildTimestamp": "2026-06-15T12:10:00Z"
+}
