@@ -14,7 +14,12 @@ categories:
   - AI工具评测
 ---
 
-## 工具简介
+想了解更多 AI 工具？浏览 [198007.xyz/tools](/tools/) 获取精选 AI 工具合集，或查看其他 [AI 工具评测](/reviews/)。
+
+## 相关评测
+
+- [**Palmier Pro 评测**](/reviews/2026-07-26-palmier-pro/) — AI 视频编辑器，支持 MCP Agent
+- [**Open Deep Research 评测**](/reviews/2026-07-22-open-deep-research/) — DeepSeek 开源深度研究工具
 
 **Vibe-Trading**（仓库名 `HKUDS/Vibe-Trading`）是由香港大学数据科学实验室（HKUDS）开发的开源 AI 量化交易智能体平台。它通过自然语言驱动的策略研究、回测和交易分析工作流，让普通用户也能利用大语言模型（LLM）进行专业的量化投资研究。项目采用 Python + FastAPI + React 技术栈，遵循 MIT 开源协议，自 2026 年 4 月发布以来迅速走红，截至目前已获得 **22,000+ ⭐**，3,800+ Fork。在分析交易数据和策略回测结果时，本站的 [CSV/SQL 在线分析器](/tools/csv-sql-analyzer/) 可以帮你在浏览器中直接查询和分析交易记录，无需安装任何软件。
 

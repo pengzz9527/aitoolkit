@@ -155,3 +155,12 @@ Moonshine Voice 是目前开源语音 AI 领域最具潜力的项目之一。它
 🔗 **项目链接**：[github.com/moonshine-ai/moonshine](https://github.com/moonshine-ai/moonshine)
 🌐 **官网**：[moonshine.ai](https://moonshine.ai)
 📖 **论文**：[arxiv.org/abs/2602.12241](https://arxiv.org/abs/2602.12241)
+
+---
+
+想了解更多 AI 工具？浏览 [198007.xyz/tools](/tools/) 获取精选 AI 工具合集，或查看其他 [AI 工具评测](/reviews/)。
+
+## 相关评测
+
+- [**Palmier Pro 评测**](/reviews/2026-07-26-palmier-pro/) — YC 支持的 AI 原生视频编辑器
+- [**Nativ 评测**](/reviews/2026-07-25-nativ/) — macOS 本地 AI 运行环境

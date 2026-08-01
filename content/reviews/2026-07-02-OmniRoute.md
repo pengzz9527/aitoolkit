@@ -6,7 +6,12 @@ categories: ['工具评测']
 description: 'OmniRoute 是一个开源免费 AI 网关，聚合 231+ AI 提供商（50+ 免费），让 Claude Code、Cursor、Cline 等编码工具一键切换底层模型，RTK+Caveman 压缩可节省 15%-95% Token 消耗。'
 ---
 
-# OmniRoute: 免费 AI 网关，一个接口连接 231+ 提供商，每月 16 亿免费 Token
+想了解更多 AI 工具？浏览 [198007.xyz/tools](/tools/) 获取精选 AI 工具合集，或查看其他 [AI 工具评测](/reviews/)。
+
+## 相关评测
+
+- [**OmniRoute 评测**](/reviews/2026-07-02-OmniRoute/) — AI 路由优化工具
+- [**Video Use 评测**](/reviews/2026-07-01-video-use/) — AI 视频使用分析工具
 
 > 一句话简介：OmniRoute 是一个开源 AI 网关，将 231+ 个 AI 提供商聚合到一个端点，让你的 AI 编码工具（Claude Code、Cursor、Cline 等）免费使用 Claude、GPT、Gemini 等顶级模型，并通过智能压缩节省高达 95% 的 Token 消耗。
 

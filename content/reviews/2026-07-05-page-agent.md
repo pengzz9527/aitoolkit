@@ -6,7 +6,12 @@ categories: ['工具评测']
 description: 'Page Agent 是阿里巴巴开源的纯前端 GUI 智能体，无需后端、浏览器插件或无头浏览器，只需一行 JS 代码即可让网页通过自然语言交互，GitHub 23K+ Star。'
 ---
 
-# Page Agent: 纯前端 GUI 智能体，一行代码让网页听懂人话
+想了解更多 AI 工具？浏览 [198007.xyz/tools](/tools/) 获取精选 AI 工具合集，或查看其他 [AI 工具评测](/reviews/)。
+
+## 相关评测
+
+- [**OmniRoute 评测**](/reviews/2026-07-02-OmniRoute/) — AI 路由优化工具
+- [**Page Agent 评测**](/reviews/2026-07-05-page-agent/) — 自动化网页操作 Agent
 
 > 一句话简介：Page Agent 是阿里巴巴开源的纯前端 GUI 智能体，无需后端、浏览器插件或无头浏览器，只需在网页中嵌入一行 JavaScript 代码，就能让用户通过自然语言操控 Web 界面，GitHub 星标已超 23,000。
 

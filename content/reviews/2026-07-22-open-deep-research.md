@@ -159,3 +159,12 @@ Open Deep Research 是目前开源社区中**最成熟的深度研究 Agent 实�
 - **在线 Demo**: https://oap.langchain.com
 - **官方教程**: https://academy.langchain.com/courses/deep-research-with-langgraph
 - **排行榜**: https://huggingface.co/spaces/Ayanami0730/DeepResearch-Leaderboard
+
+---
+
+想了解更多 AI 工具？浏览 [198007.xyz/tools](/tools/) 获取精选 AI 工具合集，或查看其他 [AI 工具评测](/reviews/)。
+
+## 相关评测
+
+- [**Palmier Pro 评测**](/reviews/2026-07-26-palmier-pro/) — YC 支持的 AI 原生视频编辑器，支持 MCP Agent 集成
+- [**Nativ 评测**](/reviews/2026-07-25-nativ/) — macOS 原生本地 AI 运行环境

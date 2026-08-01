@@ -6,7 +6,12 @@ categories: ['AI工具评测']
 description: 'OfficeCLI 是全球首款专为 AI 代理设计的 Office 套件，支持 Word、Excel、PowerPoint 的创建、读取和修改。单二进制文件，无需安装 Office，一行命令即可让 AI 代理掌控文档处理。'
 ---
 
-# OfficeCLI 评测：给 AI 代理一个完整的 Office 套件
+想了解更多 AI 工具？浏览 [198007.xyz/tools](/tools/) 获取精选 AI 工具合集，或查看其他 [AI 工具评测](/reviews/)。
+
+## 相关评测
+
+- [**Palmier Pro 评测**](/reviews/2026-07-26-palmier-pro/) — AI 视频编辑器，支持 MCP Agent
+- [**Superpowers 评测**](/reviews/2026-07-11-superpowers/) — AI 编程助手增强工具
 
 在 AI 代理（AI Agent）快速发展的今天，如何让 AI 真正操控日常办公软件一直是个难题。Microsoft Office 需要许可证、依赖复杂的 COM 接口、且难以在无头环境中运行。今天介绍的 **OfficeCLI** 正是为解决这些问题而生——它是全球首款专为 AI 代理设计的 Office 套件，用一行命令就能让 AI 代理掌控 Word、Excel 和 PowerPoint。
 

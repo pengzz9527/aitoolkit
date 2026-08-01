@@ -144,4 +144,11 @@ DesktopCommanderMCP 是目前 MCP 生态中最全面的文件系统和终端控�
 
 ---
 
-*本文发布于 2026 年 7 月 9 日，基于 DesktopCommanderMCP v2.x 版本编写。*
+---
+
+想了解更多 AI 工具？浏览 [198007.xyz/tools](/tools/) 获取精选 AI 工具合集，或查看其他 [AI 工具评测](/reviews/)。
+
+## 相关评测
+
+- [**Palmier Pro 评测**](/reviews/2026-07-26-palmier-pro/) — AI 视频编辑器，支持 MCP Agent
+- [**Crawl4AI 评测**](/reviews/2026-07-10-crawl4ai/) — 开源 AI 爬虫框架

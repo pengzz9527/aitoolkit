@@ -143,4 +143,11 @@ Stitch Skills 代表了 AI 编程工具发展的一个重要趋势——**从单
 
 ---
 
-*本文基于 google-labs-code/stitch-skills 官方仓库和文档信息编写，数据截至 2026 年 7 月 12 日。*
+---
+
+想了解更多 AI 工具？浏览 [198007.xyz/tools](/tools/) 获取精选 AI 工具合集，或查看其他 [AI 工具评测](/reviews/)。
+
+## 相关评测
+
+- [**Palmier Pro 评测**](/reviews/2026-07-26-palmier-pro/) — AI 视频编辑器，支持 MCP Agent
+- [**Nativ 评测**](/reviews/2026-07-25-nativ/) — macOS 本地 AI 运行环境
