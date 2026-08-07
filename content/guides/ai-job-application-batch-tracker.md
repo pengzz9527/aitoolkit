@@ -122,8 +122,6 @@ WHERE 面试日期 >= date('now')
 AND 面试日期 <= date('now', '+7 days');
 ```
 
-用 [Cron 表达式生成器](/tools/cron-builder/) 设置每天早上的提醒，把查询结果发送到你的邮箱。
-
 ### 第三步：用 AI 追踪面试反馈
 
 面试完当天，立刻告诉 AI 面试情况：
