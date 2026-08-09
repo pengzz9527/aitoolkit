@@ -227,6 +227,8 @@ OpenWorker 代表了 AI 智能体发展的一个重要方向——从「对话�
 
 如果你希望 AI 真正成为工作助手，而不只是聊天机器人，OpenWorker 值得加入你的工具箱。🚀
 
+运行 OpenWorker 时，可使用本站的 [JSON 格式化工具](/tools/json-formatter/) 或 [CSV 查看器](/tools/csv-viewer/) 监控任务状态。
+
 ---
 
 **参考资料**：
