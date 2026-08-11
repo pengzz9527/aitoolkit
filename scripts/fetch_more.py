@@ -1,57 +1,69 @@
-import urllib.request
-import re
+#!/usr/bin/env python3
+import json, urllib.request, sys, re, html
 
-urls = [
-    ("https://www.kimi.com/products/kimi-work", "Kimi Work"),
-    ("https://news.ycombinator.com/item?id=48979269", "HN China Open Weights"),
-    ("https://news.ycombinator.com/item?id=48980019", "HN Kimi K3 Qwen 3.8"),
-    ("https://news.ycombinator.com/item?id=48982681", "HN Nativ"),
-    ("https://news.ycombinator.com/item?id=48982535", "HN Agent Swarms"),
-    ("https://news.ycombinator.com/item?id=48975665", "HN GPT5.6 WordPress RCE"),
-]
+# Fetch HN with AI keywords
+try:
+    req = urllib.request.Request(
+        "https://hn.algolia.com/api/v1/search?query=AI+artificial+intelligence+LLM+OpenAI+Google+DeepSeek+Claude&tags=front_page&hitsPerPage=20",
+        headers={"User-Agent": "AI-Daily/1.0"}
+    )
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        data = json.loads(resp.read().decode())
+    print("=== HNAI ===")
+    for h in data.get("hits", [])[:20]:
+        title = h.get("title", "")
+        score = h.get("points", 0)
+        url = h.get("url", "")
+        comments = h.get("num_comments", 0)
+        print(f"{score}pts | {title}")
+        if url:
+            print(f"  -> {url}")
+        print(f"  comments: {comments}")
+        print()
+except Exception as e:
+    print(f"HN AI search error: {e}", file=sys.stderr)
 
-for url, label in urls:
-    print(f"\n=== {label}: {url} ===")
-    try:
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'})
-        html = urllib.request.urlopen(req, timeout=15).read().decode('utf-8', errors='ignore')
-        
-        if 'hacker-news' in url:
-            # Extract comments from HN
-            # Find all comment texts
-            comments = re.findall(r'<p class="comment"><span class="commit">(.+?)</span></p>', html)
-            if not comments:
-                # Try another pattern
-                texts = re.findall(r'class="commentcode">(.+?)</span>', html)
-                if not texts:
-                    # Get sitestrings
-                    sitestrings = re.findall(r'<span class="sitestr">(.*?)</span>', html, re.DOTALL)
-                    for s in sitestrings[:3]:
-                        clean = re.sub('<[^<]+?>', '', s).strip()
-                        if clean:
-                            print(f"SITESTRING: {clean[:300]}")
-            else:
-                for c in comments[:5]:
-                    clean = re.sub('<[^<]+?>', '', c).strip()
-                    if clean and len(clean) > 20:
-                        print(f"COMMENT: {clean[:300]}")
-            
-            # Get title
-            m = re.search(r'<span class="titleline".*?>(.*?)</span>', html, re.DOTALL)
-            if m:
-                print(f"HN TITLE: {re.sub('<[^<]+?>', '', m.group(1)).strip()}")
-        else:
-            # Regular page
-            m = re.search(r'<title[^>]*>(.*?)</title>', html, re.DOTALL)
-            if m:
-                print(f"TITLE: {re.sub('<[^<]+?>', '', m.group(1)).strip()[:200]}")
-            m2 = re.search(r'<meta[^>]*name="description"[^>]*content="([^"]*)"', html, re.IGNORECASE)
-            if m2:
-                print(f"DESC: {m2.group(1)[:300]}")
-            text = re.sub(r'<script[^>]*>.*?</script>', ' ', html, flags=re.DOTALL)
-            text = re.sub(r'<style[^>]*>.*?</style>', ' ', text, flags=re.DOTALL)
-            text = re.sub(r'<[^>]+>', ' ', text)
-            text = re.sub(r'\s+', ' ', text).strip()
-            print(f"CONTENT: {text[200:800]}")
-    except Exception as e:
-        print(f"ERROR: {e}")
+# Fetch more from Hacker News search
+try:
+    req = urllib.request.Request(
+        "https://hn.algolia.com/api/v1/search?query=agent+LLM+model&tags=story&hitsPerPage=15&numericFilters=points>30",
+        headers={"User-Agent": "AI-Daily/1.0"}
+    )
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        data = json.loads(resp.read().decode())
+    print("=== HNAGENTS ===")
+    for h in data.get("hits", [])[:15]:
+        title = h.get("title", "")
+        score = h.get("points", 0)
+        url = h.get("url", "")
+        comments = h.get("num_comments", 0)
+        print(f"{score}pts | {title}")
+        if url:
+            print(f"  -> {url}")
+        print(f"  comments: {comments}")
+        print()
+except Exception as e:
+    print(f"HN agents error: {e}", file=sys.stderr)
+
+# Try Reddit API for AI news
+try:
+    req = urllib.request.Request(
+        "https://www.reddit.com/r/LocalLLaMA/hot.json?limit=15",
+        headers={"User-Agent": "AI-Daily/1.0"}
+    )
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        data = json.loads(resp.read().decode())
+    print("=== REDDITLLAMAMA ===")
+    for post in data.get("data", {}).get("children", [])[:12]:
+        d = post.get("data", {})
+        title = d.get("title", "")
+        score = d.get("score", 0)
+        url = d.get("url", "")
+        comments = d.get("num_comments", 0)
+        print(f"{score}pts | {title}")
+        if url:
+            print(f"  -> {url}")
+        print(f"  comments: {comments}")
+        print()
+except Exception as e:
+    print(f"Reddit error: {e}", file=sys.stderr)
