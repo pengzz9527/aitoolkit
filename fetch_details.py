@@ -1,15 +1,32 @@
 #!/usr/bin/env python3
-import urllib.request, json
+"""Fetch additional details for the AI daily report."""
+import urllib.request, json, urllib.parse
 
-# Get details for top AI stories
-hn_ids = [49157930, 49156111, 49132992, 49158581, 49156682, 49158474]
-for sid in hn_ids:
+def fetch_article(title_or_url):
+    return None
+
+# Try to get more details from the key articles
+urls_to_check = [
+    "https://stolen-thoughts.com/",
+    "https://www.modular.com/blog/modular-26-5-mojo-1-0-is-here",
+    "https://manus.im/blog/a-note-to-our-users",
+    "https://github.com/openclaw/openclaw",
+]
+
+for url in urls_to_check:
     try:
-        data = json.loads(urllib.request.urlopen(f'https://hacker-news.firebaseio.com/v0/item/{sid}.json').read())
-        if data.get('type') == 'story':
-            print(f"[{data['score']}] {data['title']}")
-            print(f"  {data.get('url','')}")
-            print(f"  by {data.get('by','')} | {data.get('descendants',0)} comments")
-            print()
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=10) as r:
+            content = r.read().decode("utf-8", errors="ignore")
+        # Extract relevant text snippets
+        print(f"\n=== {url} ===")
+        # Find meta description
+        import re
+        desc = re.search(r'<meta[^>]*description[^>]*content="([^"]*)"', content, re.IGNORECASE)
+        if desc:
+            print(f"Desc: {desc.group(1)[:200]}")
+        title = re.search(r'<title>([^<]+)</title>', content, re.IGNORECASE)
+        if title:
+            print(f"Title: {title.group(1)[:200]}")
     except Exception as e:
-        pass
+        print(f"Failed {url}: {e}")

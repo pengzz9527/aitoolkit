@@ -1,13 +1,111 @@
 {
-  "date": "2026-08-01",
-  "fetched": "2026-08-01T23:35:56.967044Z",
+  "date": "2026-08-12",
+  "fetched": "2026-08-12T01:02:36.877033Z",
   "items": [
     {
-      "source": "TechCrunch",
-      "title": "AI News &amp; Artificial Intelligence",
-      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
-      "points": 0,
-      "comments": 0
+      "source": "github",
+      "title": "KKKKhazix/human-writing",
+      "url": "https://github.com/KKKKhazix/human-writing",
+      "points": 2407,
+      "description": "让 AI 写的中文读起来像一个具体的人在说话。通用创作与改稿 Skill，开箱即用。"
+    },
+    {
+      "source": "github",
+      "title": "ShawnPana/phone-harness",
+      "url": "https://github.com/ShawnPana/phone-harness",
+      "points": 1501,
+      "description": "let your agent control your phone"
+    },
+    {
+      "source": "github",
+      "title": "oil-oil/oil-motion",
+      "url": "https://github.com/oil-oil/oil-motion",
+      "points": 1483,
+      "description": "Create smooth, responsive interactive web animations."
+    },
+    {
+      "source": "github",
+      "title": "jd-opensource/JoyAI-Video-Edit",
+      "url": "https://github.com/jd-opensource/JoyAI-Video-Edit",
+      "points": 834,
+      "description": "[Official Repo] JoyAI-Video-Edit: Real-Time Open-Ended Video Editing with Autoregressive Diffusion"
+    },
+    {
+      "source": "github",
+      "title": "pathwaycom/arc-task-gen",
+      "url": "https://github.com/pathwaycom/arc-task-gen",
+      "points": 689,
+      "description": "Generates original ARC-AGI-1-style tasks distribution-matched to the public eval set."
+    },
+    {
+      "source": "github",
+      "title": "T8mars/comfyui-minimax-h3-audio-T8",
+      "url": "https://github.com/T8mars/comfyui-minimax-h3-audio-T8",
+      "points": 617,
+      "description": ""
+    },
+    {
+      "source": "github",
+      "title": "disler/super-simple-software-factory",
+      "url": "https://github.com/disler/super-simple-software-factory",
+      "points": 598,
+      "description": "Repeatable agents-plus-code workflows, packaged as one skill, stamped into any repo. Deterministic Python owns the graph; coding agents are bounded no"
+    },
+    {
+      "source": "github",
+      "title": "AMAP-ML/LongHorizon-Harness",
+      "url": "https://github.com/AMAP-ML/LongHorizon-Harness",
+      "points": 582,
+      "description": "The long-horizon computer-use harness. Run AI agents across desktop apps and the CLI for extended periods while preserving task state and making relia"
+    },
+    {
+      "source": "github",
+      "title": "Evianis/travel-photo-abstraction",
+      "url": "https://github.com/Evianis/travel-photo-abstraction",
+      "points": 490,
+      "description": "A source-available Codex skill for distilling photographs into sparse editorial abstractions."
+    },
+    {
+      "source": "github",
+      "title": "xmarre/ComfyUI-Spectrum-MiniMax-H3",
+      "url": "https://github.com/xmarre/ComfyUI-Spectrum-MiniMax-H3",
+      "points": 467,
+      "description": "Spectrum-based acceleration for ComfyUI’s native MiniMax H3 audio-video model. Forecasts post-transformer features with Chebyshev ridge regression to "
+    },
+    {
+      "source": "github",
+      "title": "SandAI-org/MAGI-2-preview",
+      "url": "https://github.com/SandAI-org/MAGI-2-preview",
+      "points": 449,
+      "description": "MAGI-2-preview: Scaling Video Generation Models Efficiently"
+    },
+    {
+      "source": "github",
+      "title": "NikoDemon80/ComfyUI-H3-Motion-Context",
+      "url": "https://github.com/NikoDemon80/ComfyUI-H3-Motion-Context",
+      "points": 416,
+      "description": "Clip chaining for MiniMax H3 in ComfyUI - motion and audio genuinely continue across joins"
+    },
+    {
+      "source": "github",
+      "title": "IAmIronMan42/MiniMax-H3-FineTuning",
+      "url": "https://github.com/IAmIronMan42/MiniMax-H3-FineTuning",
+      "points": 414,
+      "description": ""
+    },
+    {
+      "source": "github",
+      "title": "Larryvrh/ComfyUI-MiniMax-H3-Turbo",
+      "url": "https://github.com/Larryvrh/ComfyUI-MiniMax-H3-Turbo",
+      "points": 392,
+      "description": ""
+    },
+    {
+      "source": "github",
+      "title": "crawfordxx/xiaoma-durex-copywriter",
+      "url": "https://github.com/crawfordxx/xiaoma-durex-copywriter",
+      "points": 385,
+      "description": "杜蕾斯式文案与海报 Skill for Claude Code —— 双层语义方法论 + 8 个文案公式 + 从 260 张原始海报拆解的视觉系统 + AI 出图/代码排版管线"
     },
     {
       "source": "TechCrunch",
@@ -18,91 +116,98 @@
     },
     {
       "source": "TechCrunch",
-      "title": "Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps",
+      "title": "AI News &amp; Artificial Intelligence",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "YouTuber Hank Green says his AI usage is ‘not healthy’",
+      "title": "Accel closes oversubscribed $550M India fund within weeks, 19 months after its last",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Sam Altman is still making the case for parenting via ChatGPT",
+      "title": "OpenAI launches ChatGPT desktop app for Linux",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "This $9 key physically locks your most addictive apps",
+      "title": "Google’s Gemini app surges to 1 billion users",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "OpenAI reportedly finds evidence that more of its agents ran amok",
+      "title": "Brad Lightcap, OpenAI&#8217;s longtime COO, is leaving to &#8216;start something new&#8217;",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "India is starting to pay for apps, not just download them",
+      "title": "General Catalyst leads $1.1B round into 2-month-old River AI",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Google nixes its Earth AI feature one day after launch, amid criticism it would spread misinformation",
+      "title": "An unreleased Anthropic model made progress on one of math&#8217;s biggest unsolved problems",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Sam Altman isn&#8217;t the only one who wants to pump the brakes on AI",
+      "title": "Spotify will label &#8216;AI Persona&#8217; profiles and exclude their music from recommendations",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Snapchat no longer rewards fully AI-generated Spotlight content",
+      "title": "Anthropic says it will watermark text generated by its AI models",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Siri AI could come with a paywall for power users",
+      "title": "OpenAI reportedly completed a $7 billion employee tender offer",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "SpaceX won’t remove all of xAI’s unpermitted turbines for another year",
+      "title": "As AI-led attacks multiply, OpenAI launches a new cyber model",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Smallest.ai raises $13M to build ultra-fast voice AI that sounds genuinely human",
+      "title": "Mark Zuckerberg&#8217;s AI manifesto is exactly why people don&#8217;t like AI",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "AI labs want to pump the brakes, but Amazon and SpaceX are still blasting off",
+      "title": "Tech industry is buzzing after a Claude agent hacked into a gym",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
+    },
+    {
+      "source": "TechCrunch",
+      "title": "Meta’s new Glimmer AI model offers a hint at Zuckerberg’s personal intelligence vision",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
