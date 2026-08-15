@@ -1,20 +1,16 @@
-import json, urllib.request
+#!/usr/bin/env python3
+import urllib.request, json
 
-# Fetch top story IDs from HN
-url = "https://hacker-news.firebaseio.com/v0/topstories.json"
-with urllib.request.urlopen(url) as resp:
-    ids = json.load(resp)[:30]
+# Fetch Hacker News front page via Algolia
+url = "https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=25"
+resp = urllib.request.urlopen(url, timeout=15)
+data = json.loads(resp.read())
 
-# Fetch details for each story
-for sid in ids:
-    story_url = f"https://hacker-news.firebaseio.com/v0/item/{sid}.json"
-    try:
-        with urllib.request.urlopen(story_url) as story_resp:
-            item = json.load(story_resp)
-            if item and item.get('type') == 'story':
-                title = item.get('title', '')
-                url_link = item.get('url', '') or f"https://news.ycombinator.com/item?id={sid}"
-                score = item.get('score', 0)
-                print(f"{sid}|{score}|{title}|{url_link}")
-    except Exception as e:
-        pass
+for h in data.get('hits', [])[:25]:
+    title = h.get('title', '')
+    story_url = h.get('url', '') or h.get('hn_url', '') or f"https://news.ycombinator.com/item?id={h.get('objectID','')}"
+    points = h.get('points', 0)
+    comments = h.get('num_comments', 0)
+    print(f"[{points} pts] {title}")
+    print(f"  → {story_url} (comments: {comments})")
+    print()
