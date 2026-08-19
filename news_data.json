@@ -1,113 +1,113 @@
 {
-  "date": "2026-08-13",
-  "fetched": "2026-08-13T10:02:08.729375Z",
+  "date": "2026-08-18",
+  "fetched": "2026-08-18T23:31:08.498347Z",
   "items": [
     {
       "source": "github",
       "title": "guillaumemeyer/watermarks-remover",
       "url": "https://github.com/guillaumemeyer/watermarks-remover",
-      "points": 3580,
+      "points": 14471,
       "description": "Strip multi-vendor AI provenance marks: Unicode text hygiene, statistical rewrite hooks, and C2PA/metadata from PNG/JPEG/SVG/PDF/DOCX/HTML/MD"
+    },
+    {
+      "source": "github",
+      "title": "awesome-dsh-plugin/awesome-dsh-plugin",
+      "url": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin",
+      "points": 8860,
+      "description": "A curated list of plugins for DeepSeek Harness (dsh) · DeepSeek Harness 插件精选列表"
+    },
+    {
+      "source": "github",
+      "title": "pathwaycom/arc-task-gen",
+      "url": "https://github.com/pathwaycom/arc-task-gen",
+      "points": 3483,
+      "description": "Generates original ARC-AGI-1-style tasks distribution-matched to the public eval set."
     },
     {
       "source": "github",
       "title": "KKKKhazix/human-writing",
       "url": "https://github.com/KKKKhazix/human-writing",
-      "points": 2632,
+      "points": 2849,
       "description": "让 AI 写的中文读起来像一个具体的人在说话。通用创作与改稿 Skill，开箱即用。"
     },
     {
       "source": "github",
       "title": "ShawnPana/phone-harness",
       "url": "https://github.com/ShawnPana/phone-harness",
-      "points": 1689,
+      "points": 1914,
       "description": "let your agent control your phone"
     },
     {
       "source": "github",
       "title": "oil-oil/oil-motion",
       "url": "https://github.com/oil-oil/oil-motion",
-      "points": 1657,
+      "points": 1893,
       "description": "Create smooth, responsive interactive web animations."
-    },
-    {
-      "source": "github",
-      "title": "pathwaycom/arc-task-gen",
-      "url": "https://github.com/pathwaycom/arc-task-gen",
-      "points": 1220,
-      "description": "Generates original ARC-AGI-1-style tasks distribution-matched to the public eval set."
     },
     {
       "source": "github",
       "title": "jd-opensource/JoyAI-Video-Edit",
       "url": "https://github.com/jd-opensource/JoyAI-Video-Edit",
-      "points": 1002,
+      "points": 1558,
       "description": "[Official Repo] JoyAI-Video-Edit: Real-Time Open-Ended Video Editing with Autoregressive Diffusion"
+    },
+    {
+      "source": "github",
+      "title": "AdamPlatin123/awesome-dsh-plugins",
+      "url": "https://github.com/AdamPlatin123/awesome-dsh-plugins",
+      "points": 1214,
+      "description": "DSH 插件雷达与精选榜：多路自动发现 7600+ 候选，容器真实安装路径运行级实测（四档判定，883/1415 可用），精选 Top 50 · 11 类人工策展，全量索引 PLUGINS-ALL.md，自动更新。"
+    },
+    {
+      "source": "github",
+      "title": "Leutenegger/book-to-skill",
+      "url": "https://github.com/Leutenegger/book-to-skill",
+      "points": 1189,
+      "description": "Turn any technical book PDF into a Claude Code skill — ready to study, reference, and use while you work."
     },
     {
       "source": "github",
       "title": "AMAP-ML/LongHorizon-Harness",
       "url": "https://github.com/AMAP-ML/LongHorizon-Harness",
-      "points": 672,
+      "points": 829,
       "description": "The long-horizon computer-use harness. Run AI agents across desktop apps and the CLI for extended periods while preserving task state and making relia"
+    },
+    {
+      "source": "github",
+      "title": "alexgreensh/attention-span",
+      "url": "https://github.com/alexgreensh/attention-span",
+      "points": 784,
+      "description": "Make your agents talk human. ADHD-friendly output styles for Claude Code. So you can pay attention, not tokens."
+    },
+    {
+      "source": "github",
+      "title": "sowarma/wp2shell-PoC",
+      "url": "https://github.com/sowarma/wp2shell-PoC",
+      "points": 743,
+      "description": "CVE-2026-63030 & CVE-2026-60137 RCE chain proof-of-concept"
     },
     {
       "source": "github",
       "title": "T8mars/comfyui-minimax-h3-audio-T8",
       "url": "https://github.com/T8mars/comfyui-minimax-h3-audio-T8",
-      "points": 660,
+      "points": 742,
       "description": ""
+    },
+    {
+      "source": "github",
+      "title": "0xsline/awesome-deepseek-harness",
+      "url": "https://github.com/0xsline/awesome-deepseek-harness",
+      "points": 727,
+      "description": "DeepSeek Harness (DSH) ecosystem: curated plugins, tools, and infrastructure from dsh-external/hub and the public dsh-plugin topic."
     },
     {
       "source": "github",
       "title": "disler/super-simple-software-factory",
       "url": "https://github.com/disler/super-simple-software-factory",
-      "points": 620,
+      "points": 693,
       "description": "Repeatable agents-plus-code workflows, packaged as one skill, stamped into any repo. Deterministic Python owns the graph; coding agents are bounded no"
     },
     {
-      "source": "github",
-      "title": "crawfordxx/xiaoma-durex-copywriter",
-      "url": "https://github.com/crawfordxx/xiaoma-durex-copywriter",
-      "points": 535,
-      "description": "杜蕾斯式文案与海报 Skill for Claude Code —— 双层语义方法论 + 8 个文案公式 + 从 260 张原始海报拆解的视觉系统 + AI 出图/代码排版管线"
-    },
-    {
-      "source": "github",
-      "title": "Evianis/travel-photo-abstraction",
-      "url": "https://github.com/Evianis/travel-photo-abstraction",
-      "points": 527,
-      "description": "A source-available Codex skill for distilling photographs into sparse editorial abstractions."
-    },
-    {
-      "source": "github",
-      "title": "NikoDemon80/ComfyUI-H3-Motion-Context",
-      "url": "https://github.com/NikoDemon80/ComfyUI-H3-Motion-Context",
-      "points": 500,
-      "description": "Clip chaining for MiniMax H3 in ComfyUI - motion and audio genuinely continue across joins"
-    },
-    {
-      "source": "github",
-      "title": "xmarre/ComfyUI-Spectrum-MiniMax-H3",
-      "url": "https://github.com/xmarre/ComfyUI-Spectrum-MiniMax-H3",
-      "points": 496,
-      "description": "Spectrum-based acceleration for ComfyUI’s native MiniMax H3 audio-video model. Forecasts post-transformer features with Chebyshev ridge regression to "
-    },
-    {
-      "source": "github",
-      "title": "IAmIronMan42/MiniMax-H3-FineTuning",
-      "url": "https://github.com/IAmIronMan42/MiniMax-H3-FineTuning",
-      "points": 493,
-      "description": ""
-    },
-    {
-      "source": "github",
-      "title": "SandAI-org/MAGI-2-preview",
-      "url": "https://github.com/SandAI-org/MAGI-2-preview",
-      "points": 458,
-      "description": "MAGI-2-preview: Scaling Video Generation Models Efficiently"
-    },
-    {
       "source": "TechCrunch",
       "title": "AI News &amp; Artificial Intelligence",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
@@ -123,91 +123,91 @@
     },
     {
       "source": "TechCrunch",
-      "title": "Some Claude users are mad that Anthropic&#8217;s new watermarks will catch them using it at their jobs, classes",
+      "title": "Cursor capitalizes on GitHub frustration, launches rival hosting platform",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Amazon will train on Twitch streamers&#8217; content by default, unless they opt out",
+      "title": "OpenAI institutes new safeguards after Hugging Face breach",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "AI coding startup Cognition reportedly already in talks to raise at $40B valuation",
+      "title": "Etched&#8217;s valuation doubles to $21B in a month",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "As AI safety concerns mount, three pioneers make the case for staying open",
+      "title": "Why Apple&#8217;s camera-equipped AirPods may not be the &#8216;pervert pods&#8217; consumers fear",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "OpenAI-backed Thrive Holdings raises $2B to bring AI to the enterprise",
+      "title": "Warp&#8217;s new system is an out-of-the-box software factory for AI development",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Mesh, Automattic&#8217;s CRM for everyone, comes to Android",
+      "title": "OpenAI launches a safer ChatGPT for teens — years after teens started using it",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Why Stream ring-maker Sandbar says the future of AI wearables is voice",
+      "title": "Perplexity’s free AI offer left it with millions more users in India",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Lovable confirms new $13.3B valuation, raises another $400M",
+      "title": "Anthropic&#8217;s annualized revenue surges to $65B",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "How a $250 million acquisition collapsed into allegations of fraud and forged signatures",
+      "title": "AI automation startup Relay shuts down, staff joins Google&#8217;s Chrome team",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Why Sandbar thinks it’s voice-enabled ring can avoid the AI hardware graveyard",
+      "title": "Amazon, which started off selling books, is destroying rare texts to train AI",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Everything announced at Made by Google &#8217;26: Pixel 11, Pixel Watch 5, Pixel Tag, and tons of Gemini features",
+      "title": "Groq raises $350M to fuel its pivot from AI chips to neocloud",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "AI code-testing startup Blacksmith&#8217;s valuation jumps almost 10x in less than a year",
+      "title": "Nvidia investing $1.5B in SoftBank data center developer behind OpenAI project",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Accel closes oversubscribed $550M India fund within weeks, 19 months after its last",
+      "title": "Wispr raises $280M at $2B valuation as it looks beyond dictation",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
