@@ -56,7 +56,7 @@ image: /images/guides/ai-fullstack-web-dev-cover.png
 请用中文输出，结构清晰，便于后续开发参考。
 ```
 
-AI会生成一份完整的PRD。你可以参考本站的 [AI做PRD撰写教程](/guides/ai-prd-guide/) 了解更多需求分析的细节。
+AI会生成一份完整的PRD。你可以参考本站的 [AI做PRD撰写教程](https://198007.xyz/guides/ai-prd-guide/) 了解更多需求分析的细节。
 
 ### 关键产出
 
@@ -171,7 +171,7 @@ CREATE TABLE note_tags (
 4. 是否存在数据更新异常？
 ```
 
-如果涉及数据分析需求，可以参考本站的 [SQL查询教程](/guides/ai-sql-query-guide/) 学习如何用DuckDB做更复杂的查询分析。
+如果涉及数据分析需求，可以参考本站的 [SQL查询教程](https://198007.xyz/guides/ai-sql-query-guide/) 学习如何用DuckDB做更复杂的查询分析。
 
 ---
 
@@ -330,7 +330,7 @@ Web应用中经常需要处理数据导入导出。本站提供了 [CSV在线查
 5. 对重复数据做去重处理
 ```
 
-> **提示**：如果需要分析CSV数据的质量，可以先用本站的 [CSV SQL分析器](/tools/csv-sql-analyzer/) 预览数据，确认格式正确后再导入。
+> **提示**：如果需要分析CSV数据的质量，可以先用本站的 [CSV SQL分析器](https://198007.xyz/tools/csv-sql-analyzer/) 预览数据，确认格式正确后再导入。
 
 ---
 
@@ -538,18 +538,18 @@ mv index.html style.css app.js frontend/
 
 ### 站内相关教程
 
-- [AI做Python编程实战](/guides/ai-python-programming-guide/) — 深入学习Python编程
-- [AI做SQL查询与数据分析](/guides/ai-sql-query-guide/) — 掌握数据库查询技巧
-- [零代码AI数据分析](/guides/ai-data-analysis-no-code/) — 学会用AI处理数据
-- [AI做PRD撰写](/guides/ai-prd-guide/) — 提升需求分析能力
-- [本地部署大模型做私享助理](/guides/local-llm-assistant/) — 离线运行AI模型
+- [AI做Python编程实战](https://198007.xyz/guides/ai-python-programming-guide/) — 深入学习Python编程
+- [AI做SQL查询与数据分析](https://198007.xyz/guides/ai-sql-query-guide/) — 掌握数据库查询技巧
+- [零代码AI数据分析](https://198007.xyz/guides/ai-data-analysis-no-code/) — 学会用AI处理数据
+- [AI做PRD撰写](https://198007.xyz/guides/ai-prd-guide/) — 提升需求分析能力
+- [本地部署大模型做私享助理](https://198007.xyz/guides/local-llm-assistant/) — 离线运行AI模型
 
 ### 推荐工具
 
 - [DuckDB](https://duckdblab.org/zh/) — 高性能数据分析引擎
-- [CSV在线查看器](/tools/csv-viewer/) — 预览和分析CSV数据
-- [CSV SQL分析器](/tools/csv-sql-analyzer/) — 用SQL查询CSV文件
-- [Cron表达式生成器](/tools/cron-builder/) — 配置定时任务
+- [CSV在线查看器](https://198007.xyz/tools/csv-viewer/) — 预览和分析CSV数据
+- [CSV SQL分析器](https://198007.xyz/tools/csv-sql-analyzer/) — 用SQL查询CSV文件
+- [Cron表达式生成器](https://198007.xyz/tools/cron-builder/) — 配置定时任务
 
 ---
 
