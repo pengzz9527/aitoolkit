@@ -178,3 +178,5 @@ MoneyPrinterTurbo 是目前开源社区中最成熟的 AI 短视频生成工具�
 **推荐指数：★★★★★**
 
 🔗 项目地址：https://github.com/harry0703/MoneyPrinterTurbo
+
+生成视频后可用本站的 [文本去重工具](/tools/text-deduplicator/) 清理重复文案，或用 [Base64 编码解码工具](/tools/base64-encode-decode/) 处理素材编码。

@@ -165,3 +165,5 @@ Screenpipe 支持精细化的过滤规则：
 ---
 
 *本文基于 screenpipe v2.6.32 撰写，信息更新于 2026-08-17。*
+
+如需对录制数据做进一步处理，可搭配本站的 [文本统计工具](/tools/text-counter/) 或 [JSON 格式化工具](/tools/json-formatter/) 使用。
