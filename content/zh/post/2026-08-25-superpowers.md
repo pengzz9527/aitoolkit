@@ -1,3 +1,11 @@
+---
+title: 'Superpowers 评测：让 AI 编程代理拥有软件工程超能力'
+date: 2026-08-25
+tags: ['AI工具', '编程助手', 'Superpowers', 'AI Agent', 'TDD', '开源']
+categories: ['AI工具评测']
+description: 'Superpowers 是 GitHub 上 27.7 万星标的开源项目，为 Claude Code、Cursor、Codex 等 AI 编程代理提供完整的软件开发方法论，包括 brainstorming、TDD、子代理驱动开发等核心技能。'
+---
+
 # Superpowers：AI 编程代理的终极方法论框架
 
 **一句话简介**：Superpowers 是一个为 AI 编程代理设计的完整软件开发方法论框架，通过可组合的 skill 系统让 Claude Code、Cursor、Codex 等主流 AI 编程工具实现专业的软件工程实践。
