@@ -1,312 +1,104 @@
 {
-  "date": "2026-08-25",
-  "fetched": "2026-08-25T23:32:02.698373Z",
+  "date": "2026-08-27",
+  "fetched": "2026-08-27T10:02:08.330524Z",
   "items": [
     {
-      "source": "HN Top",
-      "score": 270,
-      "title": "OpenAI Jalapeño: Better than Nvidia Blackwell",
-      "url": "https://newsletter.semianalysis.com/p/openai-jalapeno-better-than-nvidia"
+      "source": "TechCrunch",
+      "title": "AI News &amp; Artificial Intelligence",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "HN Top",
-      "score": 21,
-      "title": "Show HN: TeXbrain, a LaTeX editor that runs pdfTeX in the browser via WASM",
-      "url": "https://github.com/swimmingbrain/texbrain"
+      "source": "TechCrunch",
+      "title": "Viral AI startup Instinct has raised $350M at a $2.5B valuation",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "HN Top",
-      "score": 81,
-      "title": "Show HN: I made a Raspberry with Qwen my local car AI",
-      "url": "https://github.com/ThinkOffApp/CarWatch"
+      "source": "TechCrunch",
+      "title": "Google&#8217;s Gemini has a branding problem, and so does the rest of AI",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "HN Top",
-      "score": 193,
-      "title": "Training AI to Paint with Code",
-      "url": "https://surya.website/rling-qwen-to-paint-with-code"
+      "source": "TechCrunch",
+      "title": "How do we explain OpenAI&#8217;s executive exodus?",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "HN Top",
-      "score": 3,
-      "title": "Cross-vendor byte-identical inference for a 72B LLM (AMD MI300X vs. Nvidia H100)",
-      "url": "https://zenodo.org/records/19882078"
+      "source": "TechCrunch",
+      "title": "OpenAI releases its official report on the Hugging Face breach",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "GoogleNews",
-      "title": "\"recent AI artificial intelligence\" - Google 新闻",
-      "url": "https://news.google.com/search?q=recent+AI+artificial+intelligence&amp;hl=zh-CN&amp;gl=CN&amp;ceid=CN:zh-Hans"
+      "source": "TechCrunch",
+      "title": "Radar makes podcasts searchable — and usable by AI agents",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "GoogleNews",
-      "title": "The artificial intelligence company \"Clipto.AI\" has completed a new round of Pre-A++ financing. - 36Kr",
-      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1pam5lbVNUbUJ4d3oxS3EyZWRtajgxU09mLWJIN2k4Z3kwZ3FUYjhVNTVhLWpVU0FWbDhyRjgtbFBPTkRyY1pETDRMYmsxRHVYc2RMZzZIUlZXLVIxeTI5UA?oc=5"
+      "source": "TechCrunch",
+      "title": "Ex-Meta scientists want to bring visual AI to the factory floor",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "GoogleNews",
-      "title": "Alibaba Tightens AI Organization Further by Setting Up Token Foundry Unit - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNOEp0cERVUmFoTjBrU3liMnNfWk5FSTRtbzAtYm1QUG5TWGhZY0JCMnhBNjJwVXhlVnlOTldmSGZmeE9zMFV0RFpUR042aFFZRDRfRGJ6TjB0OW5FTkZ1djFaaXB2OXVSaWItUW1ZUnhVLVBmTHNNQ25VLVNtWTBGSHp6NWxFN29ycFR6NFZHNzA2U1N1RlNnSDhB?oc=5"
+      "source": "TechCrunch",
+      "title": "Bill Gates wants to see a robot tax and &#8216;Human Reserved&#8217; jobs to mitigate harms from AI",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "GoogleNews",
-      "title": "CISS Hosts the XIV Round of \"U.S.-China Dialogue on AI and International Security\" - 清华大学战略与安全研究中心",
-      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE5iX1N1cElxU0hzMmNSclVVTzFtRkZwNEZCcHl5U0dMTmNmUmQ5YlUwUERHekt4RkFSVEJKWmVOTEVja0NSWVY5U2xrUHJ1OTVJNC1EYU9pTnpiYnU1UTRn?oc=5"
+      "source": "TechCrunch",
+      "title": "Surprise: Z.ai is the AI lab behind the mysterious Ox Alpha model",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "GoogleNews",
-      "title": "Embodied Intelligence, World Models are New AI Trends in 2025, Says BAAI in its Top Ten AI Trends in 2025 - 钛媒体",
-      "url": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE1adFVBdFotSVNxQzB5b3h6WFJDS3B0bm9CaTFIZTFXeUtpRnNTUzBiRTMtSjJKQ0JiT1JUQnFCSjlaSzNmbXZDLUlrVUw?oc=5"
+      "source": "TechCrunch",
+      "title": "QueryStory wants you to believe what AI is telling you",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "GoogleNews",
-      "title": "合作办会@ICME | Call for Papers: AIART 2026 - 智源社区",
-      "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE8tSXBzNE11eklWNlMwck5tV0dwbVoxbGppVjY3cDFhNUJTc2E1aFl3S041Zk1Fb3Z6cGNwZkRYNEhkaVlDZVp6ZA?oc=5"
+      "source": "TechCrunch",
+      "title": "Arga Labs is building a better way to train enterprise AI agents",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "GoogleNews",
-      "title": "AI Has Delivered Real Improvements for China’s Ping An Insurance, Chief Scientist Says - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOdHdxZ1hpTzlPVFh0bUdyemMxQkNTT194NThmWGhHU1c3bmRwUE9BUDVtaEd0WjhXMF9NOEdCVDhWeEZ0VG9pemEyUkVDaWFBeVNJXzBWNGFSRThISFFCejdHcjkzZ081UFltM2k4Y2hySU5DOEpfNkw5eVg1a1NMenljNERwbEl2YzFtNHBXakdzcjFUaS12dGtmSUhTWGFyYkdZLURwQUtQcWU2dnphcDluVHhBUTFZQUE?oc=5"
+      "source": "TechCrunch",
+      "title": "Hearing tech startup Legato emerges from stealth with $12M and a peek at its AI hearing glasses",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "GoogleNews",
-      "title": "China’s AI Talent Shortage Tops Five Million, Report Says - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQaFFYc1l2YVlDOFlQMjg3dmRHR2hqSnh1UUNlSElaaVBUazRaLXZsQTh3eEtfWFNIcWxlS0JxX3RISndva2pXdWFhMkFnMTdtYkJNWWtmR1p5dzIwOE0zYVNsWnp4Tlk1VDJXLTVQS0VObHNTa3RvamRhcjRkNkFaWFRkNmpMd3VwMEpuWTdqQ3g0cHR6QXZWc0xVLVhhNm8?oc=5"
+      "source": "TechCrunch",
+      "title": "Runable hits $21M to bet AI agents can go from building businesses to growing them",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     },
     {
-      "source": "GoogleNews",
-      "title": "Fu Ying And John Allen: Together, The U.S. And China Can Reduce The Risks From AI - 清华大学战略与安全研究中心",
-      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBSNkVfaHVzYUZpM19UclZsVXQ3SFY4c2M5MWxfZENZam9obzdEc1paSENFVDF3M3pQdEhsZXdad0ZZajJWLUlva3l1TFo0Nm54SnFhN0IxZUtLd1U?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "[Exclusive] Europe Is on Different AI Path Than US, China, BSC AI Institute Director Says - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxORG5FVm5sQWtKWGcyS0VjN3cyTjRIWEVoNXBkc3F0RGp1cF93R1piN1lydEdrN1ctMFZFdWhWZEhjUGxjdXJqVVBEU292Q0pVRmRFdTlHMzV5eGY3eDJROTdSbG5KVy0yc2loNTVuRzAtVDkydVh1RWJOdzREaXJua28taHdKSlNIaEp3eW5NS3FuOGtjeXVyNUxwZTY3bDExcDBPZ3o1TS1BS2xTYnRSQkEtSmR3cXh5OXc?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "China's Alibaba Sets Up New Token Group to Revamp AI Business - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOb1lKemI5QVIzUGY4Q1dubWF5SjktWUZVUjNaZkRSSUZjSi1CRnVnbVgtNVlLV1Y2ZFltbmRtdWw3N25VWWs0WnpLY2FVTVNkZDJFMFJRakxWaldSYWlaUmZ1YUlsQlVvdDBKS1lQdnhhelBNRE5WeHJqUERfbkJzdlBNWTRxQTE0V1ItUU9oZXJ0VFBnVHAteg?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "AI Artificial Intelligence ETF (512930) and Consumer Electronics ETF (561600) rose by more than 1% together, and the Volcano Engine Winter FORCE Conference is about to open! - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE5NM2xaWXZiSXkxZlliZkRJazFxZlBtcEhtX1FHN3hPQWVIZWRNVUNZay1SUlpjTElhVzhOY0kwdWVjTEtSb1FkRlVwSE94VzZ3YWI1bFVzZkY5WjlmdE85dl9teGwwRG9HenhTWlNIYXFQUjBDVnBz?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "Net inflow of funds for the 11th consecutive day, AI Artificial Intelligence ETF(512930.SH) rose 0.27 percent, AI wave continued to break out, and new AI application DomoAI attracted 10,000 people to try it out. - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9iZHpUNFNqWFVaT2s0TnlkOTJmRy1CRHFqWWpxQ3J6cWVjdHZvZEdKWm5jcG9jMXlDZmRWVEVwNTdiWmdHUzUzSmJld0ZROV9lUVZPWE9wUFRDUDhxdjBrVzA4Zm9HUm91SjZKYzM1RnltMVNwNUp3?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "Over 100 Androids Train for Precision Tasks at X-Humanoid's New Embodied AI Base in Beijing - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOSXItdWlOd01IbEdMdTNDTFcydWQ4NEViUEUxdEtMMndnX3NhNlhld2FVZ3BXN0tndVlSaEozNnU1elBDSnlLWUFMbTd5akpzc0Z3WFNpWnBncnZCTGZzY0tyR1dhV2w3cTNQTHp3Y25uY3NILXR6MlBsWFRab1g3LV9UOGx6Q1ZCM01udVBMWVJHMEl4X1M2Zk1QUUwtN0U1MWlTSy0xS3R5Yk9paVpHcHdDMWEyNDdMcDFoUw?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "Chinese AR Glasses Makers Show Off New AI Gadgets at CES 2025 - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPVHpXYm5INFAtTVFUZkJoaXVpTkVQemRtRmcxRDAwY2p4WDM0bWZHOGc1a2IxRGJkcDJTUURJSndHczhPTXdqcXFKZEkwWEMwOVp0emQzbDQxaVhSS01fRTU2VmdxWFBWNGg0eDFEU2E5eEttT180UFpKY24tcTZweUM4UDdPaU41VDZVaHNkcGFlODBFanhVZzhCQQ?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "Investors Rekindle Interest in China’s AI Pharma Sector, Though Tangible Results Are Yet to Come - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQSmhJZGxWVlRTb011WDdMbDdqamVVa01rMHRQcUpNWXN0c0VuUnk0a3VObTk1QmZRNll2Q1FqU0RRMWxiU2lCeXgxemprOTVhcVlxUnhqeWRSSlZsbWc3UEczZF8xRDJjVVg4S2FDdU5vZENKUTNwX0VBNFE4SElNc296Z0pQX3dtajhRbHBQNXl3VXhRRFlMZGFVRUw3LUlfUkJHSQ?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "Zhuhai Sets Up China's First Local Government Bureau for AI Development - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPdkQ4b3V6LWxWbTFmc0tLRWZGV1NsY2xnTkVFb2hzUkw0aGJyT3lWLVFDaGZRYjVVazc0TjhGZ1RaSHNIU3Q5eGlBNlR1dE9sb3JfaGUtM1lIa05YSnlJa0NKa0N2aWVwcGRIclZEOVI0Yjloc0ZRNnlVVW4zZXFJZTQyRHRQZWF6UVhlUWJuVDBDTzNWMDgxRWlac0xEVTlWTDNPeDl3?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "The humanoid robot NEO invested by OpenAI has turned into a chef, the AI artificial intelligence ETF (512930) has a frequent intraday premium, and the latest scale of the consumer electronics ETF (561600) has hit a new high in nearly one year - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBjNlFaSWNld0ZVNXMtYnNoWS16dm5DS1BRakxpWUE0TnU2TEVBVGVUWVBVRFpfWDh0WGY5WnBJbXU0czRRZ1Y2NG1KQTlqYVRhV3BfLW1PM01pU20xVmR1SWFJNmtwR3pPY0RYbkN2dG5FMnZKLWg4?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "Intelligence and Wisdom – When AI Meets Chinese Philosophers 智慧与智能-人工智能遇见中国哲学家 - Berggruen Institute",
-      "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPUGd4S0UtcWJWd0JxTHExcmlHbFVfNTYyNmJxdDZ5ZjZVVkhsOFdsSWhlbEdCV1VsZm1NdFF0bTZaRU5wdHlZX2tScEpPRkxCS1E3LUpaZk5qQlVNenJLUkNJa1lSSmg4Y0xOcGtpLV81Q2h0SXJsR2NnSXNVdXNaTlQ3NGlKQlVVWU9uNTB3?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "Kuaishou’s Kling AI Debuts World's First AI-Made Anthology Drama Series - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNdlN3QTFWNWZHbFVscFZFNDFMR0dFbUxBZWpOUHl4S3JWSmp3cThTNTI0U0FpWUNBT0l6X0YxeHk5LWwyZzBaR2FfRVVXWUszSDEyZ3c5WFItTERxZ3hIUUwxYnE4WWMwYkhPcmstVjE4MHNHbUVKeXpwX2tCWExRZDUwOGdSTVZQN1RsNG93cU01anVB?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "Cooperation crucial for future of AI, expert says-国内国际-手机江西网 - 大江网",
-      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9jRHk2a1RuNFNRQXJSbmdqOVlKOGhpM0V2S2ZjRkxYVlVySW9ZUFNQQW9QX2ZqV0dTelNvdzRUcHd3bURTRXBsVHpzSkJvb1FSYUtCQ3NMZ2xzVHZ3UjBHYzR6cy13djg5bE9HTA?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "Agibot, Physical Intelligence Link Arms to Advance Embodied AI - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPMkZ0YjZ0aURWUkhVU3oyX1hRUXNlUGFGX1Q1MHBTTHNYUndzUHBFWnhqOGd5RDVsMG90WDFsbEp2aUdySU0tYlo2V0V3Rm9EX2pDZ3RrTDczTnBGOWRQZlVCUFVyNVI0bkJUdGtPYkJzWTRQempvQ3RrNzU0ejh2WFp0MTR1aUR4Sk9BZGNQUWNBNzFtTnFBSXo4S3A0RUlscE1TNXBadjJvcjdq?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "China's New Oriental Unveils AI-Related Education Initiatives - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOSEhrWDVfQWR5M3NMQTZ5SjBRVmtkcnhscXVLa3dXbl80ZmQyMThSY0VTYXpPQUpsbkZqdUl4NTZxTTZGbnprbXJSVk5yLWdsdlNJNWdkangzUC1TZFBvM3AyYnJiSHZnTXdZOURJWkgxR0NMOWE1Y2hzWUYxZVQtT2QxOEZwRmxzWTkzZy1laDZ1N2ZnRVpF?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "New Chinese AI Agent Manus Is Said to Beat OpenAI's Deep Research - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOeHQzZmZyZFFDSUNla1RSdXJhYjRXcmJzS1pPOWVxVWJKdlpaU2ZubXdUVnN2WW85REpvSFB5ZlJmZUlsdkJUNzEwQ2xqc0JyYzRXSzhOcVlzTEN5X2E5Z2VRdmFoYWhGeUZ2MUVvOGtPcWgtN3ZxcHgyOWdfX1FQMTNsRFBUYXpibjVvVmlaSElmMUl0WmFHSjdaaGQ1UQ?oc=5"
-    },
-    {
-      "source": "GoogleNews",
-      "title": "Record high, Ultramicro, Avida, AMD all rose sharply, AI Artificial Intelligence ETF(512930.SH) turned red and hit 4 consecutive gains - 一财全球Yicai Global",
-      "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1FNXhVNDRxVEFiNWxpN0JuOVowNWRHc1dEWGlHU19VdThTVGoxZG5jeUZ5bDNmZDVrRGljNkpYT1lqM2xaLUlYM1ZXSHgzQlFJWnVINTBsVjNFZzNZNjBlTWlpOEkwUTBvekEycUs3WWUxTENxaUxv?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "\"reuters AI artificial intelligence\" - Google News",
-      "url": "https://news.google.com/search?q=reuters+AI+artificial+intelligence&amp;hl=en-US&amp;gl=US&amp;ceid=US:en"
-    },
-    {
-      "source": "Reuters",
-      "title": "EXCLUSIVE: US to tell partners they must pick sides in AI race with China - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOQm05M3ZscW8yb1Jfdkw2QUl4Y2RzOWVXWlQ5ZzNIX0JhcnJlb1VIaHlmeFhJM082VUpua05SY3lQcVotUi1xVFVKSURVRVNBX3djVzE5M3Z6RmxDTHo5WWNsSEs2MU5RS0JaVnNfdWZwZDAtaURZUW1rNTJoYlZJWUdXZ2lSelRMV2RTdVpIQVRnMW0zTWlNU3NKbGtLU3R6cjNUTkZmUQ?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Even as market clouds clear, AI investment anxiety still gnaws - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQbEp6UVdnQ0t5bGpUeHF1THM5SllRRjZqNFV0M1FUVFZtY25qN0NBY1R4ZzQxMUo2XzhzRlA2Mm9laDE0U1JtZDBfTTh3QjhTem9aMmQ4ZDhMR2Y5dDNUdVE2dVRuRThicGc1dW5XSklsM0hWalhkM0VQNU9MdmducEp2cy12RUtfNTlFZWdfVmxUc1NfNVo5aVZobkZOZ0stRnMydlVOYlotN0hHRG5mbGZTVXBrX2xwanVaak5xbFRKM3hjcVE?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "China urges respect for digital sovereignty in AI race - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPbFdOX2tzNWZNVU43emQ3NDVXclE3a2h4UlpvVHNSUkpLd1RRWTlsNU9LRjMtYXl5VjVhVEctUHRsSnZYQm92eW9SSFR5SFVFZFFuNnpXVzFITEZDbjk5MS0tVzJVam9JS1RPazZFdWZrcVlUcXdXT1hBRTRLMExwR0RkdWlMYklnZ0JMbXpleTBaQ3dDMTRxTklkQQ?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Carl Sagan estate sues AI company over audio clip in ad - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPYWNGM0xSREM1MEtRWmZraXZxVDhWQ2RLZk9XTHVDYWxjYWVwanZ2M3Q1ZTd2YVNodWs5MjZmNkZEaDlpTVVibmNSRzdmMWFuWDNUcS1neXoza1BzTk1nT1p5SkVJWmxWLXdTN0FxY2M2OTlaX2toX0V5YjY3eERrR2pnY3c2OXlQZ0FEOExlSXFUcF9fWXl4ajJ6ZHkwYzg5cWNMODZaelNTNWxm?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Google expands Gemini Enterprise AI platform for law firms, lawyers - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPZk81aGh3d2lJX0FucWpwclltdnRJd3RqNVpTWnhMeGNBU3FUeWRIby1lcEpQQ3NOT1VaWjRlU19vT1lmVzdMTEpjbm16eTh4MTdvbGRtN1ZQb243eVZ2aF9Sd19PMEtzd2ZpbGV2R0p5SzZRTGJLNkE4TGNZUmtxVnlvVGx1NlVYQkIwMmEwRnV6RGxEQ1BvTGIzNGE?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "The US fiscal hole has an AI problem at its core - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNYkt1S0JESkM2QzgtS25qN2xrY2FjTXFkc0VpNmxaSWdDbHlwempJSUcxc2pXclVkTWNKVHNySU9vMFZLY1ZvRjBmQ0RETk9PajNnOVpCS0VDNlJfc1VuOGxjcFdoT0hwaEtzakJpZDFyS1RkYTlGTC1uMEhHVWxKXzhOOUdTR0RUYmdNV1ljRDhzeHA5M2xDT2o5TjhsRzNpRFJuMUVMUG8tSVhQb19z?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "UN and Red Cross call for urgent rules on autonomous weapons - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPbmljdWxVeFc5ZjQ1akJuSEJnZ3lQZUxnZVdaSFdwUWV2MWRuWnA3NzAwUWdMRjdFa1U5SkhkU1JabzdycGduTFVUU3J5cXpMOEpGbW1tM2w1Tk9XWm9hWVVmZ29LN1k0MVhJcWwxQlRlWkRJWjNTbDdDV3gwYy16SFpVQk02M0RkOGxGQ1pvQVdxdGJpZ1FwTlJPVjVaWWR4ZGszNw?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "German broker Scalable opens investment platform to major AI chatbots - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNUHpZeUtQSDRXMTRtRVRoVnV6b05vcjFKV055QmVsb2ZGZFVJOGl3eTF2QUsyTWlfZXE2OV9MdHgyX2RaM1BCY09yYkVCOGFuVS11QnI0UDZtd1FOWVhFak5uZlpNS0ExSVRyZU9BZXZSMnN4QS1SUUszdkZpa0F1ZXl6OUUwam43WEhqbXZRYjZKZUVMSnJtNG90MWRKRVF5XzcyQjJ5M1VjX2kxNVZjWmlLZUFyS3FUYjMw?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Taiwan issues indictments over alleged illegal export of AI servers to China - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxORUFqODhsNEhfOVR2RWdNdXd1LVI2REthVUgzaU4zdXNIa2RlZmdSTXVwemR6ODVzUm1mMmtOZ0FRR3FEbVp6YWlTbDZmcm1nLTdQcFFkcWhVTTBvMkJ4dDh2blB2NkswdzZTbEFGWEZ2c3Nwam9aWXREYmhVR0wzQzdSdVoxUThYa0VrcFI4R0VKaWk2SDVFNmJUaVFuZ1Z2Nmhha21pSWxaRm1rQklZWm83aUNhbjg?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Morning Bid: Waiting on Nvidia for next leg of AI rally - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9nRzR6dW5TVWtzeEswZlh0SHpjT09mZWlsd0VMSFRGb0dSSlJ2WXNnZ0NtYnV6STFLMkJLN3dWalhmSEtCSThLTVNIaElWR3Bld204dnExYkZNNlJtQk1qdU1XcnItQ2hQRWhpeUxET19oZ0NidDFMWm01X1ZtN2M?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "UK, Ukraine sign AI defence partnership linked to battlefield technology - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQMk1vd2pFVnJwQWNUbVJRS1A0WDRCXzBuVVBMN0hlTFJtNDhSZDVnSkdaMmZTSXRhSWlOTjNvYTBSVU9KM1NSdE9OWTFIVXJKWEdEU0ZfaTBMbGV6WHlkWkdEWGdMNEE3WVFoNnRQdVZNamRlc3cxakRMbkxXd3JSYnFYMXlDVUJXZC1nOW9ONTVseXlCRGNxUExhOUhCb2E3aVpPWmRjYmpoUnFmNG5WMGRJV0lGelBQRjk3emF2MTdaSmF3eTE3UXZ3QQ?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Alabama launches probe into OpenAI after Hugging Face breach - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNbEpUUVNqdVEtZ2FQaGFZSnhRQ3BOa21DYlc3aEtLY2g1VFVINnR4MUFtTTlsdGUydkJsZllRQ3pJR3dNWnBjQlRrTjRVSWdVY2ZBdThOcXRlSkM1dTNYMlZlSF9MNnZ2M1dFc1BvNmVKTUZUYi1aR3RSeC1NWTk4d0F6aDNUbnlqZjNrMng2NFh2VVcwZk9UVkgwajFnOU9lOFRZSGJFRVF4MlBPUVhOSzF4UQ?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "AI chipmaker Enflame sets subscription date for near $900 million Shanghai IPO - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNNkp1YllobWRwNG5PZ2p2SmtTNG5IcTFhdU1vcHF4THhPN2NhU20zY3dQdFpna3dhMTBZMjhJY0hGWWNLMmlmWmd6ZnF3cGRnZXUySUVfZWdKQXhoei01cUZQWFNaUzNHbDV3YjRrSDludlNvQjRfa3JZOWlKeEtWTTY0SHJYOEJPQUdabUpHMTVsbTlIQWdleElGWU5yTlYyWGQwZUlZdUhMakVlbkNkRUhfQmp0dG9YZXJNZVA1QmlncFgzekc4?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "US lawmakers urge Trump to ban Americans from aiding Chinese security agencies - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxOQkFUWW1EZENIWkt4a2RkQy03Q1lCUFBVOE5BTmJnY3E3czFuSUpqdnJYTkdscDhmb2ZQQkdVMFBPVm0xSzFqa1l5Q0tKd2JJbWJua1JkY2tBbUduWE1jNmI4a0NBSTlPTnhPSmJuNk5uOEc2OGhsZloxLTh6Wm1uS3NZQkQzT1NQNWJxNk5xVGZKcUE1WlUzUGNseHJ2blQ0WFVBUGhhSE1DdEZabEdscG1raG9YNVpyUm4yTmZraG8?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "US corporate AI debt surge tests investor limits as fatigue emerges - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxNR0I5VXZyeVp4RlV6cnhVdXFwZ2RNZUU0Q1czQ2c0WkpZUUJuRV9PNEg0VHkzLVlnSUdZMWVOalJzNkNXdlNtamlGSzRLbVRXb0VkVzl3dm5Uc3hPV21Cb3BIdTNyOWZQSDRGQ1ZvV2xUVUZ6eExfeGpRM0hQck8wSDlzR3ViRDJHS25NaGxwNHdVYWN5cHRUcWJvb0hybjRtclNxMFFGT18tMmc2SEw5RFNYb3ZrSWZpS0VYTw?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Alibaba launches $10 billion Hong Kong share placement to fund AI spending - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOSHJGOUFEMWhrdjlTbk5JelZ2Zl9jNWZ3UjRUTFVZX3hyTmx2bnZ2Qi1Ob3FPZGdBNkoyOHpfRXk3YzFpYXMwNkZHb09uX01jWDRVZ3lJSi1rM2ZGbldMV1J1d0lLUWFTS1FLcHowTXNobENIUkxody01eDItOHZucHRUV0xjME80UkxscjVNX1dnRUlHY1BCN3o5TV9CMFNzcnlobjJBVWdyMHNiQjNtT090bEV6WXQyUU5SdQ?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Ex-Google engineer's conviction for stealing AI secrets partially overturned - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOTEtjUjJVUXlMNW80UzhSd3lYbHRvMlJEMDQxR2p2cFk1cWRyd05RNjBGRHNtdXpuWjBwaXkwZmxPVGQ0V2lKYm9OR1ZhWEhiTzgzTXUtdURlVjlEb25CalF1QzkwRWxUVmZISU81SVZFYXF2WWQ3NnpSSE92ZFozMHR1WEVVTkM4Z0ZMN3ZQdjU4RnRSb0plY0VmQ2hjM2w3TG5kNXlnTHV0QkFVMXJ4dWQtMzRaTlhUNTJKV2dHcFNYQQ?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Alibaba launches Wan3.0 AI video model after $10 billion share sale - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNZmdTM01hcWh5dzAtTzJPbUFQeFRaQjRsc0hUY0pvOGYzeWlQNWFFQUZDaGhoaXZvaVNuMmFSVlBrek9UZWhENW1qNEd4cFNNRHcxa0RJMDYzUzRXVXl5ZzBHTEJoYWRMUnZ3U0lvdFFMTjNxaVNNSWNuWUpJY3ZyZ2FQT0M0UFJvYUhXLTI1a2tKR1ByMzYyb053MVdTSjdjbVFPSlhBRXJhdDZnOGZXN3VULW53amRPQjRRV3lZX0Q4X3Bf?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "AI offers 'lifeline' for emerging economies, World Bank says - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNaVZGc1lSSGxvaXVoX2pBRG5rN1hTcU40dS1TQXl0ZU4yYUNDVFU2ODdCakpRai1hbFJwUVVkQVo0MVdENEg0YUQ4c25uZERIRUJqMHlBbVUwYXVfX3c0ZlpmdmVhVjRWUVFTbE93YnlzLV8zVW1FU3hhbFQ4Sy1OVkNXcHZsQzdIRXpVYmplcXdwOFJQS19XZk5TdVIxNlU?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Alibaba shares slide after $10.2 billion AI share sale offered at sharp discount - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPbmJDLXh4Z1Q1TU1xaFVKallDYkY5TmdpYUlUTkpxZ1BGS09ReGNfSlJTd0F4OGNKYndTUndKRmRVaU9DUUNfWVc0b1FyV211dFQwRTdHZS1CNExRd3owLU93WEUtcWZ6YkQyOThYMmZlNDFJM01RbjhOenhvaFptLW44S2tmR2pPSjJOWlhnUHNhUy02Wm1Td0gyY3F1QzhyQk42YWhnNl9UUXBxY0Z3bzhUSm1tRjhTZ3YyM3dVU21ibERiRzMtQ3B6eTlfZw?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Thomson Reuters goes via China to build its own AI model - Computing UK",
-      "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQWHlaczdsaDJSeUdHRUpRN1BmWUd5Yy1PQTk1czdLNnZDcmFTRWlNWjQxZk5fcFZqX3BTV3NWUDRaM1kzSlluenQ4QTg2cGVSOUZWUDllSlRTblpSYldHZlFlamVWT3VaUzZKZkYwXzN4UnBycWticGJYMDJ5NXFaRw?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "NEWSLETTER: American AI model makers smell an opportunity - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQTjdFeGZSYlRfS0Z2ajQwNkNMQm1vUDE2SFJiRkF2NlNMTnVMRjdDaWlSOG9BTDZhWXZ5R3M3MENRbGpBaUFrRVptYmxEbmstQXBhdEVIYmhYQUJSQmRONzcxTG9MVlhmOFRxc0Y5QUdKMF9wRkZvaS10VUc4WFNuWjNPdlE3YVV5cjRoNnUtZ3VvSnJWd3BpVWl6X1BFMUptNzBTNDBYTGNCLXhFLUZ4YkVFMHpRNFE?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Thomson Reuters launches proprietary AI model for legal work - SiliconANGLE",
-      "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNMmpwLUt2cU1XVnVacVFrd2F4QkZJc0Q0MjZOZjA4T3FCUGxBdGhYaVVRQ2gzT0VpWDFzU3dlREVFOEx4MG5wWUZrcDJHcGRHODdyYVR3TER5eVlQR3pRWVQ1LXItMm5qWWtram5HZHZGNXpiQ0ZJZmh1a0dXVVRNZE5TeHY0WGpOYVRFeE03MFNpOHZicHFiazZ2LUpfQQ?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Strong majority of Japanese firms have yet to fully embrace AI: Reuters poll - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNekllTVFtYmFKdy1HY1ZRWllGSmZLTDUtN3M1cVFOd0taZEZVNF9pcHhIX3czN1JXS0Jzb0RqTl9NWURjWlVFOUo2RDFEQUVtU1phN1pUc2p1ekdmLXYwUVo3RDYtX1NFZnNOa0s4ZE1wQnNZcFE2N2tmRjZWaUYzUGZseFo3OUV2bWJ6OGFGXzdaa3M4UUZhSEpsUjVreEFfWlRlSXNNRzd0OUZDTUo3Zw?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "US SEC subpoenas Wall Street lenders over Situational Awareness meltdown, source says - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxORkhHY1pjR3RJZTFKZDEydUJNTUZ3UHFUZFJoNFJjR1lERUVTUy1wQ1VGMzJ5U0ZkR1l2em9TRE5ZUjludVJEekZ2TENYS1lHVzNkbE1GaUVCT2kyZXlWalB6bmJNSjNiTHRmODg2V3pnbVNNWXVuSTZ5WUJCbmpDWUk2UlluT0RuODNjcVB2ekNsNXNaSHRoVmxiRF9KQzNKZzhaSndxUWFyUVNWbllsM21HeHFUeldEdnpKUXFrek9mY0g0alM5YVdLNnc?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Europe's established tech firms emerge as unexpected AI winners - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPOWRDdmdzOFBqRzVVSGppcGNESFF1WGZlQVVaQnRfaEd6NS1xLVRXUHFGSGt2dzNVR1FkRUgySTBfV0FUSHZ6RzcyYjFzdXB1aTRVTFdBbkU1c3ZyX1luWkZsTFdIOGtiTUNzVFpVZVVkRzBUQVZVZlBQbEQ1X3ZQZ0h0Y3ljVDlFRHRFeUt4S0dERW5RLVhVR0tSX2lNSkNJVXRCaktnQ0oxQmZJbmhVZWpGQTNCLUNEYmc?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Who is liable when AI goes rogue? Lawyers see new risks - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOdm5IRWdwV3E1N1BVWXFDY21mTGJoMTg1TXB3VXFyYXRodDYycGNpZkhxOVp5SGF0NzkwVFlXaHpER2Mwdk1IcU5OaENIMV9MTkZJZFNTU0E5ODV6a1BqS2VacDVZeWhtbWRnaHpIVVpMOGRqR2l4bHNpYW8wZmxvcm90SGxNelNmUmVNS3hSbHhTY1RPem5GTmd0NF91bnNw?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Higgsfield's valuation soars fourfold to $5.4 billion in six months on AI content demand - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQU2JUdkZ2ZjZ4enNhT1VXa1pXU1NtbjhPbncyUDNZZTZWOC1zb3E4akhtN1pkenY3LVZpYzdCY2xna2NIMFRkRG8yQklDTW5KejV2TjZJT1dsaXk3NlFDcE1YWks3aVRPbklKVWJxWTAxUmNKOWx1b2t3WWxmMXA5VEIzdTNlMWdVVTZKMFNkWTZDQWVVNFNXdGFlc0l1QTFoQkRBNGlvT3l5dC0xSTh6QWYwSV96TWRLUm9hdGtUclpfejZfQWdpUzRFczBpbjVK?oc=5"
-    },
-    {
-      "source": "Reuters",
-      "title": "Soaring AI hyperscaler default hedges aren't what they seem - Reuters",
-      "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOMFFnWUNMaWpDeWFxYlNzUndyNi16SWZKVmEyZ3hDckhWTlJNMGROV2VfMngxbzljVDhkRE9YTFluaVJQbVBJb1FvREFmREZlVGl1TjAtZzNmMjFnNm1HdW5lM3ZOellSMHA2M1lXYklvSVRKdWJ5Tk1abnZyZ2V4WWlZZGtrOW9GelhCZlV6dGpIamZzWFZ0djNfY0lIcXRsYTdtSExzZ2ZMWHN2NHRkMC1OajNEOW1qeFZpNzZndmpXUnZHblE?oc=5"
+      "source": "TechCrunch",
+      "title": "India&#8217;s Ringg gets backing from Peak XV as it pushes voice AI past the phone call",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
     }
-  ],
-  "published_count": 100
+  ]
 }
