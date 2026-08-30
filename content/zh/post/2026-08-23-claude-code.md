@@ -160,6 +160,8 @@ Claude Code 是目前最成熟的终端 AI 编程助手，功能全面、生态�
 
 如果你经常使用终端进行开发，或者需要一个强大的 AI Agent 来辅助编码、测试、运维，Claude Code 值得立即尝试。
 
+> 💡 **配套工具**：处理 Claude Code 输出的 JSON 结果可以用 [JSON 格式化工具](/tools/json-formatter/)，调试 JWT Token 可以用 [JWT 解码器](/tools/jwt-decoder/)。
+
 ---
 
 > 📖 **更多信息**：[Claude Code 官方文档](https://code.claude.com/docs/en/overview) | [GitHub 仓库](https://github.com/anthropics/claude-code)

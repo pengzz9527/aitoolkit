@@ -166,6 +166,8 @@ FrontierAgent 是 Apodex AI 在开源 Agent 框架领域的有力竞争者。它
 
 对于需要运行长程研究任务、且偏好终端交互的用户来说，FrontierAgent 是一个值得尝试的选择。它的 Apache 2.0 许可证也保证了企业级使用的自由度。
 
+> 处理 FrontierAgent 输出的评估结果？[JSON 格式化工具](/tools/json-formatter/) 和 [CSV/SQL 分析器](/tools/csv-sql-analyzer/) 能帮你快速解析基准测试数据。
+
 **推荐指数**：⭐⭐⭐⭐☆（4/5）
 
 | 维度 | 评分 | 说明 |
