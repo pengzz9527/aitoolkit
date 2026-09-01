@@ -1,25 +1,15 @@
 #!/usr/bin/env python3
-import json, urllib.request, urllib.error
+import json, urllib.request, sys
 
-# Get HN top stories
-ids_url = "https://hacker-news.firebaseio.com/v0/topstories.json"
-ids_resp = urllib.request.urlopen(ids_url, timeout=15)
-ids = json.loads(ids_resp.read())
+# Hacker News front page
+url = "https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=30"
+req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+with urllib.request.urlopen(req, timeout=15) as resp:
+    data = json.loads(resp.read())
 
-# Get top 30 stories details
-stories = []
-for sid in ids[:30]:
-    try:
-        story_url = f"https://hacker-news.firebaseio.com/v0/item/{sid}.json"
-        story_resp = urllib.request.urlopen(story_url, timeout=10)
-        story = json.loads(story_resp.read())
-        if story.get('type') == 'story':
-            stories.append(story)
-    except:
-        pass
-
-for s in stories[:25]:
-    title = s.get('title', '')
-    url = s.get('url', '') or ''
-    points = s.get('points', 0)
-    print(f"[{points}] {title} | {url}")
+print("=== HN TOPICS ===")
+for h in data.get("hits", [])[:25]:
+    points = h.get("points", 0)
+    title = h.get("title", "")
+    story_id = h.get("objectID", "")
+    print(f"[{points}] {title} | https://news.ycombinator.com/item?id={story_id}")

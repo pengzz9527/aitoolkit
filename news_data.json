@@ -1,7 +1,112 @@
 {
-  "date": "2026-08-27",
-  "fetched": "2026-08-27T10:02:08.330524Z",
+  "date": "2026-08-31",
+  "fetched": "2026-08-31T23:32:40.439878Z",
   "items": [
+    {
+      "source": "github",
+      "title": "guillaumemeyer/watermarks-remover",
+      "url": "https://github.com/guillaumemeyer/watermarks-remover",
+      "points": 19671,
+      "description": "A privacy-first app that strips AI watermarks from content you own."
+    },
+    {
+      "source": "github",
+      "title": "awesome-dsh-plugin/awesome-dsh-plugin",
+      "url": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin",
+      "points": 13890,
+      "description": "A curated list of plugins for DeepSeek Harness (dsh) · DeepSeek Harness 插件精选列表"
+    },
+    {
+      "source": "github",
+      "title": "pathwaycom/arc-task-gen",
+      "url": "https://github.com/pathwaycom/arc-task-gen",
+      "points": 9398,
+      "description": "Generates original ARC-AGI-1-style tasks distribution-matched to the public eval set."
+    },
+    {
+      "source": "github",
+      "title": "sapientinc/PRAXIST",
+      "url": "https://github.com/sapientinc/PRAXIST",
+      "points": 5447,
+      "description": "Autonomous research system for measurable, computer-executable research."
+    },
+    {
+      "source": "github",
+      "title": "KKKKhazix/human-writing",
+      "url": "https://github.com/KKKKhazix/human-writing",
+      "points": 3328,
+      "description": "让 AI 写的中文读起来像一个具体的人在说话。通用创作与改稿 Skill，开箱即用。"
+    },
+    {
+      "source": "github",
+      "title": "fuxicodex/Fuxi",
+      "url": "https://github.com/fuxicodex/Fuxi",
+      "points": 3126,
+      "description": "FuXi is a fast, self-contained AI coding agent that lives in your terminal — edit code, run commands, and drive tools, with cost-aware routing across "
+    },
+    {
+      "source": "github",
+      "title": "wang2122/sprix-sage-router",
+      "url": "https://github.com/wang2122/sprix-sage-router",
+      "points": 2968,
+      "description": "Sprix AI at 屿智同行 — state-aware SELF/COLLABORATE/HANDOFF routing for A2A agent networks."
+    },
+    {
+      "source": "github",
+      "title": "oil-oil/oil-motion",
+      "url": "https://github.com/oil-oil/oil-motion",
+      "points": 2128,
+      "description": "Create smooth, responsive interactive web animations."
+    },
+    {
+      "source": "github",
+      "title": "ShawnPana/phone-harness",
+      "url": "https://github.com/ShawnPana/phone-harness",
+      "points": 2111,
+      "description": "let your agent control your phone"
+    },
+    {
+      "source": "github",
+      "title": "yanliudesign/mono-color-skill",
+      "url": "https://github.com/yanliudesign/mono-color-skill",
+      "points": 1840,
+      "description": "One-ink editorial print image skill — warm paper, halftone photography, active negative space, and restrained typography."
+    },
+    {
+      "source": "github",
+      "title": "amagine-ai/Amagine3D",
+      "url": "https://github.com/amagine-ai/Amagine3D",
+      "points": 1767,
+      "description": "Amagine3D: From hardware requirements to editable 3D designs"
+    },
+    {
+      "source": "github",
+      "title": "jd-opensource/JoyAI-Video-Edit",
+      "url": "https://github.com/jd-opensource/JoyAI-Video-Edit",
+      "points": 1730,
+      "description": "[Official Repo] JoyAI-Video-Edit: Real-Time Open-Ended Video Editing with Autoregressive Diffusion"
+    },
+    {
+      "source": "github",
+      "title": "AdamPlatin123/dsh-plugin-radar",
+      "url": "https://github.com/AdamPlatin123/dsh-plugin-radar",
+      "points": 1437,
+      "description": "DSH Plugin Radar — 开源 DSH 插件生态雷达：自动发现 15900+ 候选、k8s 运行级实测 10000+、15 分钟快照管线；插件目录是其自动生成的 artifact"
+    },
+    {
+      "source": "github",
+      "title": "AMAP-ML/LongHorizon-Harness",
+      "url": "https://github.com/AMAP-ML/LongHorizon-Harness",
+      "points": 1421,
+      "description": "The long-horizon computer-use harness. Run AI agents across desktop apps and the CLI for extended periods while preserving task state and making relia"
+    },
+    {
+      "source": "github",
+      "title": "ApodexAI/FrontierAgent",
+      "url": "https://github.com/ApodexAI/FrontierAgent",
+      "points": 1332,
+      "description": "🧩 FrontierAgent, our agent framework, open-sourced alongside it — native command-line TUI, ReAct and Agent Team modes, one command on macOS and Linux,"
+    },
     {
       "source": "TechCrunch",
       "title": "AI News &amp; Artificial Intelligence",
@@ -11,91 +116,98 @@
     },
     {
       "source": "TechCrunch",
-      "title": "Viral AI startup Instinct has raised $350M at a $2.5B valuation",
+      "title": "AI News &amp; Artificial Intelligence",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Google&#8217;s Gemini has a branding problem, and so does the rest of AI",
+      "title": "The Pentagon now has its own version of ChatGPT and Grok",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "How do we explain OpenAI&#8217;s executive exodus?",
+      "title": "Instagram puts new limits on undisclosed AI profiles",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "OpenAI releases its official report on the Hugging Face breach",
+      "title": "Harvard Law dropout raises $6M for Blue Voice to build a &#8216;Harvey for police officers&#8217;",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Radar makes podcasts searchable — and usable by AI agents",
+      "title": "Clipto uses AI to search terabytes of video and is now valued at $250M",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Ex-Meta scientists want to bring visual AI to the factory floor",
+      "title": "Nvidia’s $3.5B MediaTek bet reveals its plan for tackling Big Tech&#8217;s AI chip buildout",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Bill Gates wants to see a robot tax and &#8216;Human Reserved&#8217; jobs to mitigate harms from AI",
+      "title": "Meeting note-taker Circleback adds a free tier to attract more customers",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Surprise: Z.ai is the AI lab behind the mysterious Ox Alpha model",
+      "title": "The US is building barriers around drones and robots, but China has scale to get around them",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "QueryStory wants you to believe what AI is telling you",
+      "title": "Musk&#8217;s faster path to more gas turbines comes with pollution problem",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Arga Labs is building a better way to train enterprise AI agents",
+      "title": "Caterpillar is bringing to AI deployment what it learned from automating mining",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Hearing tech startup Legato emerges from stealth with $12M and a peek at its AI hearing glasses",
+      "title": "Sony Music, Warner sue Anthropic, alleging a &#8216;brazen campaign&#8217; of intellectual property theft",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Runable hits $21M to bet AI agents can go from building businesses to growing them",
+      "title": "At TechBBQ, Europe&#8217;s AI conversations kept coming back to: Who&#8217;s actually in control?",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "India&#8217;s Ringg gets backing from Peak XV as it pushes voice AI past the phone call",
+      "title": "&#8216;We&#8217;re not doing 30 bets a year&#8217;: Vijay Pande on betting small after running $4B at a16z",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
+    },
+    {
+      "source": "TechCrunch",
+      "title": "Nvidia’s AI advantage is moving beyond the GPU",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0

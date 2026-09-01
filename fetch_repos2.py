@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 import json, urllib.request
 
+# Get more trending repos
 repos = [
-    'unclecode/crawl4ai',
-    'THU-MAIC/OpenMAIC',
-    'punkpeye/awesome-mcp-servers',
-    'livekit/agents',
-    'tashfeenahmed/freellmapi',
-    'K-Dense-AI/scientific-agent-skills',
+    'pollen-robotics/microduck_rl',
+    'corsairdev/corsair',
+    'every-app/open-seo',
+    'colinhacks/zod',
+    'abhigyanpatwari/GitNexus',
+    'tt-a1i/archify',
+    'p-e-w/heretic',
+    'handsomestWei/patent-disclosure-skill',
+    'mvanhorn/last30days-skill',
 ]
 
 for repo in repos:
