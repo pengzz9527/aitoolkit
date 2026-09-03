@@ -1,40 +1,54 @@
 #!/usr/bin/env python3
 import json, urllib.request, sys
 
-def fetch(url):
-    with urllib.request.urlopen(url, timeout=15) as r:
-        return r.read().decode('utf-8', errors='replace')
-
-# Try GitHub trending
-print("=== GitHub Trending (AI/ML) ===")
+# Fetch HN front page
+print("=== HN Front Page ===")
 try:
     req = urllib.request.Request(
-        "https://github.com/trending/python?since=daily",
-        headers={"User-Agent": "Mozilla/5.0"}
+        'https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=30',
+        headers={'User-Agent': 'Mozilla/5.0'}
     )
-    html = fetch("https://github.com/trending/python?since=daily")
-    # Extract repo names and stars
-    repos = re.findall(r'<h2[^>]*><a href="/([^"]+)"[^>]*>\s*([^<]+)\s*</a></h2>', html)
-    import re
-    for i, (owner_repo, name) in enumerate(repos[:15]):
-        stars_match = re.search(r'[\d,]+ star', html)
-        print(f"{i+1}. {owner_repo.strip()}/{name.strip()}")
-    print()
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        data = json.loads(resp.read().decode())
+    for h in data.get('hits', [])[:25]:
+        print(f"{h.get('points',0)}pts | {h.get('title','')} | {h.get('url','')}")
 except Exception as e:
-    print(f"GitHub trending failed: {e}")
+    print(f"HN error: {e}")
 
-# Search for AI news
-print("=== Searching for AI News ===")
-# Try TechCrunch AI section
+print("\n=== GitHub Recent AI Stars ===")
 try:
-    data = json.loads(fetch("https://hn.algolia.com/api/v1/search?query=OpenAI%20Google%20Anthropic%20model&tags=front&hitsPerPage=15"))
-    for i, h in enumerate(data.get("hits", [])):
-        score = h.get("points", 0)
-        title = h.get("title", "")
-        url = h.get("url", "")
-        print(f"[{score}pts] {title}")
-        if url:
-            print(f"  {url}")
-        print()
+    req2 = urllib.request.Request(
+        'https://api.github.com/search/repositories?q=created:>2026-09-01+stars:>100&sort=stars&order=desc&per_page=15',
+        headers={'User-Agent': 'Mozilla/5.0'}
+    )
+    with urllib.request.urlopen(req2, timeout=15) as resp2:
+        data2 = json.loads(resp2.read().decode())
+    for r in data2.get('items', [])[:15]:
+        desc = (r.get('description') or '')[:80]
+        print(f"⭐{r['stargazers_count']} | {r['full_name']} | {desc} | {r['html_url']}")
 except Exception as e:
-    print(f"Search failed: {e}")
+    print(f"GitHub error: {e}")
+
+print("\n=== HN AI Stories Today ===")
+try:
+    req3 = urllib.request.Request(
+        'https://hn.algolia.com/api/v1/search?tags=story&query=AI&hitsPerPage=15&numericFilters=created_at_i>1788249600',
+        headers={'User-Agent': 'Mozilla/5.0'}
+    )
+    with urllib.request.urlopen(req3, timeout=15) as resp3:
+        data3 = json.loads(resp3.read().decode())
+    for h in data3.get('hits', [])[:15]:
+        print(f"{h.get('points',0)}pts | {h.get('title','')} | {h.get('url','')}")
+except Exception as e:
+    print(f"HN AI error: {e}")
+
+print("\n=== GitHub Trending (Python) ===")
+try:
+    req4 = urllib.request.Request(
+        'https://api.gitter.dev/user/following',
+        headers={'User-Agent': 'Mozilla/5.0'}
+    )
+except:
+    pass
+
+print("\nDone.")
