@@ -1,118 +1,111 @@
 {
-  "date": "2026-08-31",
-  "fetched": "2026-08-31T23:32:40.439878Z",
+  "date": "2026-09-10",
+  "fetched": "2026-09-10T13:01:04.968805Z",
   "items": [
     {
       "source": "github",
       "title": "guillaumemeyer/watermarks-remover",
       "url": "https://github.com/guillaumemeyer/watermarks-remover",
-      "points": 19671,
+      "points": 21593,
       "description": "A privacy-first app that strips AI watermarks from content you own."
     },
     {
       "source": "github",
       "title": "awesome-dsh-plugin/awesome-dsh-plugin",
       "url": "https://github.com/awesome-dsh-plugin/awesome-dsh-plugin",
-      "points": 13890,
+      "points": 15149,
       "description": "A curated list of plugins for DeepSeek Harness (dsh) · DeepSeek Harness 插件精选列表"
     },
     {
       "source": "github",
       "title": "pathwaycom/arc-task-gen",
       "url": "https://github.com/pathwaycom/arc-task-gen",
-      "points": 9398,
+      "points": 11234,
       "description": "Generates original ARC-AGI-1-style tasks distribution-matched to the public eval set."
     },
     {
       "source": "github",
       "title": "sapientinc/PRAXIST",
       "url": "https://github.com/sapientinc/PRAXIST",
-      "points": 5447,
+      "points": 6326,
       "description": "Autonomous research system for measurable, computer-executable research."
-    },
-    {
-      "source": "github",
-      "title": "KKKKhazix/human-writing",
-      "url": "https://github.com/KKKKhazix/human-writing",
-      "points": 3328,
-      "description": "让 AI 写的中文读起来像一个具体的人在说话。通用创作与改稿 Skill，开箱即用。"
-    },
-    {
-      "source": "github",
-      "title": "fuxicodex/Fuxi",
-      "url": "https://github.com/fuxicodex/Fuxi",
-      "points": 3126,
-      "description": "FuXi is a fast, self-contained AI coding agent that lives in your terminal — edit code, run commands, and drive tools, with cost-aware routing across "
     },
     {
       "source": "github",
       "title": "wang2122/sprix-sage-router",
       "url": "https://github.com/wang2122/sprix-sage-router",
-      "points": 2968,
+      "points": 3599,
       "description": "Sprix AI at 屿智同行 — state-aware SELF/COLLABORATE/HANDOFF routing for A2A agent networks."
     },
     {
       "source": "github",
-      "title": "oil-oil/oil-motion",
-      "url": "https://github.com/oil-oil/oil-motion",
-      "points": 2128,
-      "description": "Create smooth, responsive interactive web animations."
-    },
-    {
-      "source": "github",
-      "title": "ShawnPana/phone-harness",
-      "url": "https://github.com/ShawnPana/phone-harness",
-      "points": 2111,
-      "description": "let your agent control your phone"
-    },
-    {
-      "source": "github",
-      "title": "yanliudesign/mono-color-skill",
-      "url": "https://github.com/yanliudesign/mono-color-skill",
-      "points": 1840,
-      "description": "One-ink editorial print image skill — warm paper, halftone photography, active negative space, and restrained typography."
+      "title": "KKKKhazix/human-writing",
+      "url": "https://github.com/KKKKhazix/human-writing",
+      "points": 3579,
+      "description": "让 AI 写的中文读起来像一个具体的人在说话。通用创作与改稿 Skill，开箱即用。"
     },
     {
       "source": "github",
       "title": "amagine-ai/Amagine3D",
       "url": "https://github.com/amagine-ai/Amagine3D",
-      "points": 1767,
+      "points": 3422,
       "description": "Amagine3D: From hardware requirements to editable 3D designs"
     },
     {
       "source": "github",
-      "title": "jd-opensource/JoyAI-Video-Edit",
-      "url": "https://github.com/jd-opensource/JoyAI-Video-Edit",
-      "points": 1730,
-      "description": "[Official Repo] JoyAI-Video-Edit: Real-Time Open-Ended Video Editing with Autoregressive Diffusion"
+      "title": "fuxicodex/Fuxi",
+      "url": "https://github.com/fuxicodex/Fuxi",
+      "points": 3398,
+      "description": "FuXi is a fast, self-contained AI coding agent that lives in your terminal — edit code, run commands, and drive tools, with cost-aware routing across "
     },
     {
       "source": "github",
-      "title": "AdamPlatin123/dsh-plugin-radar",
-      "url": "https://github.com/AdamPlatin123/dsh-plugin-radar",
-      "points": 1437,
-      "description": "DSH Plugin Radar — 开源 DSH 插件生态雷达：自动发现 15900+ 候选、k8s 运行级实测 10000+、15 分钟快照管线；插件目录是其自动生成的 artifact"
+      "title": "yanliudesign/mono-color-skill",
+      "url": "https://github.com/yanliudesign/mono-color-skill",
+      "points": 2988,
+      "description": "One-ink editorial print image skill — warm paper, halftone photography, active negative space, and restrained typography."
     },
     {
       "source": "github",
-      "title": "AMAP-ML/LongHorizon-Harness",
-      "url": "https://github.com/AMAP-ML/LongHorizon-Harness",
-      "points": 1421,
-      "description": "The long-horizon computer-use harness. Run AI agents across desktop apps and the CLI for extended periods while preserving task state and making relia"
+      "title": "EvoMap/AutoResearch",
+      "url": "https://github.com/EvoMap/AutoResearch",
+      "points": 2906,
+      "description": "AI/ML research agents from idea to paper-ready evidence. An EvoMap open-source project."
+    },
+    {
+      "source": "github",
+      "title": "ShawnPana/phone-harness",
+      "url": "https://github.com/ShawnPana/phone-harness",
+      "points": 2719,
+      "description": "let your agent control your phone"
+    },
+    {
+      "source": "github",
+      "title": "anthropics/commerce-agents",
+      "url": "https://github.com/anthropics/commerce-agents",
+      "points": 2655,
+      "description": "Reference blueprint for building shopping and merchant agents with Claude. Examples in retail, commerce, telecom, and entertainment included."
+    },
+    {
+      "source": "github",
+      "title": "Nanako0129/sepia",
+      "url": "https://github.com/Nanako0129/sepia",
+      "points": 2517,
+      "description": "De-AI writing skill for any Agent Skills-compatible agent (77+ via the Skills CLI), with native plugins for Claude Code, Codex, Grok Build, and Antigr"
     },
     {
       "source": "github",
       "title": "ApodexAI/FrontierAgent",
       "url": "https://github.com/ApodexAI/FrontierAgent",
-      "points": 1332,
+      "points": 2495,
       "description": "🧩 FrontierAgent, our agent framework, open-sourced alongside it — native command-line TUI, ReAct and Agent Team modes, one command on macOS and Linux,"
     },
     {
-      "source": "TechCrunch",
-      "title": "AI News &amp; Artificial Intelligence",
-      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
-      "points": 0,
-      "comments": 0
+      "source": "github",
+      "title": "oil-oil/oil-motion",
+      "url": "https://github.com/oil-oil/oil-motion",
+      "points": 2340,
+      "description": "设计并实现随滚动、拖动、指针或状态变化响应的网页动画，覆盖素材、时间轴和运行时。"
     },
     {
       "source": "TechCrunch",
@@ -123,91 +116,98 @@
     },
     {
       "source": "TechCrunch",
-      "title": "The Pentagon now has its own version of ChatGPT and Grok",
+      "title": "AI News &amp; Artificial Intelligence",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Instagram puts new limits on undisclosed AI profiles",
+      "title": "AI research startup Listen Labs scrubbed a $1.5B funding round for Salesforce talks",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Harvard Law dropout raises $6M for Blue Voice to build a &#8216;Harvey for police officers&#8217;",
+      "title": "OpenAI adds a prominent AI doomer to its board of directors",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Clipto uses AI to search terabytes of video and is now valued at $250M",
+      "title": "Massachusetts hits data centers with new clean power rules",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Nvidia’s $3.5B MediaTek bet reveals its plan for tackling Big Tech&#8217;s AI chip buildout",
+      "title": "Apple Watch&#8217;s new AI features are normalizing the idea that technology is always listening",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Meeting note-taker Circleback adds a free tier to attract more customers",
+      "title": "Everything Apple announced at its fall iPhone event, from the foldable iPhone Duo to an always-listening Apple Watch",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "The US is building barriers around drones and robots, but China has scale to get around them",
+      "title": "The hinge for Apple&#8217;s new foldable phone was built with AI",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Musk&#8217;s faster path to more gas turbines comes with pollution problem",
+      "title": "Apple&#8217;s revamped Health app will calculate your &#8216;health age&#8217; and readiness score",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Caterpillar is bringing to AI deployment what it learned from automating mining",
+      "title": "Apple has a new way to prove your iPhone photos aren’t AI slop",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Sony Music, Warner sue Anthropic, alleging a &#8216;brazen campaign&#8217; of intellectual property theft",
+      "title": "Apple CEO John Ternus says the best AI device is still the iPhone",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "At TechBBQ, Europe&#8217;s AI conversations kept coming back to: Who&#8217;s actually in control?",
+      "title": "Superintelligence is coming. Should we let it?",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "&#8216;We&#8217;re not doing 30 bets a year&#8217;: Vijay Pande on betting small after running $4B at a16z",
+      "title": "ControlAI&#8217;s Connor Leahy on why superintelligence is ‘not a weapon, it&#8217;s an adversary’",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0
     },
     {
       "source": "TechCrunch",
-      "title": "Nvidia’s AI advantage is moving beyond the GPU",
+      "title": "Viral AI assistant Instinct now has its own email address",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "points": 0,
+      "comments": 0
+    },
+    {
+      "source": "TechCrunch",
+      "title": "&#8216;Gambling with our lives&#8217;: Anthropic researcher quits, warns against self-improving AI",
       "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
       "points": 0,
       "comments": 0

@@ -1,35 +1,29 @@
 #!/usr/bin/env python3
-"""Fetch vLLM and StemDeck details for the daily report."""
-import json, urllib.request, re, sys
+import json, urllib.request, sys
 
-def fetch_json(url):
+# Fetch Cognition SWE-2 details
+url = "https://cognition.com/blog/swe-2"
+try:
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=15) as r:
-        return json.loads(r.read())
+        content = r.read().decode('utf-8', errors='ignore')
+    import re
+    # Extract some text
+    text = re.sub(r'<[^>]+>', ' ', content)
+    text = re.sub(r'\s+', ' ', text)
+    print(f"Cognition SWE-2 page excerpt: {text[:800]}")
+except Exception as e:
+    print(f"Error: {e}", file=sys.stderr)
 
-def fetch_text(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=15) as r:
-        return r.read().decode('utf-8', errors='replace')
-
-# vLLM release notes
-print("=== vLLM v0.28.0 ===")
-html = fetch_text("https://github.com/vllm-project/vllm/releases/tag/v0.28.0")
-title_match = re.search(r'<title>([^<]+)</title>', html)
-if title_match:
-    print(f"Title: {title_match.group(1)}")
-# Find key changes
-changes = re.findall(r'<li>(.*?)</li>', html[:10000], re.DOTALL)
-for c in changes[:10]:
-    clean = re.sub(r'<[^>]+>', '', c).strip()
-    if clean:
-        print(f"  - {clean[:120]}")
-
-# StemDeck repo
-print("\n=== StemDeck ===")
-data = fetch_json("https://api.github.com/repos.stemdeckapp/stemdeck")
-print(f"Stars: {data.get('stargazers_count', 0)}")
-print(f"Language: {data.get('language', '')}")
-print(f"Description: {data.get('description', '')}")
-print(f"Created: {data.get('created_at', '')[:10]}")
-print(f"Updated: {data.get('updated_at', '')[:10]}")
+# Fetch OpenAI Agents API
+url2 = "https://developers.openai.com/api/docs/guides/agents-api/overview"
+try:
+    req2 = urllib.request.Request(url2, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req2, timeout=15) as r:
+        content2 = r.read().decode('utf-8', errors='ignore')
+    import re
+    text2 = re.sub(r'<[^>]+>', ' ', content2)
+    text2 = re.sub(r'\s+', ' ', text2)
+    print(f"OpenAI Agents API excerpt: {text2[:800]}")
+except Exception as e:
+    print(f"Error: {e}", file=sys.stderr)
