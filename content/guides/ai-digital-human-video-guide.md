@@ -75,6 +75,8 @@ image: /images/guides/ai-digital-human-video-cover.png
 
 **小技巧**：如果你的内容涉及数据支撑（比如行业趋势、市场规模），可以用 [DuckDB AI](https://duckdblab.org/zh/) 快速处理和分析数据，让AI在写稿时引用真实数据，内容说服力大幅提升。
 
+写完脚本后，可以用本站的 [Markdown 预览工具](https://198007.xyz/tools/markdown-preview/) 实时预览格式效果，确保文案排版清晰、无多余符号干扰后续配音。
+
 ### 2.3 配音合成：免费的Edge TTS方案
 
 如果你用的是腾讯智影或剪映，配音可以直接在平台内完成，不需要额外工具。
