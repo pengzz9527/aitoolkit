@@ -198,3 +198,5 @@ Gemini CLI 是 Google 在终端 AI 助手赛道上的重磅之作。凭借 106,9
 > - [在线演示](https://geminicli.com)
 > - [GitHub Action](https://github.com/google-github-actions/run-gemini-cli)
 > - [Changelog](https://www.geminicli.com/docs/changelogs)
+
+喜欢这篇评测？浏览 [198007.xyz 工具集](/tools/) 发现更多 AI 编程辅助工具。

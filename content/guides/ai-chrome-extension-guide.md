@@ -283,7 +283,7 @@ async function saveSummary(title, summary) {
 - [Manifest V3 迁移指南](https://developer.chrome.com/docs/extensions/mv3/intro/mv3-migration/) — 了解新版规范
 - [Chrome Extensions Cookbook](https://developer.chrome.com/docs/extensions/how-to/examples) — 官方示例集合
 
-同时，你也可以参考我们站内的 [用AI做Python编程实战教程](https://198007.xyz/guides/ai-python-programming-guide/) 和 [用AI做API接口调试和自动化测试](https://198007.xyz/guides/ai-api-testing-guide/) 来提升自己的编程能力，这些技能对插件开发也很有帮助。
+同时，你也可以参考我们站内的 [用AI做Python编程实战教程](https://198007.xyz/guides/ai-python-programming-guide/) 和 [用AI做API接口调试和自动化测试](https://198007.xyz/guides/ai-api-testing-guide/) 来提升自己的编程能力，这些技能对插件开发也很有帮助。喜欢这篇文章？浏览 [198007.xyz 工具集](/tools/) 获取更多实用在线工具。
 
 ---
 

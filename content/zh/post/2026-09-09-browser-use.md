@@ -169,3 +169,5 @@ Browser Use 是目前最易上手的 AI 浏览器自动化工具之一，GitHub 
 > - [官方文档](https://docs.browser-use.com)
 > - [Browser Use Cloud](https://cloud.browser-use.com)
 > - [示例代码](https://github.com/browser-use/browser-use/tree/main/examples)
+
+喜欢这篇评测？浏览 [198007.xyz 工具集](/tools/) 发现更多 AI 浏览器自动化工具。
