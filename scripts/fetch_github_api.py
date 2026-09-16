@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""Fetch GitHub trending AI repos."""
+"""Fetch GitHub API for AI repos."""
 import json
 import urllib.request
 import sys
 from urllib.parse import quote
 
 try:
-    query = "created:>2026-09-14+sort:stars+order:desc"
-    encoded = quote(query, safe='')
-    url = f"https://api.github.com/search/repositories?q={encoded}&per_page=20"
-    req = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json"})
+    # Search for AI repos created in last day
+    query = "AI+machine+learning+created:>2026-09-15"
+    url = f"https://api.github.com/search/repositories?q={query}&sort=stars&order=desc&per_page=15"
+    req = urllib.request.Request(url, headers={
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "Mozilla/5.0"
+    })
     resp = urllib.request.urlopen(req, timeout=15)
     data = json.loads(resp.read())
     
@@ -21,10 +24,12 @@ try:
             "stars": r["stargazers_count"],
             "description": r.get("description") or "",
             "language": r.get("language") or "",
-            "url": r["html_url"],
-            "topics": r.get("topics", [])
+            "url": r["html_url"]
         })
+    
+    with open('/tmp/github_repos.json', 'w') as f:
+        json.dump(repos, f, ensure_ascii=False, indent=2)
     print(json.dumps(repos, ensure_ascii=False, indent=2))
 except Exception as e:
-    print(f"GitHub error: {e}", file=sys.stderr)
+    print(f"Error: {e}", file=sys.stderr)
     print(json.dumps([]))
