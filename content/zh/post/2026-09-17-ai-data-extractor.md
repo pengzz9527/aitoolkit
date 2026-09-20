@@ -167,3 +167,7 @@ python extractors/aider.py
 
 *项目地址：https://github.com/kruzovic7/ai-data-extractor*
 *文档：https://github.com/kruzovic7/ai-data-extractor#readme*
+
+---
+
+喜欢这篇评测？浏览 [198007.xyz 工具集](/tools/) 发现更多 AI 编程辅助工具。
