@@ -1,0 +1,354 @@
+{
+  "date": "2026-09-23",
+  "full_date": "September 23, 2026",
+  "hn_all": [
+    {
+      "title": "Claude Opus 5.5",
+      "points": 1042,
+      "url": "https://www.anthropic.com/claude-opus-5-5",
+      "comments": 748
+    },
+    {
+      "title": "GPT-6 Sol and Luna",
+      "points": 1002,
+      "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna/",
+      "comments": 537
+    },
+    {
+      "title": "Apple has added persistent 'ads' to iOS, and it's driving users crazy",
+      "points": 557,
+      "url": "https://www.techradar.com/phones/iphone/i-wish-apple-would-just-stop-that-crap-apple-has-added-persistent-ads-to-ios-and-its-driving-users-crazy",
+      "comments": 427
+    },
+    {
+      "title": "OpenAI GPT–6 Astra breaks Enigma message that has resisted solution since 2005",
+      "points": 520,
+      "url": "https://www.cryptocellar.org/bgac/the-mvueh-break.html",
+      "comments": 350
+    },
+    {
+      "title": "Pentagon says overreliance on AI contributed to missile strike on Iran school",
+      "points": 318,
+      "url": "https://www.bloomberg.com/graphics/2026-iran-school-attack/",
+      "comments": 161
+    },
+    {
+      "title": "'We hacked the FBI:' Hackers say they have data on all FBI employees",
+      "points": 253,
+      "url": "https://www.404media.co/we-hacked-the-fbi-hackers-say-they-have-data-on-all-fbi-employees/",
+      "comments": 187
+    },
+    {
+      "title": "OpenAI is well positioned to fast-follow Jev",
+      "points": 242,
+      "url": "https://arcturus-labs.com/blog/2026/09/21/will-openai-eat-jevs-lunch/",
+      "comments": 178
+    },
+    {
+      "title": "Claude Opus 5.5 Intelligence, Performance and Price Analysis (Max)",
+      "points": 205,
+      "url": "https://artificialanalysis.ai/models/claude-opus-5-5",
+      "comments": 56
+    },
+    {
+      "title": "How did AMD Ryzen get 50% faster in two years?",
+      "points": 165,
+      "url": "https://lemire.me/blog/2026/09/18/how-did-amd-ryzen-get-50-faster-in-two-years/",
+      "comments": 48
+    },
+    {
+      "title": "MUNI Heritage Weekend in San Francisco",
+      "points": 142,
+      "url": "https://daniel.lawrence.lu/blog/2026-09-20-muni-heritage-weekend/",
+      "comments": 35
+    },
+    {
+      "title": "WordPress: Unauthenticated path traversal leading to conditional RCE",
+      "points": 141,
+      "url": "https://github.com/WordPress/wordpress-develop/security/advisories/GHSA-7hp8-65ch-5whp",
+      "comments": 72
+    },
+    {
+      "title": "SAML: A fractal of bad design",
+      "points": 116,
+      "url": "https://blog.trailofbits.com/2026/09/21/saml-a-fractal-of-bad-design/",
+      "comments": 62
+    },
+    {
+      "title": "Microsoft killed FoxPro in 2007. Anyway, here's FoxPro revived",
+      "points": 105,
+      "url": "https://foxscript.org/",
+      "comments": 76
+    },
+    {
+      "title": "Unreal Agent",
+      "points": 98,
+      "url": "https://unreallabs.ai/blog/unreal-agent/",
+      "comments": 59
+    },
+    {
+      "title": "16-bit Intel 8088 chip (c. 1985)",
+      "points": 96,
+      "url": "https://allpoetry.com/16-bit-Intel-8088-chip",
+      "comments": 13
+    },
+    {
+      "title": "An update on how we confirm your age group on Discord",
+      "points": 89,
+      "url": "https://discord.com/blog/safer-for-teens-same-discord-for-adults",
+      "comments": 36
+    },
+    {
+      "title": "Did OpenAI solve the wrong Navier-Stokes problem?",
+      "points": 82,
+      "url": "https://www.scientificamerican.com/article/did-openai-solve-the-wrong-navier-stokes-problem/",
+      "comments": 36
+    },
+    {
+      "title": "People hooked on vapes try a new way to quit: cigarettes",
+      "points": 74,
+      "url": "https://www.bloomberg.com/news/articles/2026-09-18/to-quit-vaping-some-are-starting-to-smoke",
+      "comments": 67
+    },
+    {
+      "title": "Markdown in /src",
+      "points": 70,
+      "url": "https://htmx.org/essays/markdown-in-src/",
+      "comments": 31
+    },
+    {
+      "title": "George Lucas Returns to Earth, Bearing Gifts",
+      "points": 57,
+      "url": "https://commonedge.org/george-lucas-returns-to-earth-bearing-gifts/",
+      "comments": 29
+    },
+    {
+      "title": "Native apps written in TypeScript and CSS",
+      "points": 56,
+      "url": "https://github.com/geastack/examples",
+      "comments": 16
+    },
+    {
+      "title": "The UV index is not the warm sensation of sunlight on bare skin",
+      "points": 46,
+      "url": "https://blog.asciitweezers.com/the-uv-index-is-not-the-warm-sensation-of-sunlight-on-bare-skin/",
+      "comments": 36
+    },
+    {
+      "title": "Show HN: JevBench, a reproducible benchmark for typed decision models",
+      "points": 45,
+      "url": "https://benchmarkheaven.com/jev-models",
+      "comments": 7
+    },
+    {
+      "title": "Launch HN: Coverage Cat (YC S22) – Umbrella insurance via your personal agent",
+      "points": 39,
+      "url": "https://www.coveragecat.com/",
+      "comments": 20
+    },
+    {
+      "title": "Show HN: Training a model to identify AI web content from structure alone",
+      "points": 29,
+      "url": "https://arxiv.org/abs/2609.15369",
+      "comments": 8
+    },
+    {
+      "title": "The JavaScript Midlife Crisis",
+      "points": 24,
+      "url": "https://maroun-baydoun.com/blog/javascript-midlife-crisis/",
+      "comments": 7
+    },
+    {
+      "title": "Rabbit Hole: Minimum L-seams",
+      "points": 21,
+      "url": "https://www.fractalkitty.com/rabbit-hole-minimum-l-seams/",
+      "comments": 5
+    },
+    {
+      "title": "The trouble with 'ntile()'",
+      "points": 15,
+      "url": "https://blog.djnavarro.net/posts/2026-09-20_the-trouble-with-ntile/",
+      "comments": 0
+    },
+    {
+      "title": "ReBarUEFI: Resizable BAR for almost any UEFI system",
+      "points": 15,
+      "url": "https://github.com/xCuri0/ReBarUEFI",
+      "comments": 0
+    },
+    {
+      "title": "The current balance of power in open models",
+      "points": 5,
+      "url": "https://www.interconnects.ai/p/the-current-balance-of-power-in-open",
+      "comments": 2
+    }
+  ],
+  "hn_ai": [
+    {
+      "title": "Claude Opus 5.5",
+      "points": 1042,
+      "url": "https://www.anthropic.com/claude-opus-5-5",
+      "comments": 748
+    },
+    {
+      "title": "GPT-6 Sol and Luna",
+      "points": 1002,
+      "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna/",
+      "comments": 537
+    },
+    {
+      "title": "Apple has added persistent 'ads' to iOS, and it's driving users crazy",
+      "points": 557,
+      "url": "https://www.techradar.com/phones/iphone/i-wish-apple-would-just-stop-that-crap-apple-has-added-persistent-ads-to-ios-and-its-driving-users-crazy",
+      "comments": 427
+    },
+    {
+      "title": "OpenAI GPT–6 Astra breaks Enigma message that has resisted solution since 2005",
+      "points": 520,
+      "url": "https://www.cryptocellar.org/bgac/the-mvueh-break.html",
+      "comments": 350
+    },
+    {
+      "title": "Pentagon says overreliance on AI contributed to missile strike on Iran school",
+      "points": 318,
+      "url": "https://www.bloomberg.com/graphics/2026-iran-school-attack/",
+      "comments": 161
+    },
+    {
+      "title": "'We hacked the FBI:' Hackers say they have data on all FBI employees",
+      "points": 253,
+      "url": "https://www.404media.co/we-hacked-the-fbi-hackers-say-they-have-data-on-all-fbi-employees/",
+      "comments": 187
+    },
+    {
+      "title": "OpenAI is well positioned to fast-follow Jev",
+      "points": 242,
+      "url": "https://arcturus-labs.com/blog/2026/09/21/will-openai-eat-jevs-lunch/",
+      "comments": 178
+    },
+    {
+      "title": "Claude Opus 5.5 Intelligence, Performance and Price Analysis (Max)",
+      "points": 205,
+      "url": "https://artificialanalysis.ai/models/claude-opus-5-5",
+      "comments": 56
+    },
+    {
+      "title": "SAML: A fractal of bad design",
+      "points": 116,
+      "url": "https://blog.trailofbits.com/2026/09/21/saml-a-fractal-of-bad-design/",
+      "comments": 62
+    },
+    {
+      "title": "Unreal Agent",
+      "points": 98,
+      "url": "https://unreallabs.ai/blog/unreal-agent/",
+      "comments": 59
+    },
+    {
+      "title": "Did OpenAI solve the wrong Navier-Stokes problem?",
+      "points": 82,
+      "url": "https://www.scientificamerican.com/article/did-openai-solve-the-wrong-navier-stokes-problem/",
+      "comments": 36
+    },
+    {
+      "title": "Show HN: JevBench, a reproducible benchmark for typed decision models",
+      "points": 45,
+      "url": "https://benchmarkheaven.com/jev-models",
+      "comments": 7
+    },
+    {
+      "title": "Launch HN: Coverage Cat (YC S22) – Umbrella insurance via your personal agent",
+      "points": 39,
+      "url": "https://www.coveragecat.com/",
+      "comments": 20
+    },
+    {
+      "title": "Show HN: Training a model to identify AI web content from structure alone",
+      "points": 29,
+      "url": "https://arxiv.org/abs/2609.15369",
+      "comments": 8
+    },
+    {
+      "title": "The current balance of power in open models",
+      "points": 5,
+      "url": "https://www.interconnects.ai/p/the-current-balance-of-power-in-open",
+      "comments": 2
+    }
+  ],
+  "github_trending": [
+    {
+      "repo": "miuuyy/Astra-Ares",
+      "description": "Adaptive reasoning effort for GPT-6 Astra during Codex tasks, powered by Jev to reduce token usage.",
+      "stars": "140"
+    },
+    {
+      "repo": "Magentaalbulwark/ClipStudio-Desktop",
+      "description": "Modern ClipStudio experience for desktop",
+      "stars": "93"
+    }
+  ],
+  "arxiv": [
+    {
+      "title": "cs.AI updates on arXiv.org",
+      "link": "http://rss.arxiv.org/rss/cs.AI",
+      "description": "cs.AI updates on the arXiv.org e-print archive."
+    },
+    {
+      "title": "RBS-Attention: Radius-Bounded Sparse Prefill for Long-Context Large Language Models",
+      "link": "https://arxiv.org/abs/2609.20971",
+      "description": "arXiv:2609.20971v1 Announce Type: new \nAbstract: Long-context large language model inference is increasingly limited by "
+    },
+    {
+      "title": "Attention-Aware Routing: Coupling Routing and Attention in MoEs",
+      "link": "https://arxiv.org/abs/2609.20974",
+      "description": "arXiv:2609.20974v1 Announce Type: new \nAbstract: In Mixture-of-Experts language models, the router typically selects and"
+    },
+    {
+      "title": "CaLR: Causal Latent Revision for Robust Diffusion Reasoning",
+      "link": "https://arxiv.org/abs/2609.20981",
+      "description": "arXiv:2609.20981v1 Announce Type: new \nAbstract: Autoregressive (AR) models suffer from local greediness, while diffusio"
+    },
+    {
+      "title": "LoRA Enhanced Contrastive Learning with SAS Vision Transformers",
+      "link": "https://arxiv.org/abs/2609.21061",
+      "description": "arXiv:2609.21061v1 Announce Type: new \nAbstract: Automatic target recognition (ATR) with synthetic aperture sonar (SAS) "
+    },
+    {
+      "title": "Detecting Hallucination in LLMs: Tracing the Topological Signatures of Impaired Context Sharing",
+      "link": "https://arxiv.org/abs/2609.21096",
+      "description": "arXiv:2609.21096v1 Announce Type: new \nAbstract: In this work, we examine the topology of information flow patterns with"
+    },
+    {
+      "title": "Decoupling Internal Representational Changes and Causal Importance in Fine-Tuned Large Language Models",
+      "link": "https://arxiv.org/abs/2609.21113",
+      "description": "arXiv:2609.21113v1 Announce Type: new \nAbstract: Fine-tuning has emerged as a widely adopted approach for adapting LLMs "
+    },
+    {
+      "title": "TinyCeNN-LM: Quality-Gated Conversion of Pretrained Attention with CeNN-Inspired Cellular-Recurrent Layers",
+      "link": "https://arxiv.org/abs/2609.21139",
+      "description": "arXiv:2609.21139v1 Announce Type: new \nAbstract: Replacing attention in a pretrained language model is a compatibility p"
+    }
+  ],
+  "extra_hn": [
+    {
+      "title": "Unreal Agent",
+      "points": 99,
+      "url": "https://unreallabs.ai/blog/unreal-agent/"
+    },
+    {
+      "title": "Launch HN: Coverage Cat (YC S22) – Umbrella insurance via your personal agent",
+      "points": 39,
+      "url": "https://www.coveragecat.com/"
+    },
+    {
+      "title": "Show HN: Training a model to identify AI web content from structure alone",
+      "points": 29,
+      "url": "https://arxiv.org/abs/2609.15369"
+    },
+    {
+      "title": "Show HN: Training a model to identify AI web content from structure alone",
+      "points": 29,
+      "url": "https://arxiv.org/abs/2609.15369"
+    }
+  ]
+}
