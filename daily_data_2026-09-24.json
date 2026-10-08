@@ -1,0 +1,380 @@
+{
+  "date": "2026-09-24",
+  "full_date": "September 24, 2026",
+  "hn_all": [
+    {
+      "title": "Jev in 25 Lines of Python",
+      "points": 608,
+      "url": "https://www.nobodywho.ai/posts/jev-in-25-lines/",
+      "comments": 192
+    },
+    {
+      "title": "Italian parliament votes for return to nuclear energy",
+      "points": 474,
+      "url": "https://apnews.com/article/italy-nuclear-chernobyl-4891b6b7c7791ae84db6b0bf0f7cf567",
+      "comments": 303
+    },
+    {
+      "title": "Claude Code reads AGENTS.md only when telemetry is on [fixed]",
+      "points": 435,
+      "url": "https://blog.szypowi.cz/p/claude-code-reads-agents.md-only-when-telemetry-is-on/",
+      "comments": 242
+    },
+    {
+      "title": "Claude discovers a novel enzyme system with CRISPR-like repeats",
+      "points": 390,
+      "url": "https://www.anthropic.com/news/claude-discovers-novel-enzyme-system",
+      "comments": 413
+    },
+    {
+      "title": "Fixing the Portobello Police Station Clock",
+      "points": 356,
+      "url": "https://pointinthecloud.com/2026-04-11-211700.html",
+      "comments": 82
+    },
+    {
+      "title": "I don't want the details",
+      "points": 328,
+      "url": "https://michaelheap.com/i-dont-want-the-details/",
+      "comments": 189
+    },
+    {
+      "title": "Seattle City Council votes to ban surveillance pricing in sale of groceries",
+      "points": 273,
+      "url": "https://advocacy.consumerreports.org/press_release/seattle-city-council-votes-to-ban-surveillance-pricing-in-sale-of-groceries/",
+      "comments": 160
+    },
+    {
+      "title": "Gemini 3.8 text-to-speech",
+      "points": 227,
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/",
+      "comments": 113
+    },
+    {
+      "title": "Tokens too cheap to meter",
+      "points": 213,
+      "url": "https://jyn.dev/tokens-too-cheap-to-meter/",
+      "comments": 173
+    },
+    {
+      "title": "28% of job postings on company career sites have been open over 90 days",
+      "points": 203,
+      "url": "https://unlisted.careers/ghost-jobs/report/2026-09",
+      "comments": 271
+    },
+    {
+      "title": "Stripe's Knowledge AI Platform",
+      "points": 167,
+      "url": "https://stripe.dev/blog/meet-stripes-knowledge-ai-platform",
+      "comments": 101
+    },
+    {
+      "title": "Z80 REPL (2018)",
+      "points": 138,
+      "url": "https://abagames.github.io/z80-repl/index.html",
+      "comments": 18
+    },
+    {
+      "title": "Once Claude can measure something, it can make it faster",
+      "points": 129,
+      "url": "https://claude.dev/blog/how-we-made-claude-ai-faster/",
+      "comments": 82
+    },
+    {
+      "title": "UK military jamming other nations' satellites to defend itself, BBC told",
+      "points": 124,
+      "url": "https://www.bbc.com/news/articles/c32l8y8kygdvo",
+      "comments": 172
+    },
+    {
+      "title": "OpenAI breaches Medicare, Albanese reveals",
+      "points": 110,
+      "url": "https://www.smh.com.au/politics/federal/openai-breaches-medicare-albanese-reveals-20260924-p6100u.html",
+      "comments": 58
+    },
+    {
+      "title": "Radicle: Disclosure of Vulnerability in the Network Protocol",
+      "points": 109,
+      "url": "https://radicle.dev/2026/09/23/disclosure-of-vulnerability-in-network-protocol",
+      "comments": 41
+    },
+    {
+      "title": "A brief history of Windows scroll bar shortcuts",
+      "points": 93,
+      "url": "https://devblogs.microsoft.com/oldnewthing/20260922-00/?p=112719/",
+      "comments": 39
+    },
+    {
+      "title": "VSCode's SSH Agent Is Bananas (2025)",
+      "points": 68,
+      "url": "https://fly.io/blog/vscode-ssh-wtf/",
+      "comments": 47
+    },
+    {
+      "title": "LensVLM: Compressing long context as images, expanding only relevant pages",
+      "points": 29,
+      "url": "https://huggingface.co/apple/LensVLM-9B",
+      "comments": 2
+    },
+    {
+      "title": "Show HN: An atlas of system designs with interactive architecture diagrams",
+      "points": 28,
+      "url": "https://atlas-sysdes.vercel.app/",
+      "comments": 15
+    },
+    {
+      "title": "Making Tailscale Faster",
+      "points": 27,
+      "url": "https://tailscale.com/blog/making-tailscale-faster",
+      "comments": 6
+    },
+    {
+      "title": "The mystery animal on an ancient god's head",
+      "points": 26,
+      "url": "https://signoregalilei.com/2026/09/13/the-mystery-animal-on-an-ancient-gods-head/",
+      "comments": 8
+    },
+    {
+      "title": "Swap, ZRAM, Zswap and Hibernate on NixOS",
+      "points": 22,
+      "url": "https://blog.matthewbrunelle.com/swap-zram-zswap-and-hibernate-on-nixos/",
+      "comments": 4
+    },
+    {
+      "title": "Show HN: I built a post-mortem debugger for native Windows x64/x86 crashes",
+      "points": 16,
+      "url": "https://www.forensicdbg.com",
+      "comments": 2
+    },
+    {
+      "title": "The Curious Power of Punctuation",
+      "points": 13,
+      "url": "https://www.newyorker.com/magazine/2026/09/28/on-the-mark-louis-menand-book-review",
+      "comments": 2
+    },
+    {
+      "title": "Linux support is coming to Snapdragon X2 Series",
+      "points": 12,
+      "url": "https://www.qualcomm.com/news/onq/2026/09/snapdragon-summit-agentic-ai-pcs-linux",
+      "comments": 4
+    },
+    {
+      "title": "A refined phylochronology of the second plague pandemic in Western Eurasia",
+      "points": 7,
+      "url": "https://www.pnas.org/doi/10.1073/pnas.2534899123",
+      "comments": 0
+    },
+    {
+      "title": "We just shipped support for the ugliest part of HTTP: Vary – Cloudflare Blog",
+      "points": 5,
+      "url": "https://blog.cloudflare.com/vary-support/",
+      "comments": 0
+    },
+    {
+      "title": "Bwbach, My Guardian Goblin",
+      "points": 4,
+      "url": "https://robertmay.photography/journal/bwbach-my-guardian-goblin",
+      "comments": 4
+    },
+    {
+      "title": "QuestDB (YC S20) Is Hiring a Sales Engineer",
+      "points": 0,
+      "url": "https://questdb.com/careers/pre-sales-engineer-north-america/",
+      "comments": 0
+    }
+  ],
+  "hn_ai": [
+    {
+      "title": "Jev in 25 Lines of Python",
+      "points": 608,
+      "url": "https://www.nobodywho.ai/posts/jev-in-25-lines/",
+      "comments": 192
+    },
+    {
+      "title": "Italian parliament votes for return to nuclear energy",
+      "points": 474,
+      "url": "https://apnews.com/article/italy-nuclear-chernobyl-4891b6b7c7791ae84db6b0bf0f7cf567",
+      "comments": 303
+    },
+    {
+      "title": "Claude Code reads AGENTS.md only when telemetry is on [fixed]",
+      "points": 435,
+      "url": "https://blog.szypowi.cz/p/claude-code-reads-agents.md-only-when-telemetry-is-on/",
+      "comments": 242
+    },
+    {
+      "title": "Claude discovers a novel enzyme system with CRISPR-like repeats",
+      "points": 390,
+      "url": "https://www.anthropic.com/news/claude-discovers-novel-enzyme-system",
+      "comments": 413
+    },
+    {
+      "title": "Fixing the Portobello Police Station Clock",
+      "points": 356,
+      "url": "https://pointinthecloud.com/2026-04-11-211700.html",
+      "comments": 82
+    },
+    {
+      "title": "I don't want the details",
+      "points": 328,
+      "url": "https://michaelheap.com/i-dont-want-the-details/",
+      "comments": 189
+    },
+    {
+      "title": "Seattle City Council votes to ban surveillance pricing in sale of groceries",
+      "points": 273,
+      "url": "https://advocacy.consumerreports.org/press_release/seattle-city-council-votes-to-ban-surveillance-pricing-in-sale-of-groceries/",
+      "comments": 160
+    },
+    {
+      "title": "Gemini 3.8 text-to-speech",
+      "points": 227,
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/",
+      "comments": 113
+    },
+    {
+      "title": "Tokens too cheap to meter",
+      "points": 213,
+      "url": "https://jyn.dev/tokens-too-cheap-to-meter/",
+      "comments": 173
+    },
+    {
+      "title": "28% of job postings on company career sites have been open over 90 days",
+      "points": 203,
+      "url": "https://unlisted.careers/ghost-jobs/report/2026-09",
+      "comments": 271
+    },
+    {
+      "title": "Stripe's Knowledge AI Platform",
+      "points": 167,
+      "url": "https://stripe.dev/blog/meet-stripes-knowledge-ai-platform",
+      "comments": 101
+    },
+    {
+      "title": "Once Claude can measure something, it can make it faster",
+      "points": 129,
+      "url": "https://claude.dev/blog/how-we-made-claude-ai-faster/",
+      "comments": 82
+    },
+    {
+      "title": "OpenAI breaches Medicare, Albanese reveals",
+      "points": 110,
+      "url": "https://www.smh.com.au/politics/federal/openai-breaches-medicare-albanese-reveals-20260924-p6100u.html",
+      "comments": 58
+    },
+    {
+      "title": "VSCode's SSH Agent Is Bananas (2025)",
+      "points": 68,
+      "url": "https://fly.io/blog/vscode-ssh-wtf/",
+      "comments": 47
+    },
+    {
+      "title": "Making Tailscale Faster",
+      "points": 27,
+      "url": "https://tailscale.com/blog/making-tailscale-faster",
+      "comments": 6
+    },
+    {
+      "title": "Linux support is coming to Snapdragon X2 Series",
+      "points": 12,
+      "url": "https://www.qualcomm.com/news/onq/2026/09/snapdragon-summit-agentic-ai-pcs-linux",
+      "comments": 4
+    }
+  ],
+  "github_trending": [
+    {
+      "repo": "riba2534/claude-opus-5-5-demo",
+      "description": "claude-opus-5-5-demo",
+      "stars": "544"
+    },
+    {
+      "repo": "rgem227/knoweldge-base",
+      "description": "Personal or team knowledge base, supports MCP API calls.",
+      "stars": "399"
+    },
+    {
+      "repo": "JohnHeibel/PDoomVideo",
+      "description": "Source code for the Claude Opus 5.5 music video for I'm Upping My P(doom)",
+      "stars": "330"
+    },
+    {
+      "repo": "miuuyy/Astra-Ares",
+      "description": "Adaptive reasoning effort for GPT-6 during Codex tasks, powered by Jev to reduce token usage.",
+      "stars": "236"
+    },
+    {
+      "repo": "BinaryDeliverer/CodexDesk",
+      "description": "Desktop companion for AI coding agents and Codex workflows",
+      "stars": "222"
+    }
+  ],
+  "arxiv": [
+    {
+      "title": "cs.AI updates on arXiv.org",
+      "link": "http://rss.arxiv.org/rss/cs.AI",
+      "description": "cs.AI updates on the arXiv.org e-print archive."
+    },
+    {
+      "title": "Didactic knowledge or Clinical Cases? How Data Types Shape Medical Large Language Models",
+      "link": "https://arxiv.org/abs/2609.22161",
+      "description": "arXiv:2609.22161v1 Announce Type: new \nAbstract: Medical large language models are commonly trained on mixtures of didac"
+    },
+    {
+      "title": "An Affordable AI-Integrated Smart Cane for Multimodal Mobility Assistance of Visually Impaired Users",
+      "link": "https://arxiv.org/abs/2609.22277",
+      "description": "arXiv:2609.22277v1 Announce Type: new \nAbstract: Visual impairment affects over 2.2 billion people worldwide, yet conven"
+    },
+    {
+      "title": "PAANI : On Device Visual Evidence Fusion and Explainable Guidance for River Robot Simulation",
+      "link": "https://arxiv.org/abs/2609.22353",
+      "description": "arXiv:2609.22353v1 Announce Type: new \nAbstract: Mobile river monitoring robots must interpret obstacles and water bound"
+    },
+    {
+      "title": "Social Influence and the Allocation of Scientific Attention in AI Populations",
+      "link": "https://arxiv.org/abs/2609.22408",
+      "description": "arXiv:2609.22408v1 Announce Type: new \nAbstract: AI systems are becoming participants in the evaluation and use of scien"
+    },
+    {
+      "title": "Learning 3D biophysical cell properties from 2D images and cell-population statistics",
+      "link": "https://arxiv.org/abs/2609.22410",
+      "description": "arXiv:2609.22410v1 Announce Type: new \nAbstract: Inferring 3D cellular properties from 2D microscopy is difficult when a"
+    },
+    {
+      "title": "Goal-driven Variant Categorization",
+      "link": "https://arxiv.org/abs/2609.22475",
+      "description": "arXiv:2609.22475v1 Announce Type: new \nAbstract: Process discovery rarely yields a single coherent process structure. Fo"
+    },
+    {
+      "title": "Replication Without Persistence in Hosted LLMs: Measurement Sensitivity in Action-Time Belief Evaluation",
+      "link": "https://arxiv.org/abs/2609.22478",
+      "description": "arXiv:2609.22478v1 Announce Type: new \nAbstract: Behavioural evaluations of hosted language models can vary because the "
+    }
+  ],
+  "extra_hn": [
+    {
+      "title": "Claude Code reads AGENTS.md only when telemetry is on [fixed]",
+      "points": 435,
+      "url": "https://blog.szypowi.cz/p/claude-code-reads-agents.md-only-when-telemetry-is-on/"
+    },
+    {
+      "title": "VSCode's SSH Agent Is Bananas (2025)",
+      "points": 69,
+      "url": "https://fly.io/blog/vscode-ssh-wtf/"
+    },
+    {
+      "title": "Linux support is coming to Snapdragon X2 Series",
+      "points": 13,
+      "url": "https://www.qualcomm.com/news/onq/2026/09/snapdragon-summit-agentic-ai-pcs-linux"
+    },
+    {
+      "title": "Show HN: I built a post-mortem debugger for native Windows x64/x86 crashes",
+      "points": 16,
+      "url": "https://www.forensicdbg.com"
+    },
+    {
+      "title": "Linux support is coming to Snapdragon X2 Series",
+      "points": 13,
+      "url": "https://www.qualcomm.com/news/onq/2026/09/snapdragon-summit-agentic-ai-pcs-linux"
+    }
+  ]
+}
