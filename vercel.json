@@ -29,18 +29,5 @@
         }
       ]
     }
-  ],
-  "redirects": [
-    {
-      "source": "/(.*)",
-      "destination": "/$1",
-      "permanent": true,
-      "has": [
-        {
-          "type": "host",
-          "value": "www.198007.xyz"
-        }
-      ]
-    }
   ]
 }
