@@ -33,7 +33,7 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "destination": "/:splat",
+      "destination": "/$1",
       "permanent": true,
       "has": [
         {
