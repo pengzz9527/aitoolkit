@@ -1,4 +1,4 @@
-baseURL = 'https://198007.xyz'
+baseURL = 'https://www.198007.xyz/'
 locale = "zh-CN"
 title = 'AI Toolkit - 在线工具集'
 theme = 'minimal'

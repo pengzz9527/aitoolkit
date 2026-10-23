@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://198007.xyz/sitemap.xml
+Sitemap: https://www.198007.xyz/sitemap.xml
