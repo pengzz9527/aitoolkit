@@ -195,6 +195,8 @@ EmbeddingGemma 2 是目前本地部署场景下多模态嵌入的事实标准：
 
 如果你正在做本地 RAG、多模态搜索、代码检索中任意两个方向，建议优先考虑 EmbeddingGemma 2。如果只需要纯文本 + 有云端 API 预算，OpenAI text-embedding-3-small 依然更省事。
 
+想跳过写代码、直接验证跨语言跨模态检索效果，可以先用 [UUID 生成器](https://198007.xyz/tools/uuid-generator/) 给语料批量打上唯一 ID，再用 [JSON 格式化工具](https://198007.xyz/tools/json-formatter/) 整理 embedding 元数据，最后把检索结果导出成 CSV，用 [CSV/SQL 在线分析器](https://198007.xyz/tools/csv-sql-analyzer/) 跑一遍相似度分布统计——全程在浏览器里完成，不用搭环境。做向量维度和存储成本估算时，[百分比计算器](https://198007.xyz/tools/percentage-calculator/) 也能顺手算清 256d 截断到底省了多少。
+
 **适合谁**：本地部署多模态 RAG、代码搜索引擎、跨模态推荐系统的团队和个人开发者。
 
 **不适合谁**：需要超长上下文（>8K）的文档嵌入、纯音频精确定位场景、没有本地算力且不想折腾部署的团队。

@@ -208,6 +208,8 @@ node skills/security-audit/validate-coverage-ledger.cjs \
 
 校验失败就让流水线红掉——这样「AI 编了一条没有源码依据的高危漏洞」会在合并前被拦住，而不是躺在周报里。
 
+如果只是想在交给 Agent 深审之前先自己核对一遍产物，也可以用站点里的浏览器工具做交叉检查：把 `findings.json` 粘进 [JSON 格式化工具](https://198007.xyz/tools/json-formatter/) 先确认结构完整、没有截断，再用 [JSON Path 提取工具](https://198007.xyz/tools/json-path-finder/) 单独把 `severity` 和 `status` 字段抽出来对账，最后用 [文本差异对比工具](https://198007.xyz/tools/diff-checker/) 比对新旧两次 run 的 `REPORT.md`，一眼看出这轮多确认了哪几条、又撤回了哪几条。这几步都不需要装任何东西，原始代码片段也不会离开本机浏览器。
+
 ### 想自建流水线？官方给了路线
 
 Cloudflare 博客里那段建议比很多架构文章实在：
