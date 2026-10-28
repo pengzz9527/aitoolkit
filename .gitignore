@@ -3,4 +3,11 @@ public/
 resources/
 node_modules/
 .DS_Store
+esp32_check.py
+gh_details.py
+gh_parse.py
+sent_detail.py
+show_repos.py
+show_search.py
+show_search2.py
 
